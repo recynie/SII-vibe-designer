@@ -108,9 +108,11 @@ vibe-design/                      # 项目根
 │       ├── poster.md
 │       ├── copywriting.md
 │       └── ui-mockup.md
-├── tools/                        # Python CLI（agent 通过 bash 调用）
-│   ├── gen_image.py              # 双后端文生图
-│   └── html_screenshot.py        # HTML → PNG（playwright/chromium）
+├── tools/                        # Python CLI（agent 通过 bash 调用 + 项目内部质检）
+│   ├── gen_image.py              # 双后端文生图（agent 用）
+│   ├── html_screenshot.py        # HTML → PNG（agent 用，playwright/chromium）
+│   ├── verify_demo_panel.py      # 内部质检：playwright 检查 PPT D-key panel 链接
+│   └── verify_facts.py           # 内部质检：跨文档事实陈述与仓库一致
 ├── examples/                     # 三条不同领域 brief 验证泛化
 │   ├── brief-sii-academy.md      # 题目要求的"创智学院"测试
 │   ├── brief-zhujiajiao.md       # 参考案例的"朱家角"测试
