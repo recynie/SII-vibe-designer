@@ -1,0 +1,4 @@
+# backend: minimax
+# aspect: 1:1
+
+flat vector logo wordmark for Chuangzhi Academy, heavy sans-serif typography, clean and authoritative, two-tone using #1A2B4A and #00B8A9, on clean off-white background #F7F9FC, geometric and precise, minimalist, scalable, no gradients, no emoji, no decorative elements, no generic fonts, no purple gradient, no Web 2.0 glossy effects

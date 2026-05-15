@@ -1,0 +1,713 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>创智学院 | AI 创新与人才培养</title>
+<!--
+  设计依据（来自 brand-spec.md）：
+  - Primary: #1A2B4A（墨蓝色，学术稳重）
+  - Secondary: #2D3E5F（深灰蓝，辅助沉稳）
+  - Background: #F7F9FC（冷白，极浅灰）
+  - Ink: #1A1A1A（近黑色，正文）
+  - Accent: #00B8A9（青绿，点缀色）
+  
+  字体配对：
+  - Display: 思源黑体 Heavy / Noto Sans SC Black
+  - Body: 思源黑体 Regular / Noto Sans SC
+  
+  风格方向：Pentagram 信息建筑派
+  - 网格系统清晰
+  - 几何精准、克制
+  - 大量留白
+  - 信息层级分明
+  
+  反 AI slop 自检：
+  - ❌ 紫渐变
+  - ❌ emoji 图标
+  - ❌ generic stock 插图
+  - ❌ 过度圆角
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --primary: #1A2B4A;
+    --secondary: #2D3E5F;
+    --bg: #F7F9FC;
+    --ink: #1A1A1A;
+    --accent: #00B8A9;
+    --ink-muted: #6B7280;
+    --border: #E5E7EB;
+  }
+  
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  
+  html, body {
+    width: 1440px;
+    margin: 0 auto;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-weight: 400;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  
+  /* Header */
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 24px 80px;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  
+  .logo {
+    font-weight: 900;
+    font-size: 22px;
+    color: var(--primary);
+    letter-spacing: -0.02em;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .logo-mark {
+    width: 32px;
+    height: 32px;
+    background: var(--primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .logo-mark svg {
+    width: 18px;
+    height: 18px;
+    fill: var(--accent);
+  }
+  
+  nav {
+    display: flex;
+    gap: 48px;
+  }
+  
+  nav a {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--secondary);
+    text-decoration: none;
+    position: relative;
+    transition: color 0.2s;
+  }
+  
+  nav a:hover {
+    color: var(--primary);
+  }
+  
+  nav a::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--accent);
+    transition: width 0.2s;
+  }
+  
+  nav a:hover::after {
+    width: 100%;
+  }
+  
+  .contact-btn {
+    padding: 10px 24px;
+    background: var(--primary);
+    color: #fff;
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: background 0.2s;
+  }
+  
+  .contact-btn:hover {
+    background: var(--secondary);
+  }
+  
+  /* Hero */
+  .hero {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    padding: 120px 80px;
+    min-height: 680px;
+    align-items: center;
+  }
+  
+  .hero-content {
+    max-width: 560px;
+  }
+  
+  .hero h1 {
+    font-size: 64px;
+    font-weight: 900;
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+    color: var(--primary);
+    margin-bottom: 24px;
+  }
+  
+  .hero-tagline {
+    font-size: 20px;
+    color: var(--ink-muted);
+    margin-bottom: 40px;
+    line-height: 1.6;
+  }
+  
+  .cta-group {
+    display: flex;
+    gap: 16px;
+  }
+  
+  .cta-primary {
+    display: inline-block;
+    padding: 16px 32px;
+    background: var(--accent);
+    color: #fff;
+    font-size: 15px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  
+  .cta-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 184, 169, 0.3);
+  }
+  
+  .cta-secondary {
+    display: inline-block;
+    padding: 16px 32px;
+    border: 2px solid var(--primary);
+    color: var(--primary);
+    font-size: 15px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: background 0.2s, color 0.2s;
+  }
+  
+  .cta-secondary:hover {
+    background: var(--primary);
+    color: #fff;
+  }
+  
+  .hero-visual {
+    position: relative;
+    height: 480px;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  
+  .hero-visual::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+      linear-gradient(90deg, transparent 49.5%, rgba(0,184,169,0.1) 49.5%, rgba(0,184,169,0.1) 50.5%, transparent 50.5%),
+      linear-gradient(0deg, transparent 49.5%, rgba(0,184,169,0.1) 49.5%, rgba(0,184,169,0.1) 50.5%, transparent 50.5%);
+    background-size: 80px 80px;
+  }
+  
+  .hero-visual-shape {
+    width: 200px;
+    height: 200px;
+    border: 3px solid var(--accent);
+    position: relative;
+    z-index: 1;
+  }
+  
+  .hero-visual-shape::before {
+    content: '';
+    position: absolute;
+    top: 30px;
+    left: 30px;
+    width: 140px;
+    height: 140px;
+    border: 3px solid rgba(255,255,255,0.3);
+  }
+  
+  /* Section: About */
+  .section {
+    padding: 96px 80px;
+  }
+  
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 64px;
+  }
+  
+  .section-label {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  
+  .section-title {
+    font-size: 40px;
+    font-weight: 900;
+    color: var(--primary);
+    letter-spacing: -0.02em;
+  }
+  
+  .about-content {
+    max-width: 800px;
+  }
+  
+  .about-text {
+    font-size: 20px;
+    line-height: 1.8;
+    color: var(--ink-muted);
+    margin-bottom: 32px;
+  }
+  
+  .about-stats {
+    display: flex;
+    gap: 64px;
+  }
+  
+  .stat-item {
+    border-left: 3px solid var(--accent);
+    padding-left: 16px;
+  }
+  
+  .stat-number {
+    font-size: 36px;
+    font-weight: 900;
+    color: var(--primary);
+    letter-spacing: -0.02em;
+  }
+  
+  .stat-label {
+    font-size: 14px;
+    color: var(--ink-muted);
+  }
+  
+  /* Section: Research Areas */
+  .research-section {
+    background: #fff;
+    padding: 96px 80px;
+  }
+  
+  .research-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+  }
+  
+  .research-card {
+    padding: 40px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  
+  .research-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-4px);
+  }
+  
+  .research-icon {
+    width: 48px;
+    height: 48px;
+    background: var(--primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 24px;
+  }
+  
+  .research-icon svg {
+    width: 24px;
+    height: 24px;
+    stroke: var(--accent);
+    fill: none;
+    stroke-width: 2;
+  }
+  
+  .research-card h3 {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 12px;
+  }
+  
+  .research-card p {
+    font-size: 15px;
+    color: var(--ink-muted);
+    line-height: 1.7;
+  }
+  
+  /* Section: News */
+  .news-section {
+    padding: 96px 80px;
+  }
+  
+  .news-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+  }
+  
+  .news-card {
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 24px;
+    cursor: pointer;
+    transition: border-color 0.2s;
+  }
+  
+  .news-card:hover {
+    border-color: var(--accent);
+  }
+  
+  .news-date {
+    font-size: 13px;
+    color: var(--accent);
+    font-weight: 700;
+    margin-bottom: 12px;
+  }
+  
+  .news-card h3 {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 8px;
+    line-height: 1.5;
+  }
+  
+  .news-card p {
+    font-size: 14px;
+    color: var(--ink-muted);
+    line-height: 1.6;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  
+  /* Footer */
+  footer {
+    background: var(--primary);
+    color: #fff;
+    padding: 64px 80px 32px;
+  }
+  
+  .footer-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 48px;
+  }
+  
+  .footer-brand {
+    max-width: 320px;
+  }
+  
+  .footer-logo {
+    font-size: 20px;
+    font-weight: 900;
+    color: #fff;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .footer-logo-mark {
+    width: 28px;
+    height: 28px;
+    background: var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .footer-logo-mark svg {
+    width: 14px;
+    height: 14px;
+    fill: #fff;
+  }
+  
+  .footer-desc {
+    font-size: 14px;
+    color: rgba(255,255,255,0.6);
+    line-height: 1.7;
+  }
+  
+  .footer-links {
+    display: flex;
+    gap: 80px;
+  }
+  
+  .footer-col h4 {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+  
+  .footer-col a {
+    display: block;
+    font-size: 14px;
+    color: rgba(255,255,255,0.7);
+    text-decoration: none;
+    margin-bottom: 10px;
+    transition: color 0.2s;
+  }
+  
+  .footer-col a:hover {
+    color: #fff;
+  }
+  
+  .footer-bottom {
+    border-top: 1px solid rgba(255,255,255,0.1);
+    padding-top: 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .footer-copyright {
+    font-size: 13px;
+    color: rgba(255,255,255,0.5);
+  }
+  
+  .footer-social {
+    display: flex;
+    gap: 16px;
+  }
+  
+  .footer-social a {
+    width: 36px;
+    height: 36px;
+    border: 1px solid rgba(255,255,255,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  
+  .footer-social a:hover {
+    border-color: var(--accent);
+    background: var(--accent);
+  }
+  
+  .footer-social svg {
+    width: 16px;
+    height: 16px;
+    fill: #fff;
+  }
+</style>
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <a href="#" class="logo">
+      <div class="logo-mark">
+        <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+      </div>
+      创智学院
+    </a>
+    <nav>
+      <a href="#">研究</a>
+      <a href="#">人才培养</a>
+      <a href="#">关于我们</a>
+      <a href="#">联系我们</a>
+    </nav>
+    <a href="#" class="contact-btn">联系我们</a>
+  </header>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-content">
+      <h1>AI 创新与人才培养</h1>
+      <p class="hero-tagline">上海前沿的人工智能研究机构，融合研究院深度与教育培养使命，培养面向未来的青年研究者与工程师。</p>
+      <div class="cta-group">
+        <a href="#" class="cta-primary">了解更多</a>
+        <a href="#" class="cta-secondary">加入我们</a>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="hero-visual-shape"></div>
+    </div>
+  </section>
+
+  <!-- About Section -->
+  <section class="section">
+    <div class="section-header">
+      <div>
+        <div class="section-label">About Us</div>
+        <h2 class="section-title">机构简介</h2>
+      </div>
+    </div>
+    <div class="about-content">
+      <p class="about-text">
+        创智学院成立于上海，是一家专注于人工智能前沿研究与创新人才培养的研究型机构。我们致力于构建连接学术探索与产业实践的桥梁，通过系统化的研究项目与定制化的人才培养体系，为 AI 领域输送具有国际视野和创新能力的青年研究者和工程师。
+      </p>
+      <div class="about-stats">
+        <div class="stat-item">
+          <div class="stat-number">50+</div>
+          <div class="stat-label">研究项目</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">200+</div>
+          <div class="stat-label">培养人才</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">30+</div>
+          <div class="stat-label">合作企业</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Research Areas -->
+  <section class="research-section">
+    <div class="section-header">
+      <div>
+        <div class="section-label">Research</div>
+        <h2 class="section-title">核心研究方向</h2>
+      </div>
+    </div>
+    <div class="research-grid">
+      <article class="research-card">
+        <div class="research-icon">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v4m0 14v4M1 12h4m14 0h4M4.22 4.22l2.83 2.83m9.9 9.9l2.83 2.83M4.22 19.78l2.83-2.83m9.9-9.9l2.83-2.83"/></svg>
+        </div>
+        <h3>机器学习基础研究</h3>
+        <p>聚焦深度学习理论、算法优化与模型可解释性，探索 AI 基础科学问题。</p>
+      </article>
+      <article class="research-card">
+        <div class="research-icon">
+          <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8m-4-4v4"/></svg>
+        </div>
+        <h3>计算机视觉与感知</h3>
+        <p>研究新一代视觉识别、场景理解和多模态感知技术。</p>
+      </article>
+      <article class="research-card">
+        <div class="research-icon">
+          <svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+        </div>
+        <h3>自然语言处理</h3>
+        <p>探索大语言模型、语义理解与生成式 AI 前沿技术。</p>
+      </article>
+      <article class="research-card">
+        <div class="research-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+        </div>
+        <h3>AI 系统与架构</h3>
+        <p>研究高效计算框架、分布式训练与 AI 硬件协同设计。</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- News Section -->
+  <section class="news-section">
+    <div class="section-header">
+      <div>
+        <div class="section-label">News</div>
+        <h2 class="section-title">最新动态</h2>
+      </div>
+    </div>
+    <div class="news-grid">
+      <article class="news-card">
+        <div class="news-date">2026.05.10</div>
+        <h3>创智学院与头部科技企业达成战略合作</h3>
+        <p>双方将在 AI 人才培养、前沿研究等领域开展深度合作，共同推动技术创新与产业落地。</p>
+      </article>
+      <article class="news-card">
+        <div class="news-date">2026.04.22</div>
+        <h3>2026 春季学术研讨会圆满落幕</h3>
+        <p>本次研讨会汇聚国内外顶尖学者，围绕大模型、具身智能等热点话题展开深入交流。</p>
+      </article>
+      <article class="news-card">
+        <div class="news-date">2026.04.05</div>
+        <h3>新一批青年研究者计划开放申请</h3>
+        <p>2026 年度秋季入学现已开放申请，欢迎计算机、数学、物理等相关专业优秀学子投递。</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-content">
+      <div class="footer-brand">
+        <div class="footer-logo">
+          <div class="footer-logo-mark">
+            <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+          </div>
+          创智学院
+        </div>
+        <p class="footer-desc">上海前沿的人工智能创新与人才培养机构，连接学术探索与产业实践。</p>
+      </div>
+      <div class="footer-links">
+        <div class="footer-col">
+          <h4>研究</h4>
+          <a href="#">研究方向</a>
+          <a href="#">论文发表</a>
+          <a href="#">项目成果</a>
+        </div>
+        <div class="footer-col">
+          <h4>人才培养</h4>
+          <a href="#">青年研究者</a>
+          <a href="#">工程师培训</a>
+          <a href="#">夏令营</a>
+        </div>
+        <div class="footer-col">
+          <h4>关于我们</h4>
+          <a href="#">机构介绍</a>
+          <a href="#">团队成员</a>
+          <a href="#">联系我们</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="footer-copyright">© 2026 创智学院. 保留所有权利.</div>
+      <div class="footer-social">
+        <a href="#" aria-label="微信公众号">
+          <svg viewBox="0 0 24 24"><path d="M8.691 2.188C3.891 2.188 0 5.476 0 9.53c0 2.212 1.17 4.203 3.002 5.55a.59.59 0 0 1 .213.665l-.39 1.48c-.019.07-.048.141-.048.213 0 .163.13.295.29.295a.326.326 0 0 0 .167-.054l1.903-1.114a.864.864 0 0 1 .717-.098 10.16 10.16 0 0 0 2.837.403c.276 0 .543-.027.811-.05-.857-2.578.157-4.972 1.932-6.446 1.703-1.415 3.882-1.98 5.853-1.838-.576-3.583-4.196-6.348-8.596-6.348zM5.785 5.991c.642 0 1.162.529 1.162 1.18a1.17 1.17 0 0 1-1.162 1.178A1.17 1.17 0 0 1 4.623 7.17c0-.651.52-1.18 1.162-1.18zm5.813 0c.642 0 1.162.529 1.162 1.18a1.17 1.17 0 0 1-1.162 1.178 1.17 1.17 0 0 1-1.162-1.178c0-.651.52-1.18 1.162-1.18zm5.34 2.867c-1.797-.052-3.746.512-5.28 1.786-1.72 1.428-2.687 3.72-1.78 6.22.942 2.453 3.666 4.229 6.884 4.229.826 0 1.622-.12 2.361-.336a.722.722 0 0 1 .598.082l1.584.926a.272.272 0 0 0 .14.045c.134 0 .24-.111.24-.247 0-.06-.023-.12-.038-.177l-.327-1.233a.582.582 0 0 1-.023-.156.49.49 0 0 1 .201-.398C23.024 18.48 24 16.82 24 14.98c0-3.21-2.931-5.837-6.656-6.088V8.89c-.135-.01-.266-.03-.406-.03zm-2.53 3.274c.535 0 .969.44.969.982a.976.976 0 0 1-.969.983.976.976 0 0 1-.969-.983c0-.542.434-.982.97-.982z"/></svg>
+        </a>
+        <a href="#" aria-label="LinkedIn">
+          <svg viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+        </a>
+        <a href="#" aria-label="GitHub">
+          <svg viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+        </a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

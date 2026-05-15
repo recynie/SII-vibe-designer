@@ -1,0 +1,4 @@
+# backend: minimax
+# aspect: 1:1
+
+flat vector logo combo for Chuangzhi Academy, geometric logo mark on left, Chinese text and English Chuangzhi Academy on right, abstract neural network nodes forming a triangular core as the mark, heavy sans-serif typography for text, two-tone using #1A2B4A and #00B8A9, on clean off-white background #F7F9FC, geometric and precise, horizontal layout, minimalist, scalable, no gradients, no emoji, no photorealistic textures, no faces, no purple gradient, no Web 2.0 glossy effects

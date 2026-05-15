@@ -1,0 +1,25 @@
+# v2: 修复颜色问题，严格使用 brand-spec.md 定义的颜色
+# 改动来自 v1.review.md 的核心反馈：颜色必须重做
+
+# backend: minimax
+# aspect: 1:1
+# variant: mark | wordmark | combo (3 versions)
+
+# 设计依据:
+# - 使用 brand-spec.md Primary #1A2B4A（墨蓝色）表达学术稳重
+# - 使用 brand-spec.md Accent #00B8A9（青绿）象征 AI 活力与未来感
+# - 使用 brand-spec.md Background #F7F9FC（冷白）营造现代洁净感
+# - 参考方向: Pentagram 信息建筑派 - 几何精准、理性秩序
+# - 形态选择: 神经网络节点构成"C"形（创的首字母），融合"创智"概念与 AI 科技隐喻
+# - 严格禁止紫红/暖色，只使用 #1A2B4A 和 #00B8A9
+
+---
+
+# v2-mark.png prompt:
+flat vector logo mark for 创智学院, abstract geometric representation of intelligence and innovation, neural network nodes forming a stylized C (创) character shape, two-tone using #1A2B4A (deep ink blue) and #00B8A9 (vibrant cyan), on a clean #F7F9FC background, geometric and precise, minimalist, scalable, pentagram information architecture style, no gradients, no emoji, no faces, no purple, no warm colors, ONLY use #1A2B4A and #00B8A9 as colors
+
+# v2-wordmark.png prompt:
+flat vector wordmark logo for 创智学院, stylized text with geometric precision, Chinese characters 创智学院 in heavy bold sans-serif, with a subtle abstract C-shape geometric accent, primary color #1A2B4A (deep ink blue) with cyan accent #00B8A9 on clean #F7F9FC background, pentagram minimalist style, clean and professional, scalable, no gradients, no emoji, no faces, no purple, no warm colors, ONLY use #1A2B4A and #00B8A9 as colors
+
+# v2.png (combo) prompt:
+flat vector combo logo for 创智学院, geometric mark on left - abstract neural network nodes forming stylized C shape in #1A2B4A with #00B8A9 accent, Chinese text 创智学院 on right in heavy bold #1A2B4A with subtle cyan geometric accent, on clean #F7F9FC background, pentagram information architecture style, balanced composition, scalable, no gradients, no emoji, no faces, no purple, no warm colors, ONLY use #1A2B4A and #00B8A9 as colors
