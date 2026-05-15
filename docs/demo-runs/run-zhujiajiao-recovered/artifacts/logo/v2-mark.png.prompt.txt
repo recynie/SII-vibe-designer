@@ -1,0 +1,4 @@
+# backend: minimax
+# aspect: 1:1
+
+minimalist logo for Zhujiajiao water town tourism: abstract five-arch bridge (Fangsheng Bridge) silhouette composed of flowing curved lines suggesting动态 water ripples, in the style of contemporary Chinese graphic design combining ink wash aesthetics with modern minimalism, STRICTLY use only #2C3E50 (dark cyan-grey, Primary) for bridge structure - NO color shifts, NO warm/cool tints, and #4A7C59 (sage moss green, Accent) for flowing water ripple lines beneath the bridge, NO other colors, on clean #F5F5F0 (warm off-white paper texture) background, dynamic yet elegant, lightweight lines suggesting vitality and freshness, scalable flat vector, no text, no emoji, no purple gradients, no generic SVG faces, no stock photo aesthetics

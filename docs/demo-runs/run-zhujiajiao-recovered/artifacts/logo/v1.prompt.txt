@@ -1,0 +1,33 @@
+# v1: 初始版本
+
+# backend: minimax (开发环境)
+# aspect: 1:1
+# variants: mark, wordmark, combo (共3个)
+
+---
+
+## 设计依据
+
+- 使用 brand-spec.md Primary #2C3E50（黛青色）表达"诗意/精致"的古镇气质
+- 使用 Accent #4A7C59（苔绿）作为江南园林植被的清新点缀
+- 背景使用 #F5F5F0（米白）呼应宣纸质感，承载水墨气质
+- 形态选择：放生桥抽象化线条 + 水波纹，融合古镇标志性元素与年轻化极简设计
+- 参考方向：原研哉极简主义与东方美学融合风格，避免老气横秋的传统表达
+
+---
+
+## variant 1: mark（图形标）
+
+flat vector logo featuring an abstract bridge silhouette (Fangsheng Bridge, the iconic five-arch stone bridge of Zhujiajiao water town), flowing water ripples below, in the style of Chinese ink wash painting meets modern graphic design, two-tone using #2C3E50 (dark cyan-grey) and #4A7C59 (sage green), STRICTLY use only these two colors - NO other colors, NO gradients, on a clean #F5F5F0 (warm off-white) background, geometric and timeless, scalable, no text, no emoji, no generic SVG faces, no purple gradients, no Web 2.0 effects
+
+---
+
+## variant 2: wordmark（文字标）
+
+modern minimalist wordmark logo containing the Chinese characters 朱家角 (Zhujiajiao), styled with elegant thin brush-stroke inspired lettering, subtle water ripple lines beneath the text, using #2C3E50 (dark cyan-grey) as primary color, on a clean #F5F5F0 (warm off-white) background, geometric and timeless, no emoji, no purple gradients, no generic elements, clean and sophisticated
+
+---
+
+## variant 3: combo（组合标）
+
+elegant combo logo: abstract bridge silhouette (Fangsheng Bridge) above, Chinese characters 朱家角 below, with subtle flowing water line accent, combining Chinese ink wash aesthetics with modern minimalist design, using #2C3E50 (dark cyan-grey) for main elements and #4A7C59 (sage green) for accent details, STRICTLY use only these colors - NO other colors, on a clean #F5F5F0 (warm off-white) background, geometric and timeless, scalable, no emoji, no purple gradients, no generic stock faces

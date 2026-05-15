@@ -1,0 +1,54 @@
+# v2: 改动来自 v1.review.md 的改进版本
+
+# backend: minimax (开发环境)
+# aspect: mark/combo 1:1, wordmark 16:9
+# variants: mark, wordmark, combo (共3个)
+
+---
+
+## 改动说明
+
+基于 v1.review.md 的反馈进行以下修改：
+
+1. **颜色严格化**
+   - v1 问题：Primary #2C3E50 偏差偏绿，Accent #4A7C59 未体现
+   - v2 改进：prompt 中使用 "STRICTLY use only #2C3E50 (dark cyan-grey, Primary) - NO color shifts, NO warm/cool tints" 强制约束
+   - v2 改进：强调 "STRICTLY use only #4A7C59 (sage moss green Accent)" 用于水波纹点缀
+
+2. **增加"鲜活"感**
+   - v1 问题：整体偏沉闷，未体现"鲜活"关键词
+   - v2 改进：加入 "dynamic curved flowing lines"、"flowing water ripple"、"lightweight lines suggesting vitality and freshness" 等动态描述
+   - v2 改进：使用 "dynamic yet elegant" 替代原有的静态描述
+
+3. **苔绿点缀**
+   - v1 问题：wordmark 和 combo 未使用 Accent #4A7C59
+   - v2 改进：wordmark 中 "subtle dynamic water ripple lines flowing beneath the text in #4A7C59 (sage moss green Accent)"
+   - v2 改进：combo 中 "flowing water ripple accent in #4A7C59 (sage moss green Accent) woven through the composition"
+
+---
+
+## 设计依据
+
+- 使用 brand-spec.md Primary #2C3E50（黛青色）表达"诗意/精致"的古镇气质
+- 使用 Accent #4A7C59（苔绿）作为江南园林植被的清新点缀和水流动态
+- 背景使用 #F5F5F0（米白）呼应宣纸质感，承载水墨气质
+- 形态选择：放生桥抽象化动态曲线 + 流动水波纹，融合古镇标志性元素与年轻化鲜活设计
+- 参考方向：原研哉极简主义与东方美学融合风格，避免老气横秋的传统表达
+
+---
+
+## variant 1: mark（图形标）
+
+minimalist logo for Zhujiajiao water town tourism: abstract five-arch bridge (Fangsheng Bridge) silhouette composed of flowing curved lines suggesting dynamic water ripples, in the style of contemporary Chinese graphic design combining ink wash aesthetics with modern minimalism, STRICTLY use only #2C3E50 (dark cyan-grey, Primary) for bridge structure - NO color shifts, NO warm/cool tints, and #4A7C59 (sage moss green, Accent) for flowing water ripple lines beneath the bridge, NO other colors, on clean #F5F5F0 (warm off-white paper texture) background, dynamic yet elegant, lightweight lines suggesting vitality and freshness, scalable flat vector, no text, no emoji, no purple gradients, no generic SVG faces, no stock photo aesthetics
+
+---
+
+## variant 2: wordmark（文字标）
+
+modern minimalist wordmark logo for Zhujiajiao water town: Chinese characters 朱家角 in elegant refined typography with thin refined strokes, subtle dynamic water ripple lines flowing beneath the text in #4A7C59 (sage moss green Accent), using #2C3E50 (dark cyan-grey Primary) for the main text, STRICTLY use only these two colors - NO other colors, NO color variations, on clean #F5F5F0 (warm off-white) background, fresh and lively feeling with flowing lines suggesting vitality, sophisticated and timeless, no emoji, no purple gradients, no generic elements
+
+---
+
+## variant 3: combo（组合标）
+
+elegant combo logo for Zhujiajiao water town tourism: abstract five-arch bridge (Fangsheng Bridge) silhouette in dynamic curved flowing lines above, Chinese characters 朱家角 in refined elegant typography below, with flowing water ripple accent in #4A7C59 (sage moss green Accent) woven through the composition, using #2C3E50 (dark cyan-grey Primary) for main elements - bridge and text, STRICTLY use only these two colors - NO other colors, NO color shifts, NO warm/cool tints, on clean #F5F5F0 (warm off-white paper texture) background, dynamic yet sophisticated, lightweight lines suggesting freshness and vitality, scalable flat vector, no emoji, no purple gradients, no generic SVG faces, no stock photo aesthetics

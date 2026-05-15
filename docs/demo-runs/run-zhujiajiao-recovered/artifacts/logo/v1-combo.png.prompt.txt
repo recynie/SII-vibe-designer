@@ -1,0 +1,4 @@
+# backend: minimax
+# aspect: 1:1
+
+elegant combo logo: abstract bridge silhouette (Fangsheng Bridge) above, Chinese characters 朱家角 below, with subtle flowing water line accent, combining Chinese ink wash aesthetics with modern minimalist design, using #2C3E50 (dark cyan-grey) for main elements and #4A7C59 (sage green) for accent details, STRICTLY use only these colors - NO other colors, on a clean #F5F5F0 (warm off-white) background, geometric and timeless, scalable, no emoji, no purple gradients, no generic stock faces

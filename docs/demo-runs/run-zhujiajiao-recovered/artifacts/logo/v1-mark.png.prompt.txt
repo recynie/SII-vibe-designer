@@ -1,0 +1,4 @@
+# backend: minimax
+# aspect: 1:1
+
+minimalist flat vector logo featuring an abstract bridge silhouette (Fangsheng Bridge, the iconic five-arch stone bridge of Zhujiajiao water town), flowing water ripples below, in the style of Chinese ink wash painting meets modern graphic design, two-tone using #2C3E50 (dark cyan-grey) and #4A7C59 (sage green), STRICTLY use only these two colors - NO other colors, NO gradients, on a clean #F5F5F0 (warm off-white) background, geometric and timeless, scalable, no text, no emoji, no generic SVG faces, no purple gradients, no Web 2.0 effects

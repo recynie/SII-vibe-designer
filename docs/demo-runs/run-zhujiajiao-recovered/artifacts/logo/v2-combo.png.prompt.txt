@@ -1,0 +1,4 @@
+# backend: minimax
+# aspect: 1:1
+
+elegant combo logo for Zhujiajiao water town tourism: abstract five-arch bridge (Fangsheng Bridge) silhouette in dynamic curved flowing lines above, Chinese characters 朱家角 in refined elegant typography below, with flowing water ripple accent in #4A7C59 (sage moss green Accent) woven through the composition, using #2C3E50 (dark cyan-grey Primary) for main elements - bridge and text, STRICTLY use only these two colors - NO other colors, NO color shifts, NO warm/cool tints, on clean #F5F5F0 (warm off-white paper texture) background, dynamic yet sophisticated, lightweight lines suggesting freshness and vitality, scalable flat vector, no emoji, no purple gradients, no generic SVG faces, no stock photo aesthetics

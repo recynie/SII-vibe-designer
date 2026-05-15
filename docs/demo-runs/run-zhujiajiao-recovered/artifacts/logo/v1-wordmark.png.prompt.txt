@@ -1,0 +1,4 @@
+# backend: minimax
+# aspect: 1:1
+
+modern minimalist wordmark logo containing the Chinese characters 朱家角 (Zhujiajiao), styled with elegant thin brush-stroke inspired lettering, subtle water ripple lines beneath the text, using #2C3E50 (dark cyan-grey) as primary color, on a clean #F5F5F0 (warm off-white) background, geometric and timeless, no emoji, no purple gradients, no generic elements, clean and sophisticated
