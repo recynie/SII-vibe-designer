@@ -193,6 +193,8 @@ SII-assignment/
 ## 答辩演示
 
 ```bash
-# 浏览器打开 3 页 PPT，← / → 翻页，F 全屏
+# 浏览器打开 3 页 PPT，← / → 翻页，F 全屏，D 键展开 demo 面板
 xdg-open docs/presentation/index.html
 ```
+
+预想问题答复见 [`docs/defense-qa.md`](./docs/defense-qa.md)（10 个预设问答）。
