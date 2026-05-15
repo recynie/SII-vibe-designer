@@ -178,8 +178,9 @@ final.md               # planner 的最终交付说明
 
 ### 模型层限制
 
-- **MiniMax `image-01` 对深色 hex 复现不严格**：`#1A2B4A` 墨蓝会被生成为 `#93B8D2` 浅蓝。生产场景下需切换到 gpt-image-2 后端。
+- **MiniMax `image-01` 对深色 hex 复现不严格**：`#1A2B4A` 墨蓝会被生成为 `#93B8D2` 浅蓝。生产场景下需切换到 gpt-image-2 后端。强化 prompt 写法（`STRICTLY use only #XXX` + 颜色名+hex 双标）实测可让色值从完全偏离（#F8F4E8）逼近到接近目标（#1F3A58 vs 目标 #0D1B2A）。
 - **MiniMax-M2 偶发长 thinking**：subagent 内部偶发 5+ 分钟无 stdout 进展。`--pure` 显著缓解，但未根除。
+- **MiniMax-M2 内容审查**（`output new_sensitive 1027` 错误）：朱家角文旅 brief 跑到 designer logo 阶段被服务端内容审查反复拦截（推测是"墨"、"朱砂"等中文词组合触发）。Critic 评审等纯文本任务不受影响。绕过策略：(a) 改写 prompt 避开触发词 (b) designer 切换非 MiniMax LLM 后端 (c) 记录在 `final.md` 让用户人工补做。
 - **中转站 429**：`findcg.com` 的 gpt-image-2 中转站负载饱和时返回 429，需 retry 或回落到 minimax 后端。
 
 ---
