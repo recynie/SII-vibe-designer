@@ -139,3 +139,8 @@ echo "$RUN_ID" > /tmp/vibe-current-run
 - gen_image 报错 → 让 designer 改 prompt 重试一次；仍失败则跳过此项并在 final.md 标注
 - subagent 长时间无回应 → 不重启它（opencode 不支持），转告用户
 - 中转站 429 → 等 30 秒重试一次，否则切到 minimax 后端继续
+- **MiniMax 内容审查 `output new_sensitive (1027)`**：subagent 调用直接被拦时（特别是中文文旅类 brief，"朱砂"、"墨"等词组合敏感）：
+  1. 第一次：让 designer 按其 prompt 里的 fallback 自行改写重试
+  2. 第二次仍触发 → 写 `artifacts/<task>/BLOCKED.md` 标注阻塞 + critic 阅读输入信息推断的描述，跳过此任务，继续后续
+  3. 在 final.md "已知局限"明确写出哪些任务被审查阻塞 + 建议人工补做
+  这是模型层限制（不是 designer 错误），不要让 planner 在此死循环
