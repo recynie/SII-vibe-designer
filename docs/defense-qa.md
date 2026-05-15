@@ -8,7 +8,7 @@
 
 **短答**：题目允许直接使用现成开源 harness。opencode 1.4 已经覆盖了所有必需能力（subagent 独立上下文 / 任务调度 / 工具调用 / 错误处理 / 自定义 agent + skill + command），用现成框架让我们能把全部精力放在**设计领域知识**和**实测发现**上，而不是重复造轮子。
 
-**关键点**：用 opencode 不等于"没工程"——我们的 4 个 agent + 4 个 skill + 1 个命令 + 2 个 Python 工具完全是自己设计的，opencode 只是 plumbing。
+**关键点**：用 opencode 不等于"没工程"——我们的 4 个 agent + 4 个 skill + 1 个命令 + 3 个 Python 工具（gen_image / html_screenshot / verify_demo_panel）完全是自己设计的，opencode 只是 plumbing。
 
 ---
 
@@ -70,12 +70,14 @@ gpt-image-2 严格度高 2x+ 但中转站慢 4x+。
 
 ## Q6. 创智学院 brief 一定能跑通吗？跑了几次？
 
-**4 次完整 / 部分 e2e**，全部产物已 commit：
+**6 次 e2e 提交**（完整 4 类 + 部分阶段 + 单图实证），全部产物已 commit：
 
-1. `run-20260516-004106-chuangzhi/` — 14 min 4 类全套
-2. `run-final-hardened/` — 12 min 4 类全套（强化 prompt 后）
-3. `run-coffee-partial/` — 不同领域验证泛化
-4. `run-zhujiajiao-recovered/` — 第 3 个领域 + 内容审查恢复实证
+1. `run-20260516-004106-chuangzhi/` — 创智学院完整版 14 min
+2. `run-final-hardened/` — 创智学院强化版 12 min
+3. `run-coffee-partial/` — 钝角咖啡（不同领域，logo 阶段）
+4. `run-zhujiajiao-recovered/` — 朱家角（第 3 个领域 + 内容审查恢复实证）
+5. `run-gpt-image-2-evidence/` — gpt-image-2 单图实证（hex 复现精度对比）
+6. `run-solenne-gpt-image-2/` — Solenne 香水（gpt-image-2 后端首次完整 e2e 验证）
 
 **从未跑炸过**——critic 不通过会触发 v2 迭代，2 轮上限会触发用户提问，从不死循环。
 
