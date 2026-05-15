@@ -286,6 +286,11 @@
       <h3>⑤ 反 AI slop 是一票否决</h3>
       <p>5 维度评分中"反 slop"项 ≤4 分则整体不通过：紫渐变、emoji 图标、Inter 当 display、SVG 画人、generic 拼贴卡片均归零。</p>
     </div>
+
+    <div class="principle">
+      <h3>⑥ 内容审查可恢复</h3>
+      <p>朱家角 brief 触发 MiniMax <code>output new_sensitive 1027</code>，整个 designer 子流程被服务端拦。<br>修复：designer 触发审查时切换到纯英文 prompt + hex+色名（"sage green #4A7C59"），实测一次跑通。</p>
+    </div>
   </aside>
 </main>
 
