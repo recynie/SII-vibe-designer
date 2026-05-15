@@ -9,7 +9,7 @@
 | `docs/demo-runs/run-20260516-004106-chuangzhi/` | 创智学院（题目要求） | 14 min | 4 类全套 | logo 28/50（迭代触发）· copy 40 · poster 46 · ui 44 |
 | `docs/demo-runs/run-final-hardened/` | 创智学院（强化版） | 12 min | 4 类全套 | logo 27/50（颜色逼近 #0D1B2A）· copy 38 · poster 42 · ui 45 |
 | `docs/demo-runs/run-coffee-partial/` | 钝角咖啡（不同领域） | logo 阶段 | brief + spec + logo + critic | logo 36/50（像素级评审） |
-| `docs/demo-runs/run-zhujiajiao-blocked/` | 朱家角古镇（第 3 领域） | 至 plan.md | brief + spec + plan | designer 被 MiniMax 内容审查拦（已知限制） |
+| `docs/demo-runs/run-zhujiajiao-recovered/` | 朱家角古镇（第 3 领域） | logo 阶段 | brief + spec + plan + 6 logos + 2 reviews | logo 2 轮迭代后停止问用户（验证 milestone-16 内容审查 fallback） |
 
 ## 课题对照
 
