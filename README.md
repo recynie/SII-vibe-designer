@@ -2,7 +2,7 @@
 
 > 基于 [opencode](https://opencode.ai/) harness 扩展的命令行设计 agent。一句话 brief 输入，多 agent 协同输出 logo / 主视觉 / 品牌文案 / UI mockup。
 
-**状态**：✅ 端到端验证通过 · 5 次 demo run 已提交 · 26 milestone 完成（演进见 [CHANGELOG.md](./CHANGELOG.md)）
+**状态**：✅ 端到端验证通过 · 5 次 demo run 已提交 · 完整迭代历史见 [CHANGELOG.md](./CHANGELOG.md)
 
 | Run | Brief | 时长 | 产物 | 评分 / 备注 |
 |---|---|---|---|---|
