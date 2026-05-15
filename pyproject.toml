@@ -1,0 +1,13 @@
+[project]
+name = "sii-assignment"
+version = "0.1.0"
+description = "Vibe Design - multi-agent design system based on opencode harness"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "playwright>=1.59",
+]
+
+[tool.uv]
+# tools/gen_image.py uses only stdlib (urllib + base64), no deps needed.
+# playwright is for tools/html_screenshot.py.
