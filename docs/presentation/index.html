@@ -31,6 +31,9 @@
   .demo-grid a{display:block;padding:18px 22px;background:white;border:1.5px solid #C8CCD3;
     text-decoration:none;color:#1A1A2E;transition:border-color 0.15s;}
   .demo-grid a:hover{border-color:#FF6B35;border-width:1.5px;}
+  .demo-grid a.primary{border-color:#FF6B35;border-width:2px;background:#FFF8F4;
+    grid-column:1 / -1;}
+  .demo-grid a.primary h3{color:#FF6B35;font-size:20px;}
   .demo-grid h3{font-family:'Noto Serif SC',serif;font-weight:700;font-size:18px;color:#0A2463;margin-bottom:6px;}
   .demo-grid p{font-size:13px;line-height:1.5;color:#1A1A2E;margin-bottom:8px;}
   .demo-grid code{font-family:'JetBrains Mono',monospace;font-size:11px;color:#FF6B35;
@@ -55,8 +58,8 @@
       <button onclick="closeDemo()">✕ 关闭</button>
     </header>
     <div class="demo-grid">
-      <a href="../demo-runs/run-final-hardened/final.md">
-        <h3>Run · 创智学院（hardened）</h3>
+      <a class="primary" href="../demo-runs/run-final-hardened/final.md">
+        <h3>★ 题目正式交付 · 创智学院（hardened）</h3>
         <p>12 min · 4 类全套 · logo 27/50 · copy 38 · poster 42 · ui 45</p>
         <code>docs/demo-runs/run-final-hardened/</code>
       </a>
