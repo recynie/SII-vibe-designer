@@ -58,16 +58,22 @@ echo "$RUN_ID" > /tmp/vibe-current-run
 
 ### 3. 逐任务执行 → designer + critic 闭环
 
-对 plan 里每个子任务循环（**最多 2 轮**）：
+**严格串行**：一次只调度**一个** subagent，等它返回再调下一个。**绝对不要并行调度多个 designer**——subagent 上下文相互独立，并行会导致 race condition 和长时间挂起。
+
+对 plan 里每个子任务循环（**最多 2 轮**），按下面顺序执行：
 
 ```
 @designer 子任务：<任务名>
 - skill: <logo|poster|copywriting|ui-mockup>
 - 读 outputs/<RUN_ID>/brief.md 和 brand-spec.md
+- 读 .opencode/skills/<skill>.md 加载领域知识
 - 输出到 outputs/<RUN_ID>/artifacts/<task>/v1.<ext>
 - 同时保留 prompt 到 v1.prompt.txt（图）或在 HTML 注释里写设计依据
+- 立即开始执行 bash 工具，不要长时间思考
 完成后报告输出路径。
 ```
+
+等 designer 返回后，**立刻**调 critic：
 
 ```
 @critic 评审：
@@ -120,8 +126,9 @@ echo "$RUN_ID" > /tmp/vibe-current-run
 
 - subagent 只能通过 `@<name> <prompt>` 调用，不要试图直接执行它们的工作
 - subagent 之间**不直接通信**——所有信息流经文件（brief.md / brand-spec.md / review.md）
-- 每个子任务一次只调一个 subagent，等返回再调下一个
-- 不要并行调度同一个文件区——critic 和 designer 必须串行
+- **一次只调一个 subagent，绝不并行**——并行调度会导致 race 和长时挂起
+- critic 和 designer 必须串行（critic 评审 designer 已写盘的产物）
+- subagent 反馈要简短，长内容写文件、回报只给文件路径
 
 ## 反 AI slop
 
