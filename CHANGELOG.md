@@ -79,7 +79,7 @@ Poster 42/50 · Copy 38/50 · UI 45/50 全部通过。
 
 ## milestone-9 · README status badge + run summary table
 
-主 README 顶部加状态标识 + 3 次 demo run 评分对照表，让读者一眼看到系统真跑过。
+主 README 顶部加状态标识 + 当时已有的 demo run 评分对照表（彼时 3 个），让读者一眼看到系统真跑过。后续 milestone 持续追加，最终为 6 个。
 
 ## milestone-10 · 3rd domain brief validates researcher generalization
 

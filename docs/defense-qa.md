@@ -8,7 +8,7 @@
 
 **短答**：题目允许直接使用现成开源 harness。opencode 1.4 已经覆盖了所有必需能力（subagent 独立上下文 / 任务调度 / 工具调用 / 错误处理 / 自定义 agent + skill + command），用现成框架让我们能把全部精力放在**设计领域知识**和**实测发现**上，而不是重复造轮子。
 
-**关键点**：用 opencode 不等于"没工程"——我们的 4 个 agent + 4 个 skill + 1 个命令 + 3 个 Python 工具（gen_image / html_screenshot / verify_demo_panel）完全是自己设计的，opencode 只是 plumbing。
+**关键点**：用 opencode 不等于"没工程"——我们的 4 个 agent + 4 个 skill + 1 个命令 + 4 个 Python 工具（gen_image / html_screenshot / verify_demo_panel / verify_facts）完全是自己设计的，opencode 只是 plumbing。
 
 ---
 

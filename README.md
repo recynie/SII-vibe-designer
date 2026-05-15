@@ -111,7 +111,7 @@ uv run python vibe-design/tools/gen_image.py \
 
 ## 性能与资源开销
 
-实测 4 次 demo run 的成本与时长（MiniMax-M2 LLM + minimax image-01 后端）：
+实测 4 个完整/部分 demo run 的成本与时长（MiniMax-M2 LLM + minimax image-01 后端）：
 
 | Run | 时长 | 文件 | 总大小 | 图像数 | LLM turns（粗估） |
 |---|---|---|---|---|---|
