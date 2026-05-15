@@ -47,11 +47,13 @@
 ## 快速开始
 
 ```bash
-# 1. 安装依赖
+# 1. 安装依赖（playwright 用于 html_screenshot，gen_image.py 只用标准库）
 uv sync
-uv add playwright && uv run playwright install chromium
+uv run playwright install chromium
 
-# 2. 配置 .env（已配好 MiniMax + gpt-image-2 凭证）
+# 2. 配置 .env（从模板复制后填入真实 key）
+cp .env.example .env
+# 编辑 .env，填入 MINIMAX_API_KEY + OPENAI_API_KEY
 
 # 3. 进入项目目录
 cd vibe-design
