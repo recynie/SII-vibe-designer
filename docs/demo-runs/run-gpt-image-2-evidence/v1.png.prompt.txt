@@ -1,0 +1,4 @@
+# backend: openai
+# aspect: 1:1
+
+minimal flat vector logo for an AI research institute, geometric neural network nodes forming a stylized C, STRICTLY use only #0D1B2A deep navy blue and #00B4D8 bright cyan, on clean #F8F9FA off-white background, pentagram information architecture style, no gradients, no emoji, no text
