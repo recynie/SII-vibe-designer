@@ -75,6 +75,7 @@ uv run python tools/gen_image.py \
 prompt 写作要点（每条都重要）：
 - 全英文（图像模型对中文敏感）
 - 结构：`<主体> + <风格关键词> + <配色（用 HEX 或具体词）> + <构图> + <质感词>`
+- **颜色强约束**：仅写 `using #XXX and #YYY` 不够，必须加 `STRICTLY use only #XXX for X, #YYY for Y - NO other colors, NO color shifts, NO warm/cool tints`。MiniMax image-01 对柔性色彩描述会"美化"成偏离色，强约束更稳
 - 必须显式禁止 AI slop：在 prompt 末尾加 `no purple gradients, no emoji, no generic SVG faces, no text unless specified`
 - logo 类：加 `flat vector, scalable, on solid background, no photorealistic textures`
 - 摄影类：加 `editorial photography, natural light, no stock-photo cliché`

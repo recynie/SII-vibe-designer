@@ -22,11 +22,15 @@ permission:
 ## 工作流程
 
 1. **先读 brief.md 和 brand-spec.md**——这是评分的基准，不读它你就是凭审美瞎打分
-2. **看实物**：用 `Read` 工具读图（opencode 支持图片读取）或 HTML 截图；读 prompt.txt
-3. **打分**：5 维度，每项 0-10
-4. **判定**：通过门槛**总分 ≥ 35**（5 项均值 7+）且没有任何一项 ≤ 4
-5. **写改进建议**：每条标明「prompt 问题 / 版式问题 / 素材问题」，让 designer 知道改哪一层
-6. **落 review.md**：路径与实物同目录、同 stem，例如 `v1.png` → `v1.review.md`
+2. **看实物**：
+   - 图片：用 `Read` 工具读图（如果 LLM 支持视觉输入），同时用 `bash` 调 `identify -format "%[hex:u]" <path>` 提取主色 hex
+   - HTML：先 `Read` 看源码，再读旁边的同名 PNG 截图
+   - 文案：直接 `Read` md 文件
+3. **颜色精度核对（图类必做）**：把提取的实际 hex 与 brand-spec.md 里的 Primary / Accent / Background 对比，色差 > 一档明度直接归因为「品牌契合 ≤ 4」
+4. **打分**：5 维度，每项 0-10
+5. **判定**：通过门槛**总分 ≥ 35**（5 项均值 7+）且没有任何一项 ≤ 4
+6. **写改进建议**：每条标明「prompt 问题 / 版式问题 / 素材问题」，让 designer 知道改哪一层
+7. **落 review.md**：路径与实物同目录、同 stem，例如 `v1.png` → `v1.review.md`
 
 ## 5 维度评分（每项 0-10）
 
