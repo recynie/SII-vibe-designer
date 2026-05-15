@@ -13,13 +13,18 @@
    ```bash
    cd vibe-design
    ```
-3. 启动 opencode：
+3. 启动 opencode（`--pure` 跳过全局插件，避免 workflow rules 注入干扰 subagent）：
    ```bash
-   opencode
+   opencode --pure
    ```
 4. 在 TUI 中输入：
    ```
    /design 请为创智学院做一套品牌形象设计
+   ```
+
+   或非交互一次性跑完：
+   ```bash
+   opencode run --pure --agent planner '请为创智学院做一套品牌形象设计'
    ```
 
 输出落 `outputs/<run-id>/`。
