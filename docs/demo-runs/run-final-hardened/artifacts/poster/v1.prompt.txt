@@ -1,0 +1,45 @@
+# 主视觉海报设计 Prompt
+
+## 设计任务
+品牌主视觉海报 - 创智学院
+
+## 调性定位
+学术稳重 × 现代前沿，理性、克制
+
+## 色板（严格遵循 brand-spec.md）
+- Primary: #0D1B2A（深海蓝）
+- Secondary: #1B4965（青墨蓝）
+- Accent: #00B4D8（青空蓝）
+- Background: #F8F9FA（冷白）
+- Ink: #1A1A2E（墨色）
+
+## 字体
+- Display: Noto Serif SC（思源宋体 Bold/Heavy）
+- Body: Noto Sans SC（思源黑体 Light/Regular）
+
+## 版式设计
+- 比例：竖版 1200×1600（A2-ish）
+- 布局：参考 Pentagram 信息建筑派 + 原研哉留白克制
+- 几何精简：左侧竖条装饰 + 右上角矩形点缀 + 底部线条
+- 大量留白体现学术机构的从容感
+
+## 核心元素
+1. 主标题：「创智学院」超大思源宋体
+2. 副标题：INNOVATION · RESEARCH（衬线英文）
+3. 品牌标签：Shanghai · Institute for Intelligence
+4. 核心信息：AI 创新 + 人才培养 + 学术稳重·面向未来
+5. 装饰：几何线条 + 淡化背景数字 "AI"
+6. 底部：Logo 角标 + 城市信息
+
+## 反 AI slop 自检 ✓
+- 无紫色渐变
+- 无 emoji
+- 无模板风（无圆角卡片拼贴）
+- 无通用 stock 照片
+- 字体使用 Noto Serif SC（不是 Inter/Arial）
+- 无发光/辉光装饰
+
+## 输出文件
+- v1.html：完整自包含 HTML
+- v1.png：渲染后的海报图片
+- v1.prompt.txt：本文档

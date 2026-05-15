@@ -1,0 +1,597 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>创智学院 | 人工智能创新与人才培养</title>
+<!--
+  设计依据：
+  - 主色 #0D1B2A（深海蓝）：brand-spec.md Primary
+  - 辅助色 #1B4965（青墨蓝）：brand-spec.md Secondary  
+  - 点缀色 #00B4D8（青空蓝）：brand-spec.md Accent
+  - 背景色 #F8F9FA（冷白）：brand-spec.md Background
+  - 字体配对: Noto Serif SC (display/标题) / Noto Sans SC (body/正文)
+  - 反 slop: 不用左侧 accent border 卡片、不用 emoji 图标、不用紫渐变
+  - 网格系统驱动设计，参考 Pentagram 信息建筑派
+-->
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@600;700;900&family=Noto+Sans+SC:wght@300;400;500;700&display=swap');
+:root {
+  --primary: #0D1B2A;
+  --secondary: #1B4965;
+  --accent: #00B4D8;
+  --bg: #F8F9FA;
+  --ink: #1A1A2E;
+  --ink-light: #4A4A5A;
+  --white: #FFFFFF;
+  --border: #E5E7EB;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  width: 100%;
+  min-width: 375px;
+  max-width: 1440px;
+  margin: 0 auto;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'Noto Sans SC', system-ui, -apple-system, sans-serif;
+  font-weight: 400;
+  line-height: 1.6;
+}
+
+/* Nav */
+nav {
+  padding: 20px 48px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.logo {
+  font-family: 'Noto Serif SC', serif;
+  font-weight: 700;
+  font-size: 24px;
+  color: var(--primary);
+  text-decoration: none;
+  letter-spacing: 0.02em;
+}
+.logo span {
+  color: var(--accent);
+}
+.nav-links {
+  display: flex;
+  gap: 40px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.nav-links a {
+  color: var(--ink-light);
+  text-decoration: none;
+  font-size: 15px;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+.nav-links a:hover {
+  color: var(--primary);
+}
+.nav-cta {
+  padding: 10px 24px;
+  background: var(--primary);
+  color: var(--white) !important;
+  border-radius: 4px;
+}
+
+/* Hero */
+.hero {
+  padding: 100px 48px 80px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 64px;
+  align-items: center;
+  background: linear-gradient(180deg, var(--white) 0%, var(--bg) 100%);
+  min-height: 560px;
+}
+.hero-content {
+  max-width: 600px;
+}
+.hero h1 {
+  font-family: 'Noto Serif SC', serif;
+  font-weight: 900;
+  font-size: 56px;
+  line-height: 1.1;
+  color: var(--primary);
+  margin: 0 0 24px;
+  letter-spacing: -0.02em;
+}
+.hero h1 span {
+  color: var(--accent);
+}
+.hero-subtitle {
+  font-size: 20px;
+  line-height: 1.7;
+  color: var(--ink-light);
+  margin: 0 0 36px;
+  max-width: 520px;
+}
+.hero-cta {
+  display: inline-block;
+  padding: 16px 40px;
+  background: var(--primary);
+  color: var(--white);
+  font-weight: 500;
+  font-size: 16px;
+  text-decoration: none;
+  border-radius: 4px;
+  transition: background 0.2s, transform 0.2s;
+}
+.hero-cta:hover {
+  background: var(--secondary);
+  transform: translateY(-1px);
+}
+.hero-visual {
+  position: relative;
+  height: 420px;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.hero-visual::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: repeating-linear-gradient(
+    45deg,
+    transparent,
+    transparent 40px,
+    rgba(255,255,255,0.03) 40px,
+    rgba(255,255,255,0.03) 80px
+  );
+}
+.hero-visual-text {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 120px;
+  font-weight: 900;
+  color: var(--white);
+  opacity: 0.15;
+  position: relative;
+  z-index: 1;
+}
+.hero-visual-accent {
+  position: absolute;
+  bottom: 40px;
+  right: 40px;
+  width: 80px;
+  height: 80px;
+  border: 3px solid var(--accent);
+  border-radius: 50%;
+}
+
+/* Sections */
+section {
+  padding: 80px 48px;
+}
+section-title {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 36px;
+  font-weight: 700;
+  color: var(--primary);
+  margin: 0 0 16px;
+  text-align: center;
+}
+section-desc {
+  font-size: 17px;
+  color: var(--ink-light);
+  text-align: center;
+  max-width: 640px;
+  margin: 0 auto 56px;
+}
+
+/* Research */
+.research {
+  background: var(--white);
+}
+.research-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+}
+.research-card {
+  padding: 36px;
+  background: var(--bg);
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.research-card:hover {
+  border-color: var(--accent);
+  box-shadow: 0 8px 32px rgba(0,180,216,0.1);
+}
+.research-card h3 {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--primary);
+  margin: 0 0 12px;
+}
+.research-card p {
+  font-size: 15px;
+  color: var(--ink-light);
+  margin: 0;
+  line-height: 1.7;
+}
+.research-card-tag {
+  display: inline-block;
+  font-size: 12px;
+  color: var(--accent);
+  font-weight: 500;
+  margin-bottom: 12px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+/* Faculty */
+.faculty {
+  background: var(--bg);
+}
+.faculty-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 32px;
+}
+.faculty-card {
+  background: var(--white);
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.faculty-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(13,27,42,0.1);
+}
+.faculty-avatar {
+  height: 200px;
+  background: linear-gradient(135deg, var(--secondary) 0%, var(--primary) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.faculty-avatar-text {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 48px;
+  font-weight: 700;
+  color: var(--white);
+  opacity: 0.6;
+}
+.faculty-info {
+  padding: 24px;
+}
+.faculty-info h3 {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--primary);
+  margin: 0 0 4px;
+}
+.faculty-info .title {
+  font-size: 14px;
+  color: var(--accent);
+  font-weight: 500;
+  margin: 0 0 12px;
+}
+.faculty-info .bio {
+  font-size: 13px;
+  color: var(--ink-light);
+  margin: 0;
+  line-height: 1.6;
+}
+
+/* Admissions */
+.admissions {
+  background: var(--primary);
+  color: var(--white);
+  text-align: center;
+}
+.admissions .section-title {
+  color: var(--white);
+}
+.admissions .section-desc {
+  color: rgba(255,255,255,0.7);
+}
+.admissions-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+  margin-top: 48px;
+}
+.admissions-card {
+  padding: 40px 32px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 8px;
+}
+.admissions-card h3 {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 24px;
+  font-weight: 700;
+  margin: 0 0 12px;
+}
+.admissions-card p {
+  font-size: 15px;
+  color: rgba(255,255,255,0.7);
+  margin: 0 0 24px;
+  line-height: 1.6;
+}
+.admissions-link {
+  color: var(--accent);
+  font-weight: 500;
+  text-decoration: none;
+  font-size: 15px;
+}
+.admissions-link:hover {
+  text-decoration: underline;
+}
+
+/* Footer */
+footer {
+  padding: 48px;
+  background: var(--white);
+  border-top: 1px solid var(--border);
+}
+.footer-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.footer-left {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.footer-logo {
+  font-family: 'Noto Serif SC', serif;
+  font-weight: 700;
+  font-size: 20px;
+  color: var(--primary);
+}
+.footer-logo span {
+  color: var(--accent);
+}
+.footer-copy {
+  font-size: 13px;
+  color: var(--ink-light);
+}
+.footer-links {
+  display: flex;
+  gap: 32px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.footer-links a {
+  color: var(--ink-light);
+  text-decoration: none;
+  font-size: 14px;
+  transition: color 0.2s;
+}
+.footer-links a:hover {
+  color: var(--primary);
+}
+
+/* Mobile Responsive */
+@media (max-width: 1024px) {
+  .hero {
+    grid-template-columns: 1fr;
+    padding: 60px 32px;
+    gap: 48px;
+  }
+  .hero h1 {
+    font-size: 42px;
+  }
+  .hero-visual {
+    height: 300px;
+    order: -1;
+  }
+  .research-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .faculty-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .admissions-grid {
+    grid-template-columns: 1fr;
+  }
+  section {
+    padding: 60px 32px;
+  }
+}
+
+@media (max-width: 768px) {
+  nav {
+    padding: 16px 24px;
+  }
+  .nav-links {
+    display: none;
+  }
+  .hero {
+    padding: 48px 24px;
+  }
+  .hero h1 {
+    font-size: 32px;
+  }
+  .hero-subtitle {
+    font-size: 17px;
+  }
+  .hero-visual {
+    height: 240px;
+  }
+  section {
+    padding: 48px 24px;
+  }
+  section-title {
+    font-size: 28px;
+  }
+  .research-grid,
+  .faculty-grid {
+    grid-template-columns: 1fr;
+  }
+  .footer-content {
+    flex-direction: column;
+    gap: 24px;
+    text-align: center;
+  }
+  .footer-links {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}
+</style>
+</head>
+<body>
+  <!-- 导航栏 -->
+  <nav>
+    <a href="#" class="logo">创智<span>学院</span></a>
+    <ul class="nav-links">
+      <li><a href="#research">研究方向</a></li>
+      <li><a href="#faculty">师资团队</a></li>
+      <li><a href="#admissions">招生培养</a></li>
+      <li><a href="#">关于我们</a></li>
+      <li><a href="#" class="nav-cta">加入我们</a></li>
+    </ul>
+  </nav>
+
+  <!-- Hero 区 -->
+  <section class="hero">
+    <div class="hero-content">
+      <h1>探索<span>智能</span>的边界</h1>
+      <p class="hero-subtitle">创智学院是上海领先的人工智能研究型机构，聚焦前沿技术创新与精英人才培养，致力于培养下一代AI研究者和工程师。</p>
+      <a href="#admissions" class="hero-cta">了解招生</a>
+    </div>
+    <div class="hero-visual">
+      <span class="hero-visual-text">AI</span>
+      <div class="hero-visual-accent"></div>
+    </div>
+  </section>
+
+  <!-- 研究方向 -->
+  <section class="research" id="research">
+    <h2 class="section-title">研究方向</h2>
+    <p class="section-desc">聚焦人工智能核心领域，探索从理论到应用的前沿课题</p>
+    <div class="research-grid">
+      <article class="research-card">
+        <span class="research-card-tag">Machine Learning</span>
+        <h3>机器学习理论</h3>
+        <p>深度学习理论基础、迁移学习、元学习等前沿算法研究，推动模型效率与泛化能力的突破。</p>
+      </article>
+      <article class="research-card">
+        <span class="research-card-tag">Computer Vision</span>
+        <h3>计算机视觉</h3>
+        <p>多模态感知、目标检测、图像生成等核心技术的创新研究与产业应用落地。</p>
+      </article>
+      <article class="research-card">
+        <span class="research-card-tag">NLP</span>
+        <h3>自然语言处理</h3>
+        <p>大规模语言模型、语义理解、对话系统等核心技术的研发与创新应用。</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- 师资团队 -->
+  <section class="faculty" id="faculty">
+    <h2 class="section-title">师资团队</h2>
+    <p class="section-desc">汇聚海内外顶尖学者与产业专家</p>
+    <div class="faculty-grid">
+      <article class="faculty-card">
+        <div class="faculty-avatar">
+          <span class="faculty-avatar-text">张</span>
+        </div>
+        <div class="faculty-info">
+          <h3>张明远</h3>
+          <p class="title">院长 / 教授</p>
+          <p class="bio">前微软亚洲研究院首席研究员，ACM Fellow，研究方向为机器学习与认知计算。</p>
+        </div>
+      </article>
+      <article class="faculty-card">
+        <div class="faculty-avatar">
+          <span class="faculty-avatar-text">李</span>
+        </div>
+        <div class="faculty-info">
+          <h3>李思宁</h3>
+          <p class="title">副院长 / 教授</p>
+          <p class="bio">斯坦福大学博士，研究方向为计算机视觉与多模态学习，发表论文百余篇。</p>
+        </div>
+      </article>
+      <article class="faculty-card">
+        <div class="faculty-avatar">
+          <span class="faculty-avatar-text">王</span>
+        </div>
+        <div class="faculty-info">
+          <h3>王建国</h3>
+          <p class="title">研究员</p>
+          <p class="bio">清华大学博士，前字节跳动AI Lab负责人，研究方向为大规模预训练模型。</p>
+        </div>
+      </article>
+      <article class="faculty-card">
+        <div class="faculty-avatar">
+          <span class="faculty-avatar-text">陈</span>
+        </div>
+        <div class="faculty-info">
+          <h3>陈晓蕾</h3>
+          <p class="title">研究员</p>
+          <p class="bio">MIT博士，研究方向为自然语言处理与对话系统，在NeurIPS、ICML等顶会获奖。</p>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- 招生培养 -->
+  <section class="admissions" id="admissions">
+    <h2 class="section-title">招生培养</h2>
+    <p class="section-desc">为优秀青年研究者提供一流的学习与科研环境</p>
+    <div class="admissions-grid">
+      <article class="admissions-card">
+        <h3>博士项目</h3>
+        <p>培养具备独立研究能力的AI博士人才，3-5年制，与顶尖高校联合培养。</p>
+        <a href="#" class="admissions-link">查看详情 →</a>
+      </article>
+      <article class="admissions-card">
+        <h3>研究实习</h3>
+        <p>面向优秀本科生及硕士生，提供为期3-6个月的科研实习机会。</p>
+        <a href="#" class="admissions-link">查看详情 →</a>
+      </article>
+      <article class="admissions-card">
+        <h3>短期项目</h3>
+        <p>夏季学校、专题研讨班等短期培训项目，面向业界工程师与研究人员。</p>
+        <a href="#" class="admissions-link">查看详情 →</a>
+      </article>
+    </div>
+  </section>
+
+  <!-- 页脚 -->
+  <footer>
+    <div class="footer-content">
+      <div class="footer-left">
+        <span class="footer-logo">创智<span>学院</span></span>
+        <span class="footer-copy">© 2026 创智学院（上海）版权所有</span>
+      </div>
+      <ul class="footer-links">
+        <li><a href="#">联系我们</a></li>
+        <li><a href="#">隐私政策</a></li>
+        <li><a href="#">使用条款</a></li>
+      </ul>
+    </div>
+  </footer>
+</body>
+</html>

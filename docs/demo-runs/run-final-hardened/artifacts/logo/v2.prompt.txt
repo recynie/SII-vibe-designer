@@ -1,0 +1,49 @@
+# v2: 改动来自 v1.review.md 的第 1 条
+# 核心修改：在 prompt 开头加强颜色约束词，确保生成模型正确使用品牌色
+
+# backend: minimax (dev environment)
+# aspect: 1:1
+# variants: mark (symbol only), wordmark (text only), combo (symbol + text)
+
+# 设计依据 / Design Rationale:
+# - 使用 brand-spec.md Primary #0D1B2A (深海蓝) 作为主色，表达学术稳重与信任感
+# - 使用 Accent #00B4D8 (青空蓝) 作为点缀色，代表 AI 与未来感，克制使用
+# - v1 教训：原 prompt 已正确指定颜色，但生成模型未遵循
+# - v2 改进：在 prompt 开头加强约束 "ABSOLUTELY MUST use #0D1B2A... #00B4D8... - NO other colors"
+# - 参考方向: Pentagram 信息建筑派，强调信息层级、结构与功能
+# - 形态选择: 几何精简的抽象神经网络节点/数据流形态，契合 AI 研究机构定位
+# - 字体方向: 思源宋体风格衬线体，体现学术沉淀感
+# - 避免紫渐变、emoji、模板风，保持理性克制的视觉基调
+
+---
+
+# Variant 1: Mark (Symbol Only) / 图形标
+
+ABSOLUTELY MUST use #0D1B2A deep navy blue as the dominant color for the main logo symbol and #00B4D8 bright cyan as accent color for highlights or secondary elements - NO other colors for main elements - flat vector logo symbol for 创智学院, academic and stable, modern and innovative, on a clean #F8F9FA background, geometric and timeless, scalable, designed in the style of Pentagram information architecture, abstract geometric form suggesting AI neural network nodes or data streams, STRICTLY use only #0D1B2A for main symbol and #00B4D8 for accent elements - NO other colors on logo, no gradients, no emoji, no photorealistic textures, no faces, no generic SVG humans, no purple gradient, no Web 2.0 glossy effects
+
+---
+
+# Variant 2: Wordmark / 文字标
+
+ABSOLUTELY MUST use #0D1B2A deep navy blue as the dominant color for the Chinese characters 创智学院 and #00B4D8 bright cyan as accent color for any decorative elements - NO other colors for main elements - minimalist flat vector logo wordmark for 创智学院, containing the Chinese characters 创智学院, academic and stable, modern and innovative, on a clean #F8F9FA background, geometric and timeless, scalable, designed in the style of Pentagram information architecture, serif typography style suggesting academic heritage, STRICTLY use only #0D1B2A for main text and #00B4D8 for accent elements - NO other colors on logo, clean and minimal, no gradients, no emoji, no photorealistic textures, no faces, no generic SVG humans, no purple gradient, no Web 2.0 glossy effects
+
+---
+
+# Variant 3: Combo (Symbol + Text) / 组合标
+
+ABSOLUTELY MUST use #0D1B2A deep navy blue as the dominant color for both symbol and text, and #00B4D8 bright cyan as accent color for highlights or secondary elements - NO other colors for main elements - minimalist flat vector combo logo for 创智学院, combining geometric symbol and Chinese text 创智学院, academic and stable, modern and innovative, on a clean #F8F9FA background, geometric and timeless, scalable, designed in the style of Pentagram information architecture, abstract neural network node pattern as symbol paired with serif typography, balanced composition, STRICTLY use only #0D1B2A for main elements (both symbol and text) and #00B4D8 for accent elements - NO other colors on logo, no gradients, no emoji, no photorealistic textures, no faces, no generic SVG humans, no purple gradient, no Web 2.0 glossy effects
+
+---
+
+# 颜色使用说明 / Color Usage:
+
+| 变体 | 主色 (#0D1B2A) | 点缀色 (#00B4D8) | 背景 (#F8F9FA) |
+|---|---|---|---|
+| v2-mark | ✅ 图形主体 | ✅ 高光/次要元素 | ✅ 背景 |
+| v2-wordmark | ✅ 中文文字 | ✅ 装饰元素(如适用) | ✅ 背景 |
+| v2-combo | ✅ 图形 + 文字 | ✅ 高光/连接元素 | ✅ 背景 |
+
+# v1 vs v2 关键差异:
+# - v1: prompt 中只写了 "two-tone using #0D1B2A and #00B4D8"
+# - v2: 开头加强约束 "ABSOLUTELY MUST use #0D1B2A as the dominant color... #00B4D8 as the accent... - NO other colors for main elements"
+# - v2: 每个变体都明确指定颜色应用位置（main symbol / main text / both symbol and text）

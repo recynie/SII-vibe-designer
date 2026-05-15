@@ -1,0 +1,54 @@
+# backend: minimax (dev environment)
+# aspect: 1:1
+# variants: mark (symbol only), wordmark (text only), combo (symbol + text)
+
+# Design Rationale / 设计依据:
+# - 使用 brand-spec.md Primary #0D1B2A 表达学术稳重与信任感
+# - 使用 Accent #00B4D8 点缀代表 AI 与未来感，克制使用
+# - 参考方向: Pentagram 信息建筑派，强调信息层级、结构与功能
+# - 形态选择: 几何精简的抽象神经网络节点/数据流形态，契合 AI 研究机构定位
+# - 字体方向: 思源宋体风格衬线体，体现学术沉淀感
+# - 避免紫渐变、emoji、模板风，保持理性克制的视觉基调
+
+---
+
+# Variant 1: Mark (Symbol Only) / 图形标
+
+flat vector logo symbol for 创智学院, academic and stable, modern and innovative, 
+two-tone using #0D1B2A and #00B4D8, 
+on a clean #F8F9FA background, 
+geometric and timeless, scalable, 
+designed in the style of Pentagram information architecture, 
+abstract geometric form suggesting AI neural network nodes or data streams, 
+no gradients, no emoji, no photorealistic textures, no faces, no generic SVG humans, 
+no purple gradient, no Web 2.0 glossy effects
+
+---
+
+# Variant 2: Wordmark / 文字标
+
+minimalist flat vector logo wordmark for 创智学院, containing the Chinese characters 创智学院, 
+academic and stable, modern and innovative, 
+two-tone using #0D1B2A and #00B4D8, 
+on a clean #F8F9FA background, 
+geometric and timeless, scalable, 
+designed in the style of Pentagram information architecture, 
+serif typography style suggesting academic heritage, 
+clean and minimal, 
+no gradients, no emoji, no photorealistic textures, no faces, no generic SVG humans, 
+no purple gradient, no Web 2.0 glossy effects
+
+---
+
+# Variant 3: Combo (Symbol + Text) / 组合标
+
+minimalist flat vector combo logo for 创智学院, combining geometric symbol and Chinese text 创智学院, 
+academic and stable, modern and innovative, 
+two-tone using #0D1B2A and #00B4D8, 
+on a clean #F8F9FA background, 
+geometric and timeless, scalable, 
+designed in the style of Pentagram information architecture, 
+abstract neural network node pattern as symbol paired with serif typography, 
+balanced composition, 
+no gradients, no emoji, no photorealistic textures, no faces, no generic SVG humans, 
+no purple gradient, no Web 2.0 glossy effects

@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>主视觉 · 创智学院</title>
+<!--
+  设计依据：
+  - 主色 #0D1B2A（深海蓝）：来自 brand-spec.md Primary，学术稳重
+  - 辅助色 #1B4965（青墨蓝）：科技感与专业性
+  - 点缀色 #00B4D8（青空蓝）：AI 与未来感，克制使用
+  - 背景 #F8F9FA（冷白）：洁净、理性
+  - 字体配对：Noto Serif SC（标题） / Noto Sans SC（正文）
+  - 版式参考：Pentagram 信息建筑派 + 原研哉留白克制
+  - 几何精简：使用基础矩形与线条，避免装饰冗余
+-->
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700;900&family=Noto+Sans+SC:wght@300;400;700&display=swap');
+  :root {
+    --primary: #0D1B2A;
+    --secondary: #1B4965;
+    --accent: #00B4D8;
+    --bg: #F8F9FA;
+    --ink: #1A1A2E;
+  }
+  html, body { margin: 0; padding: 0; }
+  body {
+    width: 1200px; height: 1600px;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Noto Sans SC', system-ui, sans-serif;
+    text-wrap: pretty;
+    padding: 80px 100px;
+    box-sizing: border-box;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    position: relative;
+    overflow: hidden;
+  }
+  /* 几何装饰 - 左侧竖条 */
+  .geo-left {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 8px;
+    height: 100%;
+    background: linear-gradient(180deg, var(--primary) 0%, var(--secondary) 100%);
+  }
+  /* 右上角几何点缀 */
+  .geo-right {
+    position: absolute;
+    right: 60px;
+    top: 80px;
+    width: 120px;
+    height: 120px;
+    border: 3px solid var(--accent);
+    opacity: 0.6;
+  }
+  .geo-right::after {
+    content: '';
+    position: absolute;
+    right: -30px;
+    bottom: -30px;
+    width: 60px;
+    height: 60px;
+    background: var(--accent);
+    opacity: 0.3;
+  }
+  /* 底部装饰线 */
+  .geo-bottom {
+    position: absolute;
+    bottom: 120px;
+    left: 100px;
+    width: 200px;
+    height: 2px;
+    background: var(--primary);
+  }
+  .geo-bottom::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 8px;
+    width: 80px;
+    height: 2px;
+    background: var(--accent);
+  }
+  header {
+    position: relative;
+    z-index: 2;
+  }
+  .brand-label {
+    font-size: 14px;
+    font-weight: 300;
+    letter-spacing: 0.3em;
+    color: var(--secondary);
+    text-transform: uppercase;
+    margin-bottom: 60px;
+  }
+  main {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    z-index: 2;
+  }
+  .display {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 900;
+    font-size: 128px;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    color: var(--primary);
+    margin: 0;
+  }
+  .display-sub {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 700;
+    font-size: 42px;
+    line-height: 1.4;
+    letter-spacing: 0.2em;
+    color: var(--secondary);
+    margin-top: 24px;
+    margin-left: 8px;
+  }
+  .lede {
+    font-size: 22px;
+    font-weight: 300;
+    line-height: 1.8;
+    color: var(--ink);
+    margin-top: 60px;
+    max-width: 700px;
+    opacity: 0.85;
+  }
+  .lede strong {
+    font-weight: 700;
+    color: var(--accent);
+  }
+  footer {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+  .footer-info {
+    font-size: 13px;
+    font-weight: 300;
+    color: var(--secondary);
+    line-height: 1.6;
+    letter-spacing: 0.05em;
+  }
+  .footer-info span {
+    display: block;
+  }
+  .logo-mark {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .logo-icon {
+    width: 48px;
+    height: 48px;
+    border: 2px solid var(--primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 900;
+    font-size: 24px;
+    color: var(--primary);
+  }
+  .logo-text {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 700;
+    font-size: 18px;
+    color: var(--primary);
+    letter-spacing: 0.15em;
+  }
+  /* 小号点缀数字 */
+  .accent-num {
+    position: absolute;
+    right: 100px;
+    bottom: 200px;
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 900;
+    font-size: 320px;
+    color: var(--primary);
+    opacity: 0.04;
+    z-index: 1;
+    line-height: 1;
+  }
+</style>
+</head>
+<body>
+  <!-- 几何装饰层 -->
+  <div class="geo-left"></div>
+  <div class="geo-right"></div>
+  <div class="geo-bottom"></div>
+  <div class="accent-num">AI</div>
+
+  <header>
+    <p class="brand-label">Shanghai · Institute for Intelligence</p>
+  </header>
+
+  <main>
+    <h1 class="display">创智学院</h1>
+    <p class="display-sub">INNOVATION · RESEARCH</p>
+    <p class="lede">
+      聚焦人工智能前沿创新<br>
+      培育青年研究者与工程领袖<br>
+      <strong>学术稳重 · 面向未来</strong>
+    </p>
+  </main>
+
+  <footer>
+    <div class="footer-info">
+      <span>上海市 · 中国</span>
+      <span>Shanghai Institute for Intelligence</span>
+    </div>
+    <div class="logo-mark">
+      <div class="logo-icon">创</div>
+      <span class="logo-text">创智学院</span>
+    </div>
+  </footer>
+</body>
+</html>
