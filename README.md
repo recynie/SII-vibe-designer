@@ -4,11 +4,13 @@
 
 **状态**：✅ 端到端验证通过 · 6 次 demo run 已提交 · 完整迭代历史见 [CHANGELOG.md](./CHANGELOG.md)
 
+> 🎯 **题目正式交付物 → [`docs/demo-runs/run-final-hardened/`](./docs/demo-runs/run-final-hardened/)**（创智学院 4 类全套、12 分钟、强化 prompt 版本）。其余 5 个 run 是泛化、技术验证或恢复实证。
+
 | Run | Brief | 时长 | 产物 | 评分 / 备注 |
 |---|---|---|---|---|
-| `docs/demo-runs/run-20260516-004106-chuangzhi/` | 创智学院（题目要求） | 14 min | 4 类全套 | logo 28/50（迭代触发）· copy 40 · poster 46 · ui 44 |
-| `docs/demo-runs/run-final-hardened/` | 创智学院（强化版） | 12 min | 4 类全套 | logo 27/50（颜色逼近 #0D1B2A）· copy 38 · poster 42 · ui 45 |
-| `docs/demo-runs/run-coffee-partial/` | 钝角咖啡（不同领域） | logo 阶段 | brief + spec + logo + critic | logo 36/50（像素级评审） |
+| **`docs/demo-runs/run-final-hardened/`** ★ | **创智学院（题目要求）** | 12 min | 4 类全套 | logo 27/50（颜色逼近 #0D1B2A）· copy 38 · poster 42 · ui 45 |
+| `docs/demo-runs/run-20260516-004106-chuangzhi/` | 创智学院（早期版本） | 14 min | 4 类全套 | logo 28/50（v1→v2 迭代触发）· copy 40 · poster 46 · ui 44 |
+| `docs/demo-runs/run-coffee-partial/` | 钝角咖啡（不同领域，泛化测试） | logo 阶段 | brief + spec + logo + critic | logo 36/50（像素级评审） |
 | `docs/demo-runs/run-zhujiajiao-recovered/` | 朱家角古镇（第 3 领域） | logo 阶段 | brief + spec + plan + 6 logos + 2 reviews | 验证 milestone-16 内容审查 fallback |
 | `docs/demo-runs/run-gpt-image-2-evidence/` | hex 色值复现实证 | 单次 | gpt-image-2 单图 + 直方图分析 | 实测 #000A2E 接近目标 #0D1B2A，验证生产后端 |
 | `docs/demo-runs/run-solenne-gpt-image-2/` | Solenne 香水（gpt-image-2 后端） | logo 阶段 | brief + spec + plan + logo + critic | 32/50 · 第一次完整 e2e 跑生产后端，证明双后端架构透明性 |
