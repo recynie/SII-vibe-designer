@@ -1,0 +1,4 @@
+# backend: minimax
+# aspect: 1:1
+
+minimalist wordmark logo for coffee brand, containing Chinese characters 钝角咖啡 and English text Obtuse Coffee in geometric sans-serif style, clean and precise typography, subtle obtuse angle geometric line accent, flat vector, two-tone using #1A1A1A charcoal black and #8B5A2B caramel brown, on clean #F5F5F5 off-white background, industrial and restrained, scalable, no gradients, no emoji, no photorealistic textures, no purple gradient

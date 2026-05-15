@@ -1,0 +1,26 @@
+# backend: minimax (dev)
+# aspect: 1:1
+# variants: mark | wordmark | combo
+
+# 设计依据:
+# - 使用 brand-spec.md Primary #1A1A1A 表达「克制」与「工业风基底」
+# - 使用 Secondary #8B5A2B 焦糖棕作为咖啡温暖感的低饱和度点缀
+# - 背景使用 #F5F5F5 冷白呼应极简空间感
+# - 形态选择: 几何钝角三角形 — 呼应品牌名「钝角」，同时暗示咖啡杯轮廓，兼具冷幽默与功能性
+# - 参考方向: 日本极简主义（原研哉式）+ 几何功能主义
+# - 反 slop: 禁止紫渐变、emoji、圆角过度、可爱风格、暖橙色系滥用
+
+---
+
+## v1-mark.png (仅图形标)
+minimalist geometric logo symbol, an obtuse angle triangle shape suggesting a coffee cup silhouette, pure geometric form, flat vector, two-tone using #1A1A1A charcoal black and #8B5A2B caramel brown, on clean #F5F5F5 off-white background, industrial and precise, scalable, no gradients, no emoji, no text, no photorealistic textures, no purple gradient
+
+---
+
+## v1-wordmark.png (文字标)
+minimalist wordmark logo for coffee brand, containing Chinese characters 钝角咖啡 and English text Obtuse Coffee in geometric sans-serif style, clean and precise typography, subtle obtuse angle geometric line accent, flat vector, two-tone using #1A1A1A charcoal black and #8B5A2B caramel brown, on clean #F5F5F5 off-white background, industrial and restrained, scalable, no gradients, no emoji, no photorealistic textures, no purple gradient
+
+---
+
+## v1-combo.png (组合标)
+minimalist combo logo for specialty coffee brand, geometric obtuse angle triangle symbol positioned left, paired with Chinese 钝角咖啡 and English Obtuse Coffee text in geometric sans-serif, flat vector, two-tone using #1A1A1A charcoal black and #8B5A2B caramel brown, on clean #F5F5F5 off-white background, industrial precise and restrained, scalable, no gradients, no emoji, no photorealistic textures, no purple gradient
