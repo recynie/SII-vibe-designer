@@ -2,14 +2,15 @@
 
 > 基于 [opencode](https://opencode.ai/) harness 扩展的命令行设计 agent。一句话 brief 输入，多 agent 协同输出 logo / 主视觉 / 品牌文案 / UI mockup。
 
-**状态**：✅ 端到端验证通过 · 4 次 demo run 已提交 · 14 milestone 完成（演进见 [CHANGELOG.md](./CHANGELOG.md)）
+**状态**：✅ 端到端验证通过 · 5 次 demo run 已提交 · 21 milestone 完成（演进见 [CHANGELOG.md](./CHANGELOG.md)）
 
-| Run | Brief | 时长 | 产物 | 评分 |
+| Run | Brief | 时长 | 产物 | 评分 / 备注 |
 |---|---|---|---|---|
 | `docs/demo-runs/run-20260516-004106-chuangzhi/` | 创智学院（题目要求） | 14 min | 4 类全套 | logo 28/50（迭代触发）· copy 40 · poster 46 · ui 44 |
 | `docs/demo-runs/run-final-hardened/` | 创智学院（强化版） | 12 min | 4 类全套 | logo 27/50（颜色逼近 #0D1B2A）· copy 38 · poster 42 · ui 45 |
 | `docs/demo-runs/run-coffee-partial/` | 钝角咖啡（不同领域） | logo 阶段 | brief + spec + logo + critic | logo 36/50（像素级评审） |
-| `docs/demo-runs/run-zhujiajiao-recovered/` | 朱家角古镇（第 3 领域） | logo 阶段 | brief + spec + plan + 6 logos + 2 reviews | logo 2 轮迭代后停止问用户（验证 milestone-16 内容审查 fallback） |
+| `docs/demo-runs/run-zhujiajiao-recovered/` | 朱家角古镇（第 3 领域） | logo 阶段 | brief + spec + plan + 6 logos + 2 reviews | 验证 milestone-16 内容审查 fallback |
+| `docs/demo-runs/run-gpt-image-2-evidence/` | hex 色值复现实证 | 单次 | gpt-image-2 单图 + 直方图分析 | 实测 #000A2E 接近目标 #0D1B2A，验证生产后端 |
 
 ## 课题对照
 

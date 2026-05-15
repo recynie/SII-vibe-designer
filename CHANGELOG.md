@@ -154,3 +154,18 @@ README 主表 + CHANGELOG 末尾的 demo run 引用从 `run-zhujiajiao-blocked` 
 
 `docs/presentation/02-sequence.html` 关键设计纪律从 5 条扩到 6 条，新增第 ⑥ 条「内容审查可恢复」，把 milestone-16 + 17 的故事链（发现问题 → designer fallback 设计 → 实跑验证）写进答辩 PPT。同步重新渲染 `02-sequence.png`。
 
+## milestone-20 · CHANGELOG 记录 milestone-18 + 19
+
+CHANGELOG 之前停在 milestone-17，本次补完 18（README 同步）和 19（PPT 第 6 纪律）。
+
+## milestone-21 · gpt-image-2 hex 色彩复现实证
+
+`docs/architecture.md` §8 推论"生产用 gpt-image-2 严格"——本 milestone 用单次实测证明：
+
+| 后端 | 同 prompt 下最深像素 | 与目标 #0D1B2A 距离（RGB） |
+|---|---|---|
+| minimax `image-01`（hardened v2）| `#1F3A58` | ~50 |
+| **gpt-image-2** | **`#000A2E`** | **~22** |
+
+新增 `docs/demo-runs/run-gpt-image-2-evidence/`：单图 + prompt + 直方图分析 README。证明 `DESIGN_IMAGE_BACKEND` env 切换的双后端架构真正有差异化价值——designer.md prompt 不需要切换，同一份逻辑跑两个后端。
+
