@@ -17,27 +17,6 @@
     padding:4px 12px;cursor:pointer;font:inherit;border-radius:16px;}
   .controls button:hover{background:#0A2463;color:white;}
   .num{color:#FF6B35;font-weight:700;}
-  .demo-panel{position:fixed;inset:0;background:rgba(10,36,99,0.94);z-index:100;
-    display:flex;align-items:center;justify-content:center;padding:40px;
-    font-family:'Noto Sans SC',system-ui,sans-serif;}
-  .demo-panel-inner{background:#F8F9FA;color:#1A1A2E;padding:32px 40px;border-radius:8px;
-    max-width:980px;width:100%;max-height:90vh;overflow:auto;}
-  .demo-panel header{display:flex;justify-content:space-between;align-items:baseline;
-    border-bottom:2px solid #1A1A2E;padding-bottom:12px;margin-bottom:24px;}
-  .demo-panel h2{font-family:'Noto Serif SC',serif;font-weight:700;font-size:28px;color:#0A2463;}
-  .demo-panel header button{background:transparent;border:1px solid #0A2463;color:#0A2463;
-    padding:6px 14px;cursor:pointer;font:inherit;}
-  .demo-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
-  .demo-grid a{display:block;padding:18px 22px;background:white;border:1.5px solid #C8CCD3;
-    text-decoration:none;color:#1A1A2E;transition:border-color 0.15s;}
-  .demo-grid a:hover{border-color:#FF6B35;border-width:1.5px;}
-  .demo-grid a.primary{border-color:#FF6B35;border-width:2px;background:#FFF8F4;
-    grid-column:1 / -1;}
-  .demo-grid a.primary h3{color:#FF6B35;font-size:20px;}
-  .demo-grid h3{font-family:'Noto Serif SC',serif;font-weight:700;font-size:18px;color:#0A2463;margin-bottom:6px;}
-  .demo-grid p{font-size:13px;line-height:1.5;color:#1A1A2E;margin-bottom:8px;}
-  .demo-grid code{font-family:'JetBrains Mono',monospace;font-size:11px;color:#FF6B35;
-    background:#F8F9FA;padding:2px 6px;}
 </style>
 </head>
 <body>
@@ -48,53 +27,7 @@
   <button onclick="prev()">◀ 上一页</button>
   <span><span class="num" id="cur">1</span> / <span id="total">3</span></span>
   <button onclick="next()">下一页 ▶</button>
-  <span style="opacity:0.6">←/→ 翻页 · F 全屏 · D 看 demo</span>
-</div>
-
-<div class="demo-panel" id="demoPanel" style="display:none">
-  <div class="demo-panel-inner">
-    <header>
-      <h2>Demo Runs · 实跑产物</h2>
-      <button onclick="closeDemo()">✕ 关闭</button>
-    </header>
-    <div class="demo-grid">
-      <a class="primary" href="../demo-runs/run-final-hardened/final.md">
-        <h3>★ 题目正式交付 · 创智学院（hardened）</h3>
-        <p>12 min · 4 类全套 · logo 27/50 · copy 38 · poster 42 · ui 45</p>
-        <code>docs/demo-runs/run-final-hardened/</code>
-      </a>
-      <a href="../demo-runs/run-20260516-004106-chuangzhi/final.md">
-        <h3>Run · 创智学院（v1）</h3>
-        <p>14 min · critic 触发 v2 自主迭代 · logo 28/50 · copy 40 · poster 46 · ui 44</p>
-        <code>docs/demo-runs/run-20260516-004106-chuangzhi/</code>
-      </a>
-      <a href="../demo-runs/run-coffee-partial/brief.md">
-        <h3>Run · 钝角咖啡（不同领域）</h3>
-        <p>logo 阶段 · 工业风调性 vs SII 学术 · 像素级 critic</p>
-        <code>docs/demo-runs/run-coffee-partial/</code>
-      </a>
-      <a href="../demo-runs/run-zhujiajiao-recovered/brief.md">
-        <h3>Run · 朱家角（第 3 领域）</h3>
-        <p>验证 milestone-16 内容审查 fallback · 6 logos + 2 reviews</p>
-        <code>docs/demo-runs/run-zhujiajiao-recovered/</code>
-      </a>
-      <a href="../demo-runs/run-gpt-image-2-evidence/README.md">
-        <h3>Evidence · gpt-image-2 hex 复现</h3>
-        <p>实测最深像素 #000A2E vs minimax #1F3A58 · 双后端架构有差异化价值</p>
-        <code>docs/demo-runs/run-gpt-image-2-evidence/</code>
-      </a>
-      <a href="../demo-runs/run-solenne-gpt-image-2/brief.md">
-        <h3>Run · Solenne 香水（gpt-image-2 后端）</h3>
-        <p>第一次完整 e2e 跑生产后端 · 香水品牌 · 暗夜植物调性 · 32/50</p>
-        <code>docs/demo-runs/run-solenne-gpt-image-2/</code>
-      </a>
-      <a href="../demo-runs/run-foundry-copy/final.md">
-        <h3>Run · Foundry Lab（纯文案 + critic 维度自适应）</h3>
-        <p>4 min · slogan 42 + intro 41 + apps 41 · 实证 critic 按任务换 5 轴</p>
-        <code>docs/demo-runs/run-foundry-copy/</code>
-      </a>
-    </div>
-  </div>
+  <span style="opacity:0.6">←/→ 翻页 · F 全屏</span>
 </div>
 <script>
   const slides = ['01-architecture.html', '02-sequence.html', '03-demo.html'];
@@ -121,15 +54,10 @@
   function next(){ go(idx + 1); }
   function prev(){ go(idx - 1); }
 
-  function openDemo(){ document.getElementById('demoPanel').style.display = 'flex'; }
-  function closeDemo(){ document.getElementById('demoPanel').style.display = 'none'; }
-
   document.addEventListener('keydown', e => {
     if (e.key === 'ArrowRight' || e.key === ' ') next();
     if (e.key === 'ArrowLeft') prev();
     if (e.key === 'f' || e.key === 'F') document.documentElement.requestFullscreen();
-    if (e.key === 'd' || e.key === 'D') openDemo();
-    if (e.key === 'Escape') closeDemo();
   });
 
   if (location.hash) go(parseInt(location.hash.slice(1)) - 1);
