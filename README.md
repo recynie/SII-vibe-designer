@@ -2,9 +2,9 @@
 
 > 基于 [opencode](https://opencode.ai/) harness 扩展的命令行设计 agent。一句话 brief 输入，多 agent 协同输出 logo / 主视觉 / 品牌文案 / UI mockup。
 
-**状态**：✅ 端到端验证通过 · 6 次 demo run 已提交 · 完整迭代历史见 [CHANGELOG.md](./CHANGELOG.md)
+**状态**：✅ 端到端验证通过 · 7 次 demo run 已提交 · 完整迭代历史见 [CHANGELOG.md](./CHANGELOG.md)
 
-> 🎯 **题目正式交付物 → [`docs/demo-runs/run-final-hardened/`](./docs/demo-runs/run-final-hardened/)**（创智学院 4 类全套、12 分钟、强化 prompt 版本）。其余 5 个 run 是泛化、技术验证或恢复实证。
+> 🎯 **题目正式交付物 → [`docs/demo-runs/run-final-hardened/`](./docs/demo-runs/run-final-hardened/)**（创智学院 4 类全套、12 分钟、强化 prompt 版本）。其余 6 个 run 是泛化、技术验证或恢复实证。
 
 | Run | Brief | 时长 | 产物 | 评分 / 备注 |
 |---|---|---|---|---|
@@ -14,6 +14,7 @@
 | `docs/demo-runs/run-zhujiajiao-recovered/` | 朱家角古镇（第 3 领域） | logo 阶段 | brief + spec + plan + 6 logos + 2 reviews | 验证 milestone-16 内容审查 fallback |
 | `docs/demo-runs/run-gpt-image-2-evidence/` | hex 色值复现实证 | 单次 | gpt-image-2 单图 + 直方图分析 | 实测 #000A2E 接近目标 #0D1B2A，验证生产后端 |
 | `docs/demo-runs/run-solenne-gpt-image-2/` | Solenne 香水（gpt-image-2 后端） | logo 阶段 | brief + spec + plan + logo + critic | 32/50 · 第一次完整 e2e 跑生产后端，证明双后端架构透明性 |
+| `docs/demo-runs/run-foundry-copy/` | Foundry Lab（纯文案任务） | 4 min | brief + spec + plan + 3 文案 + 3 reviews + final | 验证 critic 维度自适应：slogan / intro / apps 各 41-42/50 |
 
 ## 课题对照
 
