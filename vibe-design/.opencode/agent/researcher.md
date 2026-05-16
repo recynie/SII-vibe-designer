@@ -1,7 +1,7 @@
 ---
 description: 调研 agent。读 brief，搜资料，输出 brief.md + brand-spec.md，下游 designer/critic 都依赖这两个文件。Planner 的第一步固定调它。
 mode: subagent
-model: minimax/MiniMax-M2
+model: minimax-cn-coding-plan/MiniMax-M2.7-highspeed
 temperature: 0.4
 permission:
   edit: allow

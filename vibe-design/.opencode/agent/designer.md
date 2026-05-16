@@ -1,7 +1,7 @@
 ---
 description: 设计执行 agent。出图、写 HTML 排版、写文案。根据 Planner 给的 skill 加载对应领域知识（logo / poster / copywriting / ui-mockup）。所有产出都落到指定路径并保留 prompt/依据。
 mode: subagent
-model: minimax/MiniMax-M2
+model: minimax-cn-coding-plan/MiniMax-M2.7-highspeed
 temperature: 0.5
 permission:
   edit: allow

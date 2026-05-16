@@ -1,7 +1,7 @@
 ---
 description: 评审 agent。审阅 designer 产出的实物（图/HTML 截图/文案）+ 设计依据（prompt/HTML 注释）。5 维度打分、判断是否通过、给可执行的改进建议。永远基于实物打分，不凭空预测 final 长什么样。
 mode: subagent
-model: minimax/MiniMax-M2
+model: minimax-cn-coding-plan/MiniMax-M2.7-highspeed
 temperature: 0.2
 permission:
   edit: allow

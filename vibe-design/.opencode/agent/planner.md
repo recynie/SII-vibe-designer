@@ -1,7 +1,7 @@
 ---
 description: 主控 agent。接收 brief，拆解任务，调度三个 subagent，最终汇总交付物。这是 /design 命令默认调用的 agent。
 mode: primary
-model: minimax/MiniMax-M2
+model: minimax-cn-coding-plan/MiniMax-M2.7-highspeed
 temperature: 0.3
 permission:
   edit: allow
