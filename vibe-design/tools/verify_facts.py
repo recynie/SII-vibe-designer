@@ -60,6 +60,12 @@ def check_doc(path: Path, real: dict[str, int]) -> list[str]:
         if key is None:
             continue
         for m in re.finditer(pattern, text):
+            # Skip claims wrapped in quotes — these are historical
+            # snapshots being narrated, not present claims about the repo.
+            # Look at the 4 chars before the match for a quote.
+            before = text[max(0, m.start() - 4) : m.start()]
+            if any(q in before for q in ("“", "「", '"', "'", "「")):
+                continue
             claimed = int(m.group(1))
             actual_count = real[key]
             # report mismatches; allow exact match
