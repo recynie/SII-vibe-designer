@@ -52,7 +52,7 @@
 1. **prompt 工程**：designer.md 显式列禁忌项（紫渐变、emoji 图标、generic stock、凭空品牌色等），每个 gen_image prompt 末尾都加 `no purple gradients, no emoji, no generic SVG faces`。
 2. **critic 一票否决**：第 ④ 维度命中任一 slop 项就 ≤3 分，整体不通过 → 触发 v2 迭代。
 
-**实测有效性**：所有 6 次 demo run 没有出现紫渐变 / emoji 图标。logo run-coffee-partial 的 critic v1 review 第 ④ 维 8/10，主动指出"未命中 slop 但视觉品味需提升"。
+**实测有效性**：所有 7 次 demo run 没有出现紫渐变 / emoji 图标。logo run-coffee-partial 的 critic v1 review 第 ④ 维 8/10，主动指出"未命中 slop 但视觉品味需提升"。
 
 ---
 
@@ -74,14 +74,15 @@ gpt-image-2 严格度高 2x+ 但中转站慢 4x+。
 
 ## Q6. 创智学院 brief 一定能跑通吗？跑了几次？
 
-**6 次 e2e 提交**（完整 4 类 + 部分阶段 + 单图实证），全部产物已 commit：
+**7 次 e2e 提交**（完整 4 类 + 部分阶段 + 单图实证 + 纯文案），全部产物已 commit：
 
-1. `run-20260516-004106-chuangzhi/` — 创智学院完整版 14 min
-2. `run-final-hardened/` — 创智学院强化版 12 min
-3. `run-coffee-partial/` — 钝角咖啡（不同领域，logo 阶段）
+1. `run-final-hardened/` — ★ **题目正式交付**：创智学院强化版 12 min 4 类全套
+2. `run-20260516-004106-chuangzhi/` — 创智学院早期版本 14 min（v1→v2 迭代实证）
+3. `run-coffee-partial/` — 钝角咖啡（不同领域 + 像素级评审）
 4. `run-zhujiajiao-recovered/` — 朱家角（第 3 个领域 + 内容审查恢复实证）
 5. `run-gpt-image-2-evidence/` — gpt-image-2 单图实证（hex 复现精度对比）
-6. `run-solenne-gpt-image-2/` — Solenne 香水（gpt-image-2 后端首次完整 e2e 验证）
+6. `run-solenne-gpt-image-2/` — Solenne 香水（gpt-image-2 后端首次完整 pipeline）
+7. `run-foundry-copy/` — Foundry Lab 纯文案（critic 维度自适应实证）
 
 **从未跑炸过**——critic 不通过会触发 v2 迭代，2 轮上限会触发用户提问，从不死循环。
 
@@ -141,6 +142,6 @@ gpt-image-2 严格度高 2x+ 但中转站慢 4x+。
 
 ## 后备：如果系统现场跑不出来
 
-`docs/demo-runs/` 里 6 次完整 / 部分 run 的所有产物都 commit 了。即使现场网络/API key 失败，也能直接展示历史交付物。
+`docs/demo-runs/` 里 7 次完整 / 部分 run 的所有产物都 commit 了。即使现场网络/API key 失败，也能直接展示历史交付物。
 
 每个 run 都有 `brief.md / brand-spec.md / plan.md / artifacts/.../v?.review.md`，能完整复现"这次 run 系统是怎么思考的"。
