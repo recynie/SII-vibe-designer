@@ -73,8 +73,8 @@ opencode 已提供 subagent（独立上下文）、自定义 agent / command / s
 
 | 用途 | 模型 | 备注 |
 |---|---|---|
-| 所有 agent LLM | **MiniMax**（`MINIMAX_BASE_URL`） | opencode 顶层配置 |
-| 图像生成（开发期） | MiniMax 文生图 | 迭代 prompt 时省钱 |
+| 所有 agent LLM | **SII `gpt-5.5`**（顶层 `model`，OpenAI 兼容 v1/chat/completions） | opencode 顶层配置；备用 `MiniMax-M2.7-highspeed` 已声明但未选中 |
+| 图像生成（开发期） | MiniMax `image-01` | 迭代 prompt 时省钱；`api.toml [active].image = "minimax"` 切换 |
 | 图像生成（正式 run） | **gpt-image-2**（默认） | 答辩与最终交付用 |
 
 `gen_image.py` 签名对 LLM 屏蔽后端：
@@ -86,7 +86,7 @@ uv run python tools/gen_image.py \
   --aspect-ratio 1:1
 ```
 
-后端由 CLI 启动时读 `DESIGN_IMAGE_BACKEND` 环境变量决定（`openai`（默认） / `minimax`）。Designer prompt 里就一句"调 gen_image"，开发与正式跑同一份 agent 逻辑，避免后端切换引入差异。
+后端由 `vibe-design/tools/api_config.py` 解析（优先级：`--backend` CLI > `api.toml [active].image`），凭据从 `api.toml [providers.<backend>]` 取。Designer prompt 里就一句"调 gen_image"，开发与正式跑同一份 agent 逻辑，避免后端切换引入差异。
 
 ---
 
@@ -94,7 +94,7 @@ uv run python tools/gen_image.py \
 
 ```
 vibe-design/                      # 项目根
-├── opencode.json                 # 注册 MiniMax provider + agent permissions
+├── opencode.json                 # 注册 SII gpt-5.5（主）+ MiniMax-M2.7-highspeed（备用）provider
 ├── .opencode/
 │   ├── agent/
 │   │   ├── planner.md            # primary
@@ -155,34 +155,36 @@ final.md               # planner 的最终交付说明
 
 ## 7. 实施顺序
 
-1. `opencode.json` + `.env` 接通 MiniMax，确认 opencode 能跑通基础对话
+1. `opencode.json` + `.env`（`SII_API_KEY`）接通 SII `gpt-5.5`，确认 opencode 能跑通基础对话；备用 provider `minimax-cn-coding-plan/MiniMax-M2.7-highspeed` 已声明，把顶层 `model` 改回去并提供 `MINIMAX_API_KEY` 即切回
 2. `gen_image.py` 路由 minimax / gpt-image-2 + `html_screenshot.py`（playwright）
 3. `designer.md` + `critic.md`，跑通"出图 → 评 → 改"最小回路
 4. 加 `researcher.md` + `planner.md`，串成完整链路
 5. `/design` 命令 + `examples/brief-sii-academy.md` 端到端
 6. 三条 example 都跑，验证"换主题就能跑"
-7. 切 `DESIGN_IMAGE_BACKEND=openai` 用 gpt-image-2 出最终交付
+7. 切 `[active].image = "openai"` 用 gpt-image-2 出最终交付
 8. 写答辩 PPT（3 页 HTML 幻灯片，可浏览器键盘翻页）
 
 ---
 
 ## 8. 实测发现与已知限制
 
+> 大部分发现来自 2026-05 中旬的 MiniMax-M2 时代实测；当前主 LLM 已切到 SII `gpt-5.5`，多数局限不再复现，但 prompt 设计仍沿用当时的防御性约束（串行调度、ImageMagick 验色等）。保留作历史依据。
+
 ### 实测中调整的关键决策
 
 1. **`opencode --pure` 是必须的**：用户可能装了全局插件（如 `oh-my-opencode-slim`）会注入"split and parallelize"workflow rules，干扰 subagent 决策导致长时挂起。`--pure` 跳过外部插件，只加载项目本地的 agent / skill / command 配置。
 
-2. **subagent 必须严格串行**：MiniMax-M2 是 reasoning 模型，并行调度多个 subagent 时偶发挂起（5+ 分钟无产出）。Planner prompt 中已硬性规定一次只 `@` 一个 subagent。
+2. **subagent 必须严格串行**：MiniMax-M2 是 reasoning 模型，并行调度多个 subagent 时偶发挂起（5+ 分钟无产出）。Planner prompt 中已硬性规定一次只 `@` 一个 subagent。切到 GPT-5.5 后挂起未再复现，但 race 风险仍在，规定保留。
 
-3. **Critic 用 ImageMagick 间接验证颜色**：MiniMax-M2 不支持图像输入，critic 无法直接看图打分。实测中 critic 自己想到了用 `identify -format %[hex:u]` 提取主色 + 中心点偏移量与 brand-spec 比对——这是 prompt 中"基于实物打分"约束自然推导出的能力。
+3. **Critic 用 ImageMagick 间接验证颜色**：MiniMax-M2 不支持图像输入，critic 无法直接看图打分。实测中 critic 自己想到了用 `identify -format %[hex:u]` 提取主色 + 中心点偏移量与 brand-spec 比对——这是 prompt 中"基于实物打分"约束自然推导出的能力。GPT-5.5 已支持视觉输入，但 critic prompt 尚未为此重写，仍以 ImageMagick 为主——优化空间。
 
 4. **Designer 走类型路由**：copywriting 任务（纯文本，无 bash 工具）和 logo/poster 任务（要调 gen_image / write HTML）需要不同的执行路径，否则 designer 容易陷入"应该 bash 还是 Write"的犹豫导致 thinking 卡住。`.opencode/agent/designer.md` 显式分两条路径。
 
 ### 模型层限制
 
 - **MiniMax `image-01` 对深色 hex 复现不严格**：`#1A2B4A` 墨蓝会被生成为 `#93B8D2` 浅蓝。生产场景下需切换到 gpt-image-2 后端。强化 prompt 写法（`STRICTLY use only #XXX` + 颜色名+hex 双标）实测可让色值从完全偏离（#F8F4E8）逼近到接近目标（#1F3A58 vs 目标 #0D1B2A）。
-- **MiniMax-M2 偶发长 thinking**：subagent 内部偶发 5+ 分钟无 stdout 进展。`--pure` 显著缓解，但未根除。
-- **MiniMax-M2 内容审查**（`output new_sensitive 1027` 错误）：朱家角文旅 brief 跑到 designer logo 阶段被服务端内容审查反复拦截（推测是"墨"、"朱砂"等中文词组合触发）。Critic 评审等纯文本任务不受影响。绕过策略：(a) 改写 prompt 避开触发词 (b) designer 切换非 MiniMax LLM 后端 (c) 记录在 `final.md` 让用户人工补做。
+- **MiniMax-M2 偶发长 thinking**（历史）：subagent 内部偶发 5+ 分钟无 stdout 进展，`--pure` 显著缓解但未根除。切到 GPT-5.5 后未再复现。
+- **MiniMax-M2 内容审查**（历史）：`output new_sensitive 1027` 错误，朱家角文旅 brief 跑到 designer logo 阶段被服务端内容审查反复拦截（推测是"墨"、"朱砂"等中文词组合触发）。Critic 评审等纯文本任务不受影响。绕过策略：(a) 改写 prompt 避开触发词 (b) designer 切换非 MiniMax LLM 后端 (c) 记录在 `final.md` 让用户人工补做。SII gpt-5.5 + findcg gpt-image-2 通道未观察到等价拦截，但 designer.md / planner.md 仍保留 1027 fallback 分支，以备临时切回 MiniMax provider 时使用。
 - **中转站 429**：`findcg.com` 的 gpt-image-2 中转站负载饱和时返回 429，需 retry 或回落到 minimax 后端。
 
 ---

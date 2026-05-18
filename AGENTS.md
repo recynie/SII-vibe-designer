@@ -16,22 +16,25 @@ This file serves as a workspace map and high-level overview for any agent operat
 | `CHANGELOG.md` | 完整迭代历史记录 |
 | `pyproject.toml` | Python 项目配置（依赖：pillow、playwright） |
 | `uv.lock` | uv 锁文件 |
-| `.env` | 仅本地，**唯一**的 API key 存放处；其它代码与文档不应出现真实 key |
-| `scripts/test_api.py` | API 端点可用性测试脚本（强制从 `.env` 读 `OPENAI_API_KEY`） |
+| `.venv/` | uv 虚拟环境（Python 3.12.3），通过 `uv sync` 创建，已 gitignore |
+| `.env` | 仅本地，opencode 用 — `opencode.json` 里 `{env:MINIMAX_API_KEY}` 走这里。Python 脚本不再读它 |
+| `api.toml` | 仅本地（gitignore），**Python 脚本的唯一**凭据源；`[active] llm/image` 选当前 provider |
+| `api.toml.example` | `api.toml` 的 schema 模板 |
+| `scripts/test_api.py` | 夏令营 API 中转站可用性测试（`api.toml [active].llm`） |
 
 ### `vibe-design/` — 系统核心代码
 
 | 路径 | 说明 |
 |---|---|
-| `vibe-design/opencode.json` | opencode provider 配置（MiniMax-M2 等） |
+| `vibe-design/opencode.json` | opencode provider 配置（当前主 LLM = SII `gpt-5.5`；MiniMax provider 备用） |
 | `vibe-design/.opencode/agent/` | 四个 agent 的 prompt 定义（planner / researcher / designer / critic） |
 | `vibe-design/.opencode/command/design.md` | `/design` 自定义命令定义 |
 | `vibe-design/.opencode/skills/` | designer 使用的领域 skill（logo / poster / copywriting / ui-mockup / asset-prep） |
-| `vibe-design/tools/gen_image.py` | 双后端文生图工具（minimax image-01 / gpt-image-2） |
+| `vibe-design/tools/api_config.py` | Python 脚本共用的 API 凭据加载器（只读 `api.toml`） |
+| `vibe-design/tools/gen_image.py` | 双后端文生图工具，后端由 `api.toml [active].image` 决定 |
 | `vibe-design/tools/html_screenshot.py` | HTML → PNG 截图工具（Playwright + Chromium） |
 | `vibe-design/examples/` | 示例 brief（创智学院 / 朱家角古镇 / 咖啡品牌） |
 | `vibe-design/outputs/` | 运行产物输出目录（gitignore） |
-| `vibe-design/MILESTONES.md` | 开发里程碑记录 |
 | `vibe-design/docs/schema/` | 数据 schema 定义 |
 
 ### `docs/` — 文档与交付物
@@ -59,7 +62,20 @@ This file serves as a workspace map and high-level overview for any agent operat
 
 | 路径 | 说明 |
 |---|---|
-| `scripts/test_api.py` | API 端点可用性测试脚本（从 `.env` 读 `OPENAI_API_KEY`） |
+| `scripts/test_api.py` | 夏令营 API 中转站可用性测试（`api.toml [active].llm`） |
+| `scripts/test_llm_capabilities.py` | LLM 速度/推理/视觉能力测试（`api.toml [active].llm`） |
+| `scripts/test_sii_vision.py` | 多模型视觉理解对比（`api.toml [active].llm`） |
+| `scripts/test_sii_imagegen.py` / `test_sii_image_gen.py` | 生图延迟测试（`api.toml [providers.sii]` / `[providers.openai]`） |
+
+## Development Environment
+
+| 项目 | 当前值 |
+|---|---|
+| Python | 3.12.3（系统 `/usr/bin/python3.12`，项目 `.python-version` 锁定）|
+| uv | 0.8.2 |
+| 虚拟环境 | `.venv/`（基于 `.venv/bin/python3.12`，通过 `uv sync` 管理）|
+| 依赖声明 | `pyproject.toml`（`[project]` 段），lock 文件 `uv.lock` |
+| 常见操作 | `uv sync` — 同步环境；`uv add <pkg>` — 添加依赖；`uv run <cmd>` — 在 venv 中执行命令 |
 
 ## Maintenance
 

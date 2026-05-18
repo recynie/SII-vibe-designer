@@ -1,7 +1,7 @@
 ---
 description: 设计执行 agent。create 模式调 gen_image / 写 HTML / 写文案；reuse 模式用 imagemagick 处理 assets/ 已有素材。skills 是介质工艺手册（流派/构图/装饰由你自由发挥），brand-spec 是硬约束（色板/字族/调性硬锁）。
 mode: subagent
-model: minimax-cn-coding-plan/MiniMax-M2.7-highspeed
+model: sii-openai/gpt-5.5
 temperature: 0.5
 permission:
   edit: allow

@@ -2,6 +2,8 @@
 
 主要节点。详细演进见 `git log --oneline`。
 
+> 历史快照：下方条目记录当时的状态，未回填后续变更。当前主 LLM 已从 `MiniMax-M2.7-highspeed` 切到 SII `gpt-5.5`（见 `vibe-design/opencode.json`）；MiniMax 相关条目反映的是切换前的实测。最新状态请看 README 头部。
+
 ## 系统骨架
 
 - 项目骨架 + opencode.json 配 MiniMax-M2 provider
@@ -26,7 +28,7 @@
 - **MiniMax-M2 内容审查偶发**（`output new_sensitive 1027`）：朱家角文旅 brief 触发；fallback 是 designer 切换纯英文 prompt + hex+色名（"sage green #4A7C59" 而非"竹青"）
 - **critic 维度自适应是特性**：copy 任务自主换成「克制 / 动手气质 / 精准 / 记忆点 / 调性统一」等更贴切的轴；视觉任务保留标准 5 维。critic.md 已显式允许
 
-## v2 重构（按 vibe-design/MILESTONES.md）
+## v2 重构
 
 ### M1 · Schema 定义 + 校验工具
 
@@ -89,7 +91,7 @@
 
 ### M1–M5 全回归
 
-`bash tools/tests/run_m{1..5}_tests.sh` 累计 63/63 全过。M6 暂未启动（按 MILESTONES 标记为可选，依赖 plugin API 调研结论）。
+`bash tools/tests/run_m{1..5}_tests.sh` 累计 63/63 全过。M6 暂未启动（标记为可选，依赖 plugin API 调研结论）。
 
 ### 端到端验证（2026-05-16/17）
 

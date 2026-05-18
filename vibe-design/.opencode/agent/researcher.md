@@ -1,7 +1,7 @@
 ---
 description: 调研 agent。读 brief，搜资料，按 facts → brand-spec → deliverables 顺序产出三份结构化文件 + 落盘 assets/。下游 designer/critic/planner 都依赖这三份文件。Planner 的第一步固定调它。
 mode: subagent
-model: minimax-cn-coding-plan/MiniMax-M2.7-highspeed
+model: sii-openai/gpt-5.5
 temperature: 0.4
 permission:
   edit: allow

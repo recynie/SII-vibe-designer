@@ -1,7 +1,7 @@
 ---
 description: 评审 agent。先跑 schema 校验（必过）+ 字族校验（必过）；色板检查仅作参考，不阻断主观打分。主观段 5 维度 × 0-5 评分。review.md 物理分离三段：机器判定 / 色板参考 / 主观打分。
 mode: subagent
-model: minimax-cn-coding-plan/MiniMax-M2.7-highspeed
+model: sii-openai/gpt-5.5
 temperature: 0.2
 permission:
   edit: allow

@@ -1,7 +1,7 @@
 ---
 description: 主控 agent。接收 brief，调度 researcher 产出三份结构化文件，再按 deliverables.md 逐条调度 designer/critic。不增删交付物、不做设计决策。这是 /design 命令默认调用的 agent。
 mode: primary
-model: minimax-cn-coding-plan/MiniMax-M2.7-highspeed
+model: sii-openai/gpt-5.5
 temperature: 0.3
 permission:
   edit: allow

@@ -57,14 +57,18 @@
 uv sync
 uv run playwright install chromium
 
-# 2. 配置 .env（从模板复制后填入真实 key）
+# 2. 配置 API 凭据
+#   - api.toml：Python 脚本读，含 [active] llm/image + [providers.*]
+cp api.toml.example api.toml
+# 编辑 api.toml，填入真实 key
+#   - .env：opencode 读（{env:MINIMAX_API_KEY}），照旧维护
 cp .env.example .env
-# 编辑 .env，填入 MINIMAX_API_KEY + OPENAI_API_KEY
+# 编辑 .env，至少填 MINIMAX_API_KEY
 
 # 3. 进入项目目录
 cd vibe-design
 
-# 4. 启动 opencode（--pure 跳过外部插件干扰）
+# 4. 启动 opencode（--pure 跳过外部插件干扰；.env 自动注入环境）
 opencode --pure
 
 # 5. 在 TUI 输入：
@@ -114,7 +118,7 @@ uv run python vibe-design/tools/gen_image.py \
 
 ## 性能与资源开销
 
-实测 4 个完整/部分 demo run 的成本与时长（MiniMax-M2 LLM + minimax image-01 后端）：
+> 下表是 2026-05 中旬跑的 4 个 demo run（**当时**主 LLM = MiniMax-M2.7-highspeed，图像 = minimax `image-01`）。当前主 LLM 已切到 SII `gpt-5.5`，单 turn 时延与 thinking 占比都明显变化；下表保留作历史参照，不代表现状。
 
 | Run | 时长 | 文件 | 总大小 | 图像数 | LLM turns（粗估） |
 |---|---|---|---|---|---|
@@ -123,18 +127,24 @@ uv run python vibe-design/tools/gen_image.py \
 | 钝角咖啡 | logo 阶段 | 11 | 208K | 3 PNG | ~5（researcher 1 + planner 2 + designer 1 + critic 1） |
 | 朱家角古镇 | logo 阶段 | 19 | 544K | 6 PNG | ~7 |
 
-观察：
+观察（基于 MiniMax-M2 时代的实测）：
 
 - **完整 4 类产物 ~12-14 分钟**，单 logo 任务 ~2-3 分钟（含 LLM thinking + 图像生成 + critic 评审）
-- **subagent 串行调度** 是主要时延源——MiniMax-M2 reasoning 单 turn 平均 30-60 秒
+- **subagent 串行调度** 是主要时延源——MiniMax-M2 reasoning 单 turn 平均 30-60 秒（GPT-5.5 单 turn 显著更快，但同 brief 端到端时长尚未系统重测）
 - **gen_image 单图 ~5-15 秒**（minimax）/ ~30 秒+（gpt-image-2 含中转站）
-- **token 开销**：MiniMax-M2 thinking 占 70%+ tokens，但题目允许 `--pure` 自由调用
+- **token 开销**：MiniMax-M2 thinking 占 70%+ tokens；GPT-5.5 下 thinking 占比显著降低
 
 ## 项目结构
 
 ```
 SII-assignment/
-├── .env                          # MiniMax + gpt-image-2 凭证（gitignore）
+├── api.toml                      # Python 脚本的 API 凭据（gitignore），schema 见 api.toml.example
+├── api.toml.example              # 凭据 schema 模板
+├── .env                          # opencode 用的环境变量（{env:MINIMAX_API_KEY}），gitignore
+├── scripts/
+│   ├── test_api.py               # 夏令营 API 中转站可用性测试（读 api.toml）
+│   ├── test_llm_capabilities.py  # LLM 能力对比（读 api.toml）
+│   └── test_sii_vision.py        # 视觉理解对比（读 api.toml）
 ├── docs/
 │   ├── architecture.md           # 完整系统设计文档
 │   ├── presentation/             # 答辩 PPT（3 页 HTML 幻灯片）
@@ -146,7 +156,7 @@ SII-assignment/
 │   └── demo-runs/                # 提交版的真实 run 产物
 │       └── run-20260516-004106-chuangzhi/
 └── vibe-design/                  # 实际系统代码
-    ├── opencode.json             # MiniMax provider 配置
+    ├── opencode.json             # provider 配置（当前主 LLM = SII gpt-5.5；MiniMax 备用）
     ├── .opencode/
     │   ├── agent/                # 4 个 agent markdown
     │   │   ├── planner.md
@@ -171,27 +181,29 @@ SII-assignment/
 
 ## 模型与图像后端
 
-| 用途 | 模型 | 备注 |
+| 用途 | 当前模型 | 备注 |
 |---|---|---|
-| 所有 agent LLM | **MiniMax-M2** | OpenAI 兼容 `v1/chat/completions`，opencode `@ai-sdk/openai-compatible` provider |
-| 图像生成 · 开发 | MiniMax `image-01` | 便宜，迭代 prompt 用 |
-| 图像生成 · 交付 | **gpt-image-2** | 高质量，最终 run 用 |
+| 所有 agent LLM | **SII `gpt-5.5`** | OpenAI 兼容，opencode `@ai-sdk/openai` provider；key 走 `.env` 的 `SII_API_KEY` |
+| `small_model`（轻量调用） | SII `gpt-4.1-nano` | 同上 |
+| 图像生成 · 默认 | **`gpt-image-2`**（findcg 中转站） | `api.toml [active].image = "openai"` |
+| 图像生成 · 开发省钱 | MiniMax `image-01` | `gen_image --backend minimax` 或 `[active].image = "minimax"` |
+| LLM 备用 | MiniMax `MiniMax-M2.7-highspeed` | opencode.json 已声明，把顶层 `model` 改回去即切换；需要 `MINIMAX_API_KEY` |
 
-切换：`export DESIGN_IMAGE_BACKEND=openai`（默认）/ `=minimax`。**LLM 完全感知不到**，同一份 agent prompt 跑两个后端。
+切换图像后端：改 `api.toml [active].image = "openai"`（默认）/ `"minimax"`，或 `gen_image --backend minimax` 单次覆盖。**LLM 完全感知不到**，同一份 agent prompt 跑两个后端。
 
 ## 关键设计决策
 
-1. **串行调度**：MiniMax-M2 reasoning 在 subagent 并行下会挂起，强制 planner 一次只调一个
+1. **串行调度**：原因是 MiniMax-M2 reasoning 在 subagent 并行下会挂起；切到 GPT-5.5 后挂起未再复现，但 planner prompt 仍保留"一次只调一个"以收敛 race 风险
 2. **文件即上下文契约**：subagent 间不互相 @；只通过 `brief.md / brand-spec.md / v?.review.md` 传递信息
 3. **Critic 同时审图与 prompt**：很多 slop 根因在 prompt（generic 词、缺禁忌项），看 prompt 才能给出"改 prompt / 改版式 / 换素材"分层建议
-4. **Critic ImageMagick fallback**：MiniMax-M2 不支持视觉输入，critic 用 `identify -format %[hex:u]` 提取颜色与 brand-spec 比对
+4. **Critic ImageMagick fallback**：MiniMax-M2 不支持视觉输入时的设计；GPT-5.5 已支持图像理解，critic 可以同时跑机器校验 + 直接看图，但当前 prompt 仍以 ImageMagick 为主——尚未为视觉模型重写 critic
 5. **`--pure` 跳过外部插件**：用户全局插件注入的"parallelize"提示会干扰 subagent，加 `--pure` 启动隔离
 
 ## 已知局限
 
-- **MiniMax image-01 对深色 hex 复现不严格**（如 #1A2B4A 墨蓝会被生成为浅蓝/浅青）。生产场景下应切到 gpt-image-2 后端
-- **MiniMax-M2 不支持图像输入**，critic 只能用 ImageMagick 间接验证颜色，无法做整体视觉评分
-- **subagent 偶发长 thinking**（5+ 分钟无产出），通过 `--pure` 缓解
+- **`gpt-image-2` 对深色 hex 复现优于 minimax `image-01`，但仍非像素级精确**（实测 ΔE 3-8 区间，散色由 JPEG 压缩 / 抗锯齿引入，非主动配色失误）
+- **critic 当前 prompt 仍假定 LLM 看不到图**（ImageMagick + brand-spec 文字对照），GPT-5.5 的视觉理解能力**未被启用**——是优化空间不是 bug
+- 早期 MiniMax-M2 时代的两个局限：**不支持图像输入** / **subagent 偶发 5+ 分钟长 thinking**（`--pure` 缓解）——切到 GPT-5.5 后均未再复现，保留备查
 
 ## 答辩演示
 

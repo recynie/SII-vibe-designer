@@ -14,10 +14,48 @@
           "limit": { "context": 200000, "output": 16384 }
         }
       }
+    },
+    "sii-openai": {
+      "npm": "@ai-sdk/openai",
+      "name": "SII (夏令营商用API)",
+      "options": {
+        "baseURL": "https://apicz.boyuerichdata.com/v1",
+        "apiKey": "{env:SII_API_KEY}"
+      },
+      "models": {
+        "gpt-5.5": {
+          "name": "GPT-5.5",
+          "limit": { "context": 131072, "output": 16384 }
+        },
+        "gpt-5.4": {
+          "name": "GPT-5.4",
+          "limit": { "context": 131072, "output": 16384 }
+        },
+        "gpt-5.2": {
+          "name": "GPT-5.2",
+          "limit": { "context": 131072, "output": 16384 }
+        },
+        "gpt-4.1": {
+          "name": "GPT-4.1",
+          "limit": { "context": 131072, "output": 16384 }
+        },
+        "gpt-4.1-nano": {
+          "name": "GPT-4.1 Nano",
+          "limit": { "context": 131072, "output": 16384 }
+        },
+        "gpt-4o-mini": {
+          "name": "GPT-4o Mini",
+          "limit": { "context": 131072, "output": 16384 }
+        },
+        "gpt-4o": {
+          "name": "GPT-4o",
+          "limit": { "context": 131072, "output": 16384 }
+        }
+      }
     }
   },
-  "model": "minimax-cn-coding-plan/MiniMax-M2.7-highspeed",
-  "small_model": "minimax-cn-coding-plan/MiniMax-M2.7-highspeed",
+  "model": "sii-openai/gpt-5.5",
+  "small_model": "sii-openai/gpt-4.1-nano",
   "permission": {
     "edit": "allow",
     "bash": "allow",
