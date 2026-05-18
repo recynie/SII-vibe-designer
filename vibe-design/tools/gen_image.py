@@ -53,16 +53,28 @@ def load_env() -> None:
 DEFAULT_UA = "vibe-design/0.1 (+https://github.com/local)"
 
 
-def http_post_json(url: str, headers: dict, body: dict, timeout: int = 180) -> dict:
+import time
+
+
+def http_post_json(url: str, headers: dict, body: dict, timeout: int = 600, max_retries: int = 5) -> dict:
     data = json.dumps(body).encode("utf-8")
     h = {"User-Agent": DEFAULT_UA, **headers}
-    req = urllib.request.Request(url, data=data, headers=h, method="POST")
-    try:
-        with urllib.request.urlopen(req, timeout=timeout) as resp:
-            return json.loads(resp.read().decode("utf-8"))
-    except urllib.error.HTTPError as e:
-        msg = e.read().decode("utf-8", errors="replace")
-        raise SystemExit(f"HTTP {e.code} from {url}: {msg[:500]}")
+    last_exc = None
+    for attempt in range(1, max_retries + 1):
+        req = urllib.request.Request(url, data=data, headers=h, method="POST")
+        try:
+            with urllib.request.urlopen(req, timeout=timeout) as resp:
+                return json.loads(resp.read().decode("utf-8"))
+        except (urllib.error.HTTPError, OSError, TimeoutError) as e:
+            last_exc = e
+            if isinstance(e, urllib.error.HTTPError) and 400 <= e.code < 500 and e.code != 429:
+                msg = e.read().decode("utf-8", errors="replace")
+                raise SystemExit(f"HTTP {e.code} from {url}: {msg[:500]}")
+            if attempt < max_retries:
+                wait = min(30 * attempt, 120)
+                print(f"  [retry {attempt}/{max_retries}] {type(e).__name__}, waiting {wait}s...", file=sys.stderr)
+                time.sleep(wait)
+    raise SystemExit(f"All {max_retries} retries failed: {last_exc}")
 
 
 def http_get_bytes(url: str, timeout: int = 180) -> bytes:
