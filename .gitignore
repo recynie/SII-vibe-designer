@@ -1,4 +1,5 @@
 .env
+api.toml
 .venv/
 __pycache__/
 *.pyc

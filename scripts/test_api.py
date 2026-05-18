@@ -2,49 +2,23 @@
 """
 测试 2026 夏令营商用 API 手册中各端点的可用性。
 
-需要从仓库根目录的 .env 读取 OPENAI_API_KEY；缺失时直接报错，
-不允许任何形式的硬编码默认值。
+凭据从仓库根目录 `api.toml` 的 role `camp_audit`（默认 -> sii provider）读取，
+缺失或仍是占位符直接报错。
 """
-import os
 import json
+import sys
 import time
-import base64
 import urllib.request
 import urllib.error
 from datetime import datetime
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "vibe-design" / "tools"))
+import api_config
 
-def _load_dotenv() -> None:
-    """Load OPENAI_API_KEY from <repo-root>/.env if not already in env."""
-    if os.environ.get("OPENAI_API_KEY"):
-        return
-    repo_root = Path(__file__).resolve().parent.parent
-    env_path = repo_root / ".env"
-    if not env_path.is_file():
-        return
-    for raw in env_path.read_text(encoding="utf-8").splitlines():
-        line = raw.strip()
-        if not line or line.startswith("#") or "=" not in line:
-            continue
-        k, v = line.split("=", 1)
-        k = k.strip()
-        v = v.strip().strip('"').strip("'")
-        if k and k not in os.environ:
-            os.environ[k] = v
-
-
-_load_dotenv()
-
-
-# ========== 配置 ==========
-API_KEY = os.environ.get("OPENAI_API_KEY")
-if not API_KEY:
-    raise SystemExit(
-        "OPENAI_API_KEY 未设置。请把 key 放进项目根目录的 .env 后重试，"
-        "脚本不接受任何硬编码或命令行明文 key。"
-    )
-BASE_URL = "https://apicz.boyuerichdata.com/v1"
+_provider = api_config.active_llm()
+API_KEY = _provider.key
+BASE_URL = _provider.base_url
 TIMEOUT = 60  # 秒
 # ==========================
 
@@ -57,7 +31,10 @@ def log(msg):
 
 def api_request(method, path, body=None, timeout=TIMEOUT, extra_headers=None):
     """发送 HTTP 请求并返回 (status_code, response_body_dict_or_str)"""
-    url = f"{BASE_URL}{path}" if path.startswith("/") else path
+    if path.startswith("/"):
+        url = f"{BASE_URL.rstrip('/')}{path}"
+    else:
+        url = path
     headers = {
         "Authorization": f"Bearer {API_KEY}",
         "Content-Type": "application/json",
@@ -246,7 +223,7 @@ test_endpoint(
 # ============================================================
 log("测试: 7. Gemini 原生端点 v1beta ...")
 start = time.time()
-gemini_url = "https://apicz.boyuerichdata.com/v1beta/models/gemini-2.5-flash:generateContent"
+gemini_url = BASE_URL.replace("/v1", "") + "/v1beta/models/gemini-2.5-flash:generateContent"
 gemini_body = {
     "contents": [
         {

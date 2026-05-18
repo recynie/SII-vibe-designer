@@ -1,0 +1,40 @@
+# API 凭据中央配置 · 复制为 api.toml 后填入真实 key（api.toml 已 gitignore）
+#
+# 一处管理，多脚本复用。所有 Python 工具（gen_image / test_api /
+# test_llm_capabilities / test_sii_vision）通过 vibe-design/tools/api_config.py
+# 读取本文件，不再注入环境变量。
+#
+# opencode 仍走 .env（opencode.json 里 {env:MINIMAX_API_KEY}），与本文件解耦。
+
+# ----------------------------------------------------------------
+# [active] —— 当前使用哪个 provider
+#   llm   : 聊天/视觉测试脚本走它（test_api / test_llm_capabilities / test_sii_vision）
+#   image : gen_image 走它（路由 minimax image-01 / openai gpt-image-2）
+# 值取自下方 [providers.<name>] 表的 name。
+# ----------------------------------------------------------------
+[active]
+llm   = "sii"
+image = "openai"
+
+# ----------------------------------------------------------------
+# [providers.<name>] —— 凭据 + 端点。name 自定义，[active] 按 name 引用。
+# ----------------------------------------------------------------
+
+# OpenAI 兼容文生图中转站（findcg，gpt-image-2）
+[providers.openai]
+key         = "sk-REPLACE_WITH_FINDCG_KEY"
+base_url    = "https://www.findcg.com"
+images_url  = "https://www.findcg.com/v1/images/generations"
+edits_url   = "https://www.findcg.com/v1/images/edits"
+image_model = "gpt-image-2"
+
+# 夏令营商用 API 中转站（LLM、视觉理解、能力对比）
+[providers.sii]
+key      = "sk-REPLACE_WITH_SII_KEY"
+base_url = "https://apicz.boyuerichdata.com/v1"
+
+# MiniMax 原生 API（image-01 开发后端；opencode 用它跑 agent 但走 .env，不读本文件）
+[providers.minimax]
+key         = "sk-cp-REPLACE_WITH_MINIMAX_TOKEN_PLAN_KEY"
+base_url    = "https://api.minimaxi.com"
+image_model = "image-01"
