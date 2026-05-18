@@ -182,9 +182,7 @@ brief → facts.md → 落 assets/ → brand-spec.md → deliverables.md
 7. **自跑校验**（强烈建议，即使 critic 也会跑）：
 
    ```bash
-   uv run python tools/validate_facts.py outputs/<RUN_ID>/facts.md
-   uv run python tools/validate_brand_spec.py outputs/<RUN_ID>/brand-spec.md
-   uv run python tools/validate_deliverables.py outputs/<RUN_ID>/deliverables.md
+   uv run python tools/validate.py upstream outputs/<RUN_ID>
    ```
 
    有违规就当场修，不要把不合规的文件交给 planner。

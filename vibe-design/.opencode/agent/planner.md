@@ -60,13 +60,11 @@ RUN_DIR：outputs/<RUN_ID>
 researcher 回报后（**这步不可跳，否则下游 designer 会基于不合规文件出活**）：
 
 1. `cat outputs/<RUN_ID>/deliverables.md` 读一遍——这是你的调度清单
-2. **必须自跑三件 schema 校验**，任一非 0 退出 → 退回 researcher 修，**不进入第 2 步 plan.md**：
+2. **必须自跑 schema 校验**，非 0 退出 → 退回 researcher 修，**不进入第 2 步 plan.md**：
    ```bash
-   uv run python tools/validate_facts.py outputs/<RUN_ID>/facts.md
-   uv run python tools/validate_brand_spec.py outputs/<RUN_ID>/brand-spec.md --facts outputs/<RUN_ID>/facts.md
-   uv run python tools/validate_deliverables.py outputs/<RUN_ID>/deliverables.md
+   uv run python tools/validate.py upstream outputs/<RUN_ID>
    ```
-3. 三件全过才继续。退回 researcher 时附上脚本输出的具体行号 + 错误，让 researcher 定向修，不要让它从头重写。
+3. 全过才继续。退回 researcher 时附上脚本输出的具体行号 + 错误，让 researcher 定向修，不要让它从头重写。
 
 ### 2. 写 plan.md（极简映射，不再生成新内容）
 

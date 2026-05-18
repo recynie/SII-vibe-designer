@@ -70,6 +70,10 @@ assert_no "no leftover ?/50 in final.md template"  '\?/50'
 assert_yes "RUN_ID hard constraint exists"   'RUN_ID 强约束|不可手写|禁止.*手写.*语义化'
 assert_yes "<RUN_ID> placeholder warning"    '占位符.*替换|<RUN_ID>.*替换'
 
+# planner 上游校验只调一次聚合脚本，不再分别调 3 个 validate_*
+assert_yes "planner uses validate.py upstream"  'validate\.py upstream'
+assert_no  "planner no longer calls separate upstream validators" '^\s+uv run python tools/validate_(facts|brand_spec|deliverables)\.py'
+
 # 其它 agent frontmatter
 DESIGNER="$ROOT/vibe-design/.opencode/agent/designer.md"
 CRITIC="$ROOT/vibe-design/.opencode/agent/critic.md"
