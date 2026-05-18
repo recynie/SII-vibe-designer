@@ -82,40 +82,57 @@ def matches_any(used: str, allowed: list[str]) -> bool:
     return False
 
 
+def check(html_path: Path, spec_path: Path) -> tuple[bool, list[str], dict]:
+    """Run the font check and return (passed, summary_lines, raw_data).
+
+    summary_lines mirror the human-readable stdout main() prints.
+    raw_data exposes parsed details for callers that want to render their own.
+    """
+    if not html_path.is_file():
+        return False, [f"html not found: {html_path}"], {"error": "html_not_found"}
+    if not spec_path.is_file():
+        return False, [f"spec not found: {spec_path}"], {"error": "spec_not_found"}
+
+    allowed = parse_spec_fonts(spec_path)
+    if not allowed:
+        return False, [f"no fonts parsed from {spec_path} 字体 section"], {
+            "allowed": [], "used": [], "bad": [],
+        }
+
+    html = html_path.read_text(encoding="utf-8")
+    used = sorted(fonts_in_html(html))
+    bad = [u for u in used if not matches_any(u, allowed)]
+
+    lines = [
+        f"spec fonts: {', '.join(allowed)}",
+        f"html uses:  {', '.join(used) or '(none)'}",
+    ]
+    if bad:
+        for u in bad:
+            lines.append(f"  ✗ '{u}' not in spec 字体")
+        lines.append(f"FAIL: {len(bad)} font(s) outside spec")
+        return False, lines, {"allowed": allowed, "used": used, "bad": bad}
+    lines.append("OK: html fonts comply with spec")
+    return True, lines, {"allowed": allowed, "used": used, "bad": []}
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--html", required=True)
     ap.add_argument("--spec", required=True)
     args = ap.parse_args()
 
-    html_path = Path(args.html)
-    spec_path = Path(args.spec)
-    if not html_path.is_file():
-        sys.stderr.write(f"html not found: {html_path}\n")
+    passed, lines, data = check(Path(args.html), Path(args.spec))
+    if data.get("error") == "html_not_found":
+        sys.stderr.write(lines[0] + "\n")
         return 2
-    if not spec_path.is_file():
-        sys.stderr.write(f"spec not found: {spec_path}\n")
+    if data.get("error") == "spec_not_found":
+        sys.stderr.write(lines[0] + "\n")
         return 2
 
-    allowed = parse_spec_fonts(spec_path)
-    if not allowed:
-        print(f"FAIL: no fonts parsed from {spec_path} 字体 section")
-        return 1
-
-    html = html_path.read_text(encoding="utf-8")
-    used = fonts_in_html(html)
-
-    print(f"spec fonts: {', '.join(allowed)}")
-    print(f"html uses:  {', '.join(sorted(used)) or '(none)'}")
-
-    bad = [u for u in sorted(used) if not matches_any(u, allowed)]
-    if bad:
-        for u in bad:
-            print(f"  ✗ '{u}' not in spec 字体")
-        print(f"\nFAIL: {len(bad)} font(s) outside spec")
-        return 1
-    print("OK: html fonts comply with spec")
-    return 0
+    for line in lines:
+        print(line)
+    return 0 if passed else 1
 
 
 if __name__ == "__main__":

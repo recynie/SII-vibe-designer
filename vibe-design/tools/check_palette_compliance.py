@@ -87,37 +87,37 @@ def parse_palette(spec_path: Path) -> list[str]:
     return hexes
 
 
-def main() -> int:
-    ap = argparse.ArgumentParser()
-    ap.add_argument("--image", required=True)
-    ap.add_argument("--spec", required=True, help="brand-spec.md")
-    ap.add_argument("--threshold", type=float, default=5.0)
-    ap.add_argument("--max-strays", type=int, default=2)
-    args = ap.parse_args()
+def check(
+    image_path: Path,
+    spec_path: Path,
+    threshold: float = 5.0,
+    max_strays: int = 2,
+) -> tuple[bool, list[str], dict]:
+    """Run the palette check and return (passed, summary_lines, raw_data).
 
-    spec_path = Path(args.spec)
-    img_path = Path(args.image)
-    if not img_path.is_file():
-        sys.stderr.write(f"image not found: {img_path}\n")
-        return 2
+    summary_lines mirror the human-readable stdout main() prints.
+    raw_data exposes parsed palette / artifact_hexes / strays for callers
+    that want to render their own format.
+    """
+    if not image_path.is_file():
+        return False, [f"image not found: {image_path}"], {"error": "image_not_found"}
     if not spec_path.is_file():
-        sys.stderr.write(f"spec not found: {spec_path}\n")
-        return 2
+        return False, [f"spec not found: {spec_path}"], {"error": "spec_not_found"}
 
     palette = parse_palette(spec_path)
     if not palette:
-        print(f"FAIL: no palette hexes parsed from {spec_path}")
-        return 1
+        return False, [f"no palette hexes parsed from {spec_path}"], {"palette": []}
 
     extractor = Path(__file__).parent / "extract_artifact_palette.py"
     proc = subprocess.run(
-        [sys.executable, str(extractor), str(img_path), "--top", "8", "--k", "5"],
+        [sys.executable, str(extractor), str(image_path), "--top", "8", "--k", "5"],
         capture_output=True,
         text=True,
     )
     if proc.returncode != 0:
-        sys.stderr.write(f"extract_artifact_palette failed: {proc.stderr}\n")
-        return 2
+        return False, [f"extract_artifact_palette failed: {proc.stderr.strip()}"], {
+            "error": "extract_failed",
+        }
     data = json.loads(proc.stdout.strip().splitlines()[-1])
     artifact_hexes: list[str] = data["combined"][:8]
 
@@ -130,9 +130,11 @@ def main() -> int:
         rgb = hex_to_rgb(hx)
         if is_neutral(rgb):
             continue
-        nearest = min(((p, delta_e76(rgb, p_rgb)) for p, p_rgb in zip(palette, palette_rgbs)), key=lambda t: t[1])
-        nearest_hex, dist = nearest
-        if dist > args.threshold:
+        nearest_hex, dist = min(
+            ((p, delta_e76(rgb, p_rgb)) for p, p_rgb in zip(palette, palette_rgbs)),
+            key=lambda t: t[1],
+        )
+        if dist > threshold:
             strays.append((hx, dist, nearest_hex))
 
     if dominant:
@@ -142,26 +144,61 @@ def main() -> int:
                 ((p, delta_e76(dom_rgb, p_rgb)) for p, p_rgb in zip(palette, palette_rgbs)),
                 key=lambda t: t[1],
             )
-            if dist > args.threshold:
+            if dist > threshold:
                 issues.append(
-                    f"dominant color {dominant} is ΔE {dist:.1f} from nearest palette {nearest_hex} (>{args.threshold})"
+                    f"dominant color {dominant} is ΔE {dist:.1f} from nearest palette {nearest_hex} (>{threshold})"
                 )
 
-    if len(strays) > args.max_strays:
+    if len(strays) > max_strays:
         issues.append(
-            f"{len(strays)} stray colors out of palette (max {args.max_strays}): "
+            f"{len(strays)} stray colors out of palette (max {max_strays}): "
             + ", ".join(f"{h}→{n}(ΔE{d:.1f})" for h, d, n in strays)
         )
 
-    print(f"palette ({len(palette)}): {', '.join(palette)}")
-    print(f"artifact top: {', '.join(artifact_hexes)}")
+    lines = [
+        f"palette ({len(palette)}): {', '.join(palette)}",
+        f"artifact top: {', '.join(artifact_hexes)}",
+    ]
     if issues:
         for msg in issues:
-            print(f"  ✗ {msg}")
-        print(f"\nFAIL: {len(issues)} palette violation(s)")
-        return 1
-    print("OK: palette compliant")
-    return 0
+            lines.append(f"  ✗ {msg}")
+        lines.append(f"FAIL: {len(issues)} palette violation(s)")
+        return False, lines, {
+            "palette": palette,
+            "artifact": artifact_hexes,
+            "dominant": dominant,
+            "strays": strays,
+            "issues": issues,
+        }
+    lines.append("OK: palette compliant")
+    return True, lines, {
+        "palette": palette,
+        "artifact": artifact_hexes,
+        "dominant": dominant,
+        "strays": strays,
+        "issues": [],
+    }
+
+
+def main() -> int:
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--image", required=True)
+    ap.add_argument("--spec", required=True, help="brand-spec.md")
+    ap.add_argument("--threshold", type=float, default=5.0)
+    ap.add_argument("--max-strays", type=int, default=2)
+    args = ap.parse_args()
+
+    passed, lines, data = check(
+        Path(args.image), Path(args.spec), args.threshold, args.max_strays
+    )
+    err = data.get("error")
+    if err in ("image_not_found", "spec_not_found", "extract_failed"):
+        sys.stderr.write(lines[0] + "\n")
+        return 2
+
+    for line in lines:
+        print(line)
+    return 0 if passed else 1
 
 
 if __name__ == "__main__":

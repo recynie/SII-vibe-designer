@@ -62,5 +62,10 @@ PLANNER="$ROOT/vibe-design/.opencode/agent/planner.md"
 grep -Pq 'MISSING_REVIEW_FILE|test -f .*review\.md' "$PLANNER"; check "planner.md gates on review.md existence after @critic" $?
 
 echo
+echo "== aggregator: critic uses one CLI call (validate.py review) =="
+grep -Pq 'validate\.py review' "$CRITIC"; check "critic.md uses validate.py review" $?
+[ "$(grep -cP '^uv run python tools/(validate_|check_)' "$CRITIC")" = "0" ]; check "critic.md no longer calls 5 separate validators" $?
+
+echo
 echo "== summary: $pass passed, $fail failed =="
 [ $fail -eq 0 ] || exit 1

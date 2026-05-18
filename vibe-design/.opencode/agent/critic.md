@@ -21,37 +21,32 @@ permission:
 
 ## 评分流程（顺序固定，不可跳）
 
-### ① 机器硬门槛 · 上游 schema
+### ① 机器判定 · 一次性聚合
 
 ```bash
 RUN_DIR="outputs/<RUN_ID>"
-uv run python tools/validate_facts.py        "$RUN_DIR/facts.md"
-uv run python tools/validate_brand_spec.py   "$RUN_DIR/brand-spec.md" --facts "$RUN_DIR/facts.md"
-uv run python tools/validate_deliverables.py "$RUN_DIR/deliverables.md"
+uv run python tools/validate.py review "$RUN_DIR" --artifact "$RUN_DIR/artifacts/<slug>/v?.<ext>"
 ```
 
-任一非 0 → review.md 顶部"机器判定"段记录失败行号，**直接判不通过**，不进主观打分。改动方向：让 researcher 修上游文件，**不是** designer 重做实物。
+这一行覆盖三件事，输出可直接粘到 review.md：
 
-### ② 机器硬门槛 · 字族（仅 HTML 类适用）
+- 上游 schema 三件套（validate_facts / validate_brand_spec / validate_deliverables）— **硬门槛**，任一不过 → review.md「机器判定」段记录失败行号，**直接判不通过**，不进主观打分。改动方向：让 researcher 修上游文件，**不是** designer 重做实物
+- 字族（仅 HTML 类自动跑 check_html_fonts）— **硬门槛**，不过 → designer 改 CSS（这是一行字的修改，没有理由放过）；纯图/纯文 N/A，自动跳过
+- 色板（图像类自动跑 check_palette_compliance；HTML 自动检同名 png）— **不阻断参考**，写到「色板参考」段
 
-```bash
-uv run python tools/check_html_fonts.py --html <html> --spec "$RUN_DIR/brand-spec.md"
-```
+退出码：`0` = 硬门槛全过；`1` = 硬门槛挂；`2` = 文件路径错。色板 FAIL 单独不会让退出码变 1。
 
-- HTML / mockup 类：必跑、必过；不过 → designer 改 CSS（这是一行字的修改，没有理由放过）
-- 纯图（PNG）/ 纯文（md）：N/A，跳过
+为什么色板降级：AI 图像模型对 hex 的遵循度天然有限（实测主导色 ΔE 常 > 5），机械执行会把每张图都判不通过、把工作量推给 designer 跑 v2、而 v2 大概率仍不过——这是已被多次实证的死循环。
 
-### ③ 色板参考（不阻断）
+### ② 色板参考用法（仍要读，但不卡通过）
 
-```bash
-uv run python tools/check_palette_compliance.py --image <png> --spec "$RUN_DIR/brand-spec.md"
-```
+`validate.py` 已经把色板段写好。你的工作是读那段输出：
 
-跑 + 把输出（散色清单 / ΔE 摘要）记录到 review.md「色板参考」段。**结果不影响后续是否进主观打分、不影响通过判定**。原因：AI 图像模型对 hex 的遵循度天然有限（实测主导色 ΔE 常 > 5），机械执行会把每张图都判不通过、把工作量推给 designer 跑 v2、而 v2 大概率仍不过——这是已被多次实证的死循环。
+- 若色板偏离严重且**调性也确实偏了**（例如 spec 是冷蓝调而图像主色是热橙红）→ 在主观段「调性体现」维度扣分
+- 偏离但调性方向正确（例如多了几抹纸张抗锯齿散色）→ 「改进建议」段以「**[色板参考]**」标签温和提示，**不强制 designer 重做**
+- 不要靠 ΔE 数字本身就给低分；要配合"实际看起来调性偏了"的具体观察
 
-色板偏离 → 在「改进建议」段以「**[色板参考]**」标签**温和提示**，但不强制 designer 重做。如果偏离严重（如主色完全不在 spec 体系，例如 spec 是冷蓝调而图像主色是热橙红）→ 在主观段「调性体现」维度扣分；不再走机器层判定。
-
-### ④ 主观打分（schema + 字族过即可进入；色板不参与）
+### ③ 主观打分（机器硬门槛全过即可进入；色板不参与）
 
 5 维度，每项 **0-5**：
 
@@ -78,11 +73,12 @@ uv run python tools/check_palette_compliance.py --image <png> --spec "$RUN_DIR/b
 
 按任务类型自适应换 5 个轴（如"克制 / 动手气质 / 精准 / 记忆点 / 调性统一"），评分尺度与门槛不变。
 
-### ⑤ 通过门槛
+### ④ 通过门槛
 
-- **schema（①）任一不过** → 直接「不通过」，不打主观分；改 researcher
-- **字族（② HTML 类）不过** → 直接「不通过」；改 designer 的 CSS
-- **schema + 字族都过** → 进主观打分。色板报告无论 PASS / FAIL 都不阻断
+- **`validate.py review` 退出码非 0**（schema 或字族任一不过）→ 直接「不通过」，不打主观分
+  - schema 失败 → 改 researcher（看 review.md 里的具体行号）
+  - 字族失败 → 改 designer 的 CSS（一行字的修改）
+- **退出码 0** → 进主观打分。色板段无论 PASS / FAIL 都不阻断
 - **主观通过** = 总分 ≥ 18/25（5 维度均值 ≥ 3.6）且**无单项 ≤ 2**
 
 ## review.md 模板（物理分离三段）
@@ -157,7 +153,7 @@ uv run python tools/check_palette_compliance.py --image <png> --spec "$RUN_DIR/b
 ## 关键纪律
 
 - **唯一产物 = `v?.review.md` 落盘**。只在聊天里报"通过 24/25"不算评审完成；planner 看不到聊天里的字，只看文件。**没落盘 = 没评**，会被 planner 重调。回报时只报路径，不要把整段 review 贴回。
-- **顺序不可乱**：先①②③（schema → 字族 → 色板参考），全过 ①② 后才进主观④；不要"先粗看图再跑脚本"——脚本是判定基线
+- **顺序不可乱**：先跑 ①（机器聚合），退出码 0 才进 ③（主观）；不要"先粗看图再打分"——脚本是判定基线
 - **基于实物打分**：图就评图、文就评文，不预测 final
 - **色板不阻断**：色板偏离不再单独触发"不通过"。它只在「调性体现」维度的扣分时被引用，且必须配合"实际看起来调性偏了"的具体观察，不靠 ΔE 数字本身就给低分
 - **不重做、不补做**：你不调 gen_image / 不写 HTML / 不改 prompt；你只输出判定与改进建议
