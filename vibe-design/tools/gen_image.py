@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 """gen_image: route image generation between MiniMax (dev) and gpt-image-2 (prod).
 
-Backend selected by env DESIGN_IMAGE_BACKEND ∈ {minimax, openai}, default openai.
-Designer agent calls this CLI; it never picks the backend itself.
+Backend resolution (first match wins):
+  --backend CLI flag  >  api.toml [active].image
+Credentials and endpoints come from api.toml [providers.<backend>] via
+vibe-design/tools/api_config.py. Designer agent never picks a backend itself.
 
 Usage:
     uv run python tools/gen_image.py \\
@@ -18,36 +20,13 @@ from __future__ import annotations
 import argparse
 import base64
 import json
-import os
 import sys
 import urllib.request
 import urllib.error
 from pathlib import Path
 
-ENV_FILE_CANDIDATES = [
-    Path(__file__).resolve().parent.parent.parent / ".env",
-    Path(__file__).resolve().parent.parent / ".env",
-]
-
-
-def load_env() -> None:
-    """Lightweight .env loader (no python-dotenv dependency).
-
-    First env file found wins; values already in os.environ are not overwritten.
-    """
-    for p in ENV_FILE_CANDIDATES:
-        if not p.is_file():
-            continue
-        for raw in p.read_text(encoding="utf-8").splitlines():
-            line = raw.strip()
-            if not line or line.startswith("#") or "=" not in line:
-                continue
-            key, _, val = line.partition("=")
-            key = key.strip()
-            val = val.strip().strip('"').strip("'")
-            if key and key not in os.environ:
-                os.environ[key] = val
-        return
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import api_config
 
 
 DEFAULT_UA = "vibe-design/0.1 (+https://github.com/local)"
@@ -84,20 +63,17 @@ def http_get_bytes(url: str, timeout: int = 180) -> bytes:
 
 
 def gen_minimax(prompt: str, aspect_ratio: str) -> bytes:
-    api_key = os.environ.get("MINIMAX_API_KEY")
-    if not api_key:
-        raise SystemExit("MINIMAX_API_KEY not set")
-    base = os.environ.get("MINIMAX_BASE_URL", "https://api.minimaxi.com").rstrip("/")
+    p = api_config.get_provider("minimax")
     payload = {
-        "model": "image-01",
+        "model": p.image_model or "image-01",
         "prompt": prompt,
         "n": 1,
         "aspect_ratio": aspect_ratio,
         "response_format": "url",
     }
     resp = http_post_json(
-        f"{base}/v1/image_generation",
-        {"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"},
+        f"{p.base_url}/v1/image_generation",
+        {"Authorization": f"Bearer {p.key}", "Content-Type": "application/json"},
         payload,
     )
     base_resp = resp.get("base_resp") or {}
@@ -118,21 +94,44 @@ SIZE_FROM_AR = {
 }
 
 
+# Magic bytes for image formats actually returned by upstream APIs.
+# Order matters only for documentation; checks are mutually exclusive.
+_MAGIC = (
+    (b"\x89PNG\r\n\x1a\n", "png"),
+    (b"\xff\xd8\xff", "jpg"),               # JPEG (JFIF, EXIF, raw)
+    (b"GIF87a", "gif"),
+    (b"GIF89a", "gif"),
+    (b"RIFF", "webp_partial"),              # WEBP needs WEBP at offset 8
+)
+
+
+def detect_format(data: bytes) -> str:
+    """Return canonical extension ('png' / 'jpg' / 'webp' / 'gif') from magic bytes.
+
+    Raises SystemExit if bytes don't look like a supported image — better to
+    fail loudly than save a corrupt file with a misleading extension.
+    """
+    for prefix, ext in _MAGIC:
+        if not data.startswith(prefix):
+            continue
+        if ext == "webp_partial":
+            if len(data) >= 12 and data[8:12] == b"WEBP":
+                return "webp"
+            continue
+        return ext
+    head = data[:16].hex() if data else "(empty)"
+    raise SystemExit(f"unrecognized image format; first bytes = {head}")
+
+
 def gen_openai(prompt: str, aspect_ratio: str, size: str | None) -> bytes:
-    api_key = os.environ.get("OPENAI_API_KEY")
-    if not api_key:
-        raise SystemExit("OPENAI_API_KEY not set")
-    url = os.environ.get(
-        "OPENAI_IMAGES_URL",
-        os.environ.get("OPENAI_BASE_URL", "https://api.openai.com").rstrip("/")
-        + "/v1/images/generations",
-    )
-    model = os.environ.get("OPENAI_IMAGE_MODEL", "gpt-image-2")
+    p = api_config.get_provider("openai")
+    url = p.images_url or f"{p.base_url}/v1/images/generations"
+    model = p.image_model or "gpt-image-2"
     chosen_size = size or SIZE_FROM_AR.get(aspect_ratio, "1024x1024")
     payload = {"model": model, "prompt": prompt, "n": 1, "size": chosen_size}
     resp = http_post_json(
         url,
-        {"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"},
+        {"Authorization": f"Bearer {p.key}", "Content-Type": "application/json"},
         payload,
     )
     items = resp.get("data") or []
@@ -147,7 +146,6 @@ def gen_openai(prompt: str, aspect_ratio: str, size: str | None) -> bytes:
 
 
 def main() -> int:
-    load_env()
     ap = argparse.ArgumentParser(description="Generate an image for the design agent.")
     ap.add_argument("--prompt", required=True)
     ap.add_argument("--output", required=True, help="Output file path (.png)")
@@ -161,11 +159,11 @@ def main() -> int:
         "--backend",
         default=None,
         choices=["minimax", "openai"],
-        help="Override DESIGN_IMAGE_BACKEND for a single call",
+        help="Override api.toml [active].image for a single call",
     )
     args = ap.parse_args()
 
-    backend = args.backend or os.environ.get("DESIGN_IMAGE_BACKEND", "openai").lower()
+    backend = args.backend or api_config.active_image_backend()
     if backend not in {"minimax", "openai"}:
         raise SystemExit(f"Unknown backend: {backend}")
 
@@ -174,13 +172,30 @@ def main() -> int:
     else:
         image_bytes = gen_openai(args.prompt, args.aspect_ratio, args.size)
 
+    real_ext = detect_format(image_bytes)
     out_path = Path(args.output).expanduser().resolve()
+    requested_ext = out_path.suffix.lstrip(".").lower()
+
+    # If the upstream returned a different format than the user requested, prefer
+    # the real format (silently re-suffix) so downstream tools that key off the
+    # extension don't get fooled. Warn so the caller notices.
+    if requested_ext != real_ext and not (
+        requested_ext in ("jpg", "jpeg") and real_ext == "jpg"
+    ):
+        new_path = out_path.with_suffix(f".{real_ext}")
+        print(
+            f"  [gen_image] backend returned {real_ext.upper()}, requested .{requested_ext}; "
+            f"writing to {new_path.name} instead",
+            file=sys.stderr,
+        )
+        out_path = new_path
+
     out_path.parent.mkdir(parents=True, exist_ok=True)
     out_path.write_bytes(image_bytes)
 
     prompt_path = out_path.with_suffix(out_path.suffix + ".prompt.txt")
     prompt_path.write_text(
-        f"# backend: {backend}\n# aspect: {args.aspect_ratio}\n\n{args.prompt}\n",
+        f"# backend: {backend}\n# format: {real_ext}\n# aspect: {args.aspect_ratio}\n\n{args.prompt}\n",
         encoding="utf-8",
     )
 
