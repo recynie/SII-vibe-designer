@@ -1,7 +1,5 @@
 # Brand Spec · 创智学院（mock-compliant）
 
-# 严格度: strict
-
 ## 色板
 - Primary: #1A73E8 [from-fact: 主色 #1A73E8]
 - Secondary: #00A86B [inferred: 成长绿表达进阶]

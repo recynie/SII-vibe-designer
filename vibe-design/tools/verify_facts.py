@@ -31,7 +31,7 @@ def actual() -> dict[str, int]:
     """Count what's actually in the repo right now."""
     return {
         "agents": len(list((ROOT / "vibe-design/.opencode/agent").glob("*.md"))),
-        "skills": len(list((ROOT / "vibe-design/.opencode/skills").glob("*.md"))),
+        "skills": len(list((ROOT / "vibe-design/.opencode/skills").glob("*/SKILL.md"))),
         "commands": len(list((ROOT / "vibe-design/.opencode/command").glob("*.md"))),
         "tools": len(list((ROOT / "vibe-design/tools").glob("*.py"))),
         "demo_runs": len([d for d in (ROOT / "docs/demo-runs").iterdir() if d.is_dir()]),

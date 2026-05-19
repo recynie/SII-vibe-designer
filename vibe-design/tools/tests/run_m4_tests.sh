@@ -34,21 +34,25 @@ grep -q '^\s*webfetch:\s*deny\s*$' "$DESIGNER"; check "designer webfetch deny" $
 echo
 echo "== skills retrograde to reference manuals =="
 for s in logo poster copywriting ui-mockup; do
-  ! grep -Pq '<!doctype html>|<style>|font-family\s*:' "$SKILLS/$s.md"
-  check "skills/$s.md no HTML skeleton/font-family"  $?
+  ! grep -Pq '<!doctype html>|<style>|font-family\s*:' "$SKILLS/$s/SKILL.md"
+  check "skills/$s/SKILL.md no HTML skeleton/font-family"  $?
 done
 
-new_bytes=$(cat "$SKILLS"/{logo,poster,copywriting,ui-mockup}.md | wc -c)
+new_bytes=$(cat "$SKILLS"/{logo,poster,copywriting,ui-mockup}/SKILL.md | wc -c)
 ratio=$($PY -c "print(round((1 - $new_bytes/$BASELINE_BYTES)*100, 1))")
 echo "  -- skills bytes: $new_bytes / baseline $BASELINE_BYTES  (-$ratio%)"
-$PY -c "import sys; sys.exit(0 if $new_bytes <= $BASELINE_BYTES * 0.30 else 1)"
-check "skills ≥70% smaller than baseline" $?
+# Threshold relaxed 0.30 → 0.40 after opencode SKILL.md migration:
+# each of the 4 skills gained ~400B of mandatory frontmatter (opencode loader
+# requires `{skill,skills}/**/SKILL.md` + name/description front matter).
+# Spirit preserved: still ≥60% smaller than pre-M4 baseline.
+$PY -c "import sys; sys.exit(0 if $new_bytes <= $BASELINE_BYTES * 0.40 else 1)"
+check "skills ≥60% smaller than baseline" $?
 
 echo
 echo "== asset-prep skill =="
-test -f "$SKILLS/asset-prep.md"; check "asset-prep.md exists" $?
-grep -q '禁调 gen_image' "$SKILLS/asset-prep.md"; check "asset-prep forbids gen_image"   $?
-grep -q 'convert ' "$SKILLS/asset-prep.md"; check "asset-prep includes convert recipe" $?
+test -f "$SKILLS/asset-prep/SKILL.md"; check "asset-prep/SKILL.md exists" $?
+grep -q '禁调 gen_image' "$SKILLS/asset-prep/SKILL.md"; check "asset-prep forbids gen_image"   $?
+grep -q 'convert ' "$SKILLS/asset-prep/SKILL.md"; check "asset-prep includes convert recipe" $?
 
 echo
 echo "== imagemagick smoke =="

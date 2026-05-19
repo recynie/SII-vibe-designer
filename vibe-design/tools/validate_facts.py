@@ -38,7 +38,7 @@ def validate(path: Path) -> list[str]:
 
     if not any(DATE_RE.match(ln) for ln in lines[:5]):
         issues.append(
-            f"{path}:1-5  missing '> 采集日期：YYYY-MM-DD' (must use full-width colon ：)"
+            f"{path}:1-5  missing '> 采集日期：YYYY-MM-DD' (半角 : 或全角 ：均可)"
         )
 
     for i, raw in enumerate(lines, start=1):

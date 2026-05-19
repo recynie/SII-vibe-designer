@@ -7,8 +7,6 @@
 ```markdown
 # Brand Spec · <主题名>
 
-# 严格度: light | strict
-
 ## 色板
 - Primary: #XXXXXX [from-fact: <事实片段>]
 - Secondary: #XXXXXX [inferred: <理由>]
@@ -42,35 +40,20 @@
 
 调性 / 视觉气质 / 反 slop 三段不需要逐项标签（它们本身就是设计判断）。
 
-## 严格度声明
-
-文件顶部必须出现 `# 严格度: light` 或 `# 严格度: strict` 行：
-
-- `strict`：deliverables.md 中行数 ≥ 4 时使用——所有色板字段必须给出，所有 from-fact 引用必须可在 facts.md 找到
-- `light`：deliverables.md 中行数 < 4 时使用——允许部分字段为空（用 `-` 占位），降低 over-spec 噪音
-
 ## 校验规则（`tools/validate_brand_spec.py`）
 
 1. 第一行必须以 `# Brand Spec` 开头
-2. 必须出现一行符合 `^# 严格度:\s*(light|strict)\s*$` 的声明
-3. 必须包含 `## 色板` `## 字体` `## 调性` 四个一级章节（顺序可调，但都要有）
-4. `## 色板` 下每行 `- <角色>: #HEX` 必须命中 `[from-fact: ...]` 或 `[inferred: ...]` 标签之一
-5. `## 字体` 下每行 `- <角色>: <名>` 同上
-6. 所有 `[from-fact: <片段>]` 引用必须能在同 RUN_DIR 的 `facts.md` 中找到子串匹配（区分大小写不严格，去除首尾空白）
-7. 所有 hex 必须形如 `#` 后跟 3 或 6 位 16 进制（不接受 `rgba()` / `oklch()` 等）
-8. 如果某 `## 色板` 行声明 `[from-fact: <片段>]` 且该 fact 中含完整 6 位 hex（如 `#1A73E8`），spec 行的 hex 必须与 fact 中的 hex 完全一致
+2. 必须包含 `## 色板` `## 字体` `## 调性` 三个一级章节（顺序可调，但都要有）
+3. `## 色板` 下每行 `- <角色>: #HEX` 必须命中 `[from-fact: ...]` 或 `[inferred: ...]` 标签之一
+4. `## 字体` 下每行 `- <角色>: <名>` 同上
+5. 所有 `[from-fact: <片段>]` 引用必须能在同 RUN_DIR 的 `facts.md` 中找到子串匹配（区分大小写不严格，去除首尾空白）
+6. 所有 hex 必须形如 `#` 后跟 3 或 6 位 16 进制（不接受 `rgba()` / `oklch()` 等）
+7. 如果某 `## 色板` 行声明 `[from-fact: <片段>]` 且该 fact 中含完整 6 位 hex（如 `#1A73E8`），spec 行的 hex 必须与 fact 中的 hex 完全一致
 
-## 严格度联动
-
-- `strict` 模式：色板 5 条必须齐全（Primary / Secondary / Background / Ink / Accent）
-- `light` 模式：色板至少给 Primary 与 Background；其它可写 `- Secondary: -`（值为单破折号，跳过标签校验）
-
-## 示例（合规 · strict）
+## 示例（合规）
 
 ```markdown
 # Brand Spec · 创智学院
-
-# 严格度: strict
 
 ## 色板
 - Primary: #1A73E8 [from-fact: 主色 #1A73E8]
@@ -98,12 +81,10 @@
 
 ```markdown
 # Brand Spec · X
-（缺严格度声明）
-
 ## 色板
 - Primary: #FFF [inferred: 太亮]   ← 仅 3 位 hex 不合 hex 严格写法（不强制）
 - Secondary: #00A86B               ← 缺标签
 - Ink: #ABC123 [from-fact: 黑色]   ← 引用片段在 facts.md 找不到
 ```
 
-校验脚本必须分别报告：缺严格度、缺标签、from-fact 失配。
+校验脚本必须分别报告：缺标签、from-fact 失配。

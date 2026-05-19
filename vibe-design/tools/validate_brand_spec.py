@@ -2,16 +2,15 @@
 
 Checks:
 1. First line starts with `# Brand Spec`.
-2. A line `# 严格度: light` or `# 严格度: strict` exists.
-3. Sections `## 色板` `## 字体` `## 调性` all present.
-4. Each `- <role>: <value>` bullet under 色板/字体 carries
+2. Sections `## 色板` `## 字体` `## 调性` all present.
+3. Each `- <role>: <value>` bullet under 色板/字体 carries
    `[from-fact: ...]` or `[inferred: ...]` (skipped if value is single `-`).
-5. `[from-fact: <fragment>]` references resolve in the sibling `facts.md`
+4. `[from-fact: <fragment>]` references resolve in the sibling `facts.md`
    (passed via --facts; if omitted, only the tag presence is checked).
-6. hex values in 色板 are `#XXX` or `#XXXXXX`.
-7. If a 色板 row carries `[from-fact: <fragment>]` and that fragment in facts.md
+5. hex values in 色板 are `#XXX` or `#XXXXXX`.
+6. If a 色板 row carries `[from-fact: <fragment>]` and that fragment in facts.md
    contains a 6-digit hex, the spec hex must equal it (case-insensitive).
-8. strict mode requires Primary/Secondary/Background/Ink/Accent all non-`-`.
+7. All 5 palette roles (Primary/Secondary/Background/Ink/Accent) must be present with real values.
 
 Usage:
     uv run python vibe-design/tools/validate_brand_spec.py <brand-spec.md> [--facts <facts.md>]
@@ -24,12 +23,11 @@ import re
 import sys
 from pathlib import Path
 
-PALETTE_ROLES_STRICT = ["Primary", "Secondary", "Background", "Ink", "Accent"]
+PALETTE_ROLES = ["Primary", "Secondary", "Background", "Ink", "Accent"]
 HEX_RE = re.compile(r"#([0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})\b")
 TAG_FROM_FACT = re.compile(r"\[from-fact:\s*([^\]]+?)\s*\]")
 TAG_INFERRED = re.compile(r"\[inferred:\s*([^\]]+?)\s*\]")
 SECTION_RE = re.compile(r"^##\s+(\S.*)$")
-STRICT_HEADER_RE = re.compile(r"^#\s*严格度:\s*(light|strict)\s*$")
 ROW_RE = re.compile(r"^- ([^:]+):\s*(.*)$")
 
 
@@ -93,17 +91,6 @@ def validate(spec_path: Path, facts_path: Path | None) -> list[str]:
     if not lines or not lines[0].startswith("# Brand Spec"):
         issues.append(f"{spec_path}:1  first line must start with '# Brand Spec'")
 
-    strict_mode: str | None = None
-    for i, raw in enumerate(lines, start=1):
-        m = STRICT_HEADER_RE.match(raw)
-        if m:
-            strict_mode = m.group(1)
-            break
-    if strict_mode is None:
-        issues.append(
-            f"{spec_path}:1  missing '# 严格度: light' or '# 严格度: strict' header"
-        )
-
     sections = parse_sections(lines)
     for required in ("色板", "字体", "调性"):
         if required not in sections:
@@ -134,18 +121,11 @@ def validate(spec_path: Path, facts_path: Path | None) -> list[str]:
                     if msg:
                         issues.append(f"{spec_path}:{line_no}  {msg}")
 
-    if strict_mode == "strict":
-        for role in PALETTE_ROLES_STRICT:
-            if role not in palette_seen or palette_seen.get(role, "").strip() == "-":
-                issues.append(
-                    f"{spec_path}:1  strict mode requires palette role '{role}' with a real value"
-                )
-    elif strict_mode == "light":
-        for role in ("Primary", "Background"):
-            if role not in palette_seen or palette_seen.get(role, "").strip() == "-":
-                issues.append(
-                    f"{spec_path}:1  light mode still requires palette role '{role}'"
-                )
+    for role in PALETTE_ROLES:
+        if role not in palette_seen or palette_seen.get(role, "").strip() == "-":
+            issues.append(
+                f"{spec_path}:1  palette role '{role}' missing or empty — all 5 roles must be filled"
+            )
 
     return issues
 

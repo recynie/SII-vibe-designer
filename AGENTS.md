@@ -2,6 +2,19 @@
 
 This file serves as a workspace map and high-level overview for any agent operating in this repository. Use it to locate files, understand project structure, and orient yourself before diving into details.
 
+## Git
+
+### Tags
+Add tag for *major versions* of this system.
+Major version means that the system can:
+- pass end-to-end pipeline. Minor problems are allowed, but the system must be available.
+
+## E2E run
+
+如果用户要求运行e2e或端到端测试，使用下面的任务：
+
+> 请为创智学院做一套品牌形象设计。
+
 ## Overview
 
 当前代码库是一个多智能体协同设计系统（Vibe Design），基于 opencode harness 构建。用户输入一句话 brief，系统通过 planner / researcher / designer / critic 四个 agent 协同输出 logo、主视觉海报、品牌文案、UI mockup 等品牌设计产物。这是一个课程实训作业项目。
@@ -33,7 +46,7 @@ This file serves as a workspace map and high-level overview for any agent operat
 | `vibe-design/tools/api_config.py` | Python 脚本共用的 API 凭据加载器（只读 `api.toml`） |
 | `vibe-design/tools/gen_image.py` | 双后端文生图工具，后端由 `api.toml [active].image` 决定 |
 | `vibe-design/tools/html_screenshot.py` | HTML → PNG 截图工具（Playwright + Chromium） |
-| `vibe-design/examples/` | 示例 brief（创智学院 / 朱家角古镇 / 咖啡品牌） |
+| `vibe-design/examples/` | 示例 brief（创智学院 / 朱家角古镇） |
 | `vibe-design/outputs/` | 运行产物输出目录（gitignore） |
 | `vibe-design/docs/schema/` | 数据 schema 定义 |
 
@@ -51,10 +64,21 @@ This file serves as a workspace map and high-level overview for any agent operat
 
 | 路径 | 说明 |
 |---|---|
+| `references/README.md` | 设计资源索引（Skills/Design Systems/Prompt 模板）|
+| `references/open-design/` | nexu-io/open-design — 109 Skills / 151 Design Systems / 111 Templates |
+| `references/open-codesign/` | OpenCoworkAI/open-codesign — 多模型设计工具 |
+| `references/Deep-Research-skills/` | Weizhena/Deep-Research-skills — Claude Code/OpenCode/Codex 深度调研 workflow、web-search agent 与结构化 research skills 参考 |
+| `references/awesome-claude-design/` | 按美学风格分类的 DESIGN.md 品牌系统 |
+| `references/awesome-design-md/` | VoltAgent 品牌设计系统（71个） |
+| `references/awesome-design-skills/` | Design Skills 精选（68个） |
+| `references/awesome-claude-skills/` | Claude Skills 精选列表（11K+ Stars） |
+| `references/anthropics-skills/` | Anthropic 官方 Skills（含 canvas-design/brand-guidelines） |
+| `references/skywork-skills/` | Skywork AI 设计场景（logo/poster/branding/infographic） |
+| `references/logo-designer-skill/` | SVG Logo 设计插件（迭代式设计） |
+| `references/logo-generator-skill/` | Logo 生成器（中英双语） |
+| `references/claude-skills/` | 通用 Claude Skills（含 svg-logo-designer） |
 | `references/opencode/` | opencode 框架参考文档 |
 | `references/huashu-design/` | 华数设计相关参考 |
-| `references/open-codesign/` | open-codesign 项目参考 |
-| `references/open-design/` | open-design 项目参考 |
 | `references/flow-guarantees/` | 流程保障相关参考 |
 | `references/ppt-master/` | PPT 制作参考 |
 
@@ -64,6 +88,7 @@ This file serves as a workspace map and high-level overview for any agent operat
 |---|---|
 | `scripts/run_e2e.py` | 端到端测试 runner；调 `opencode run --command design`，加载 `vibe-design/.env`，流式输出并扫描 `outputs/` 打印进度心跳 |
 | `scripts/test_api.py` | 夏令营 API 中转站可用性测试（`api.toml [active].llm`） |
+| `scripts/test_opencode_skill_permissions.py` | opencode 各 agent 的 skill 权限矩阵配置测试（不调用 LLM API） |
 | `scripts/test_llm_capabilities.py` | LLM 速度/推理/视觉能力测试（`api.toml [active].llm`） |
 | `scripts/test_sii_vision.py` | 多模型视觉理解对比（`api.toml [active].llm`） |
 | `scripts/test_sii_imagegen.py` / `test_sii_image_gen.py` | 生图延迟测试（`api.toml [providers.sii]` / `[providers.openai]`） |

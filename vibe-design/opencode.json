@@ -60,6 +60,7 @@
     "edit": "allow",
     "bash": "allow",
     "webfetch": "allow",
+    "skill": "allow",
     "external_directory": "deny"
   }
 }

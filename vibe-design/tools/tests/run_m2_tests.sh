@@ -50,14 +50,6 @@ done
 [ "$reuse_count" -ge 1 ] && echo "  PASS  ≥1 deliverables has mode: reuse  (got $reuse_count)" && pass=$((pass+1)) || { echo "  FAIL  no deliverables uses mode: reuse"; fail=$((fail+1)); }
 [ "$reject_count" -ge 1 ] && echo "  PASS  ≥1 deliverables has non-empty 拒绝 (got $reject_count)" && pass=$((pass+1)) || { echo "  FAIL  no deliverables has 拒绝 row"; fail=$((fail+1)); }
 
-light_count=0
-for run in "${RUNS[@]}"; do
-  if grep -q '^# 严格度: light' "$ROOT/vibe-design/outputs/$run/brand-spec.md"; then
-    light_count=$((light_count+1))
-  fi
-done
-[ "$light_count" -ge 1 ] && echo "  PASS  ≥1 spec uses light strictness     (got $light_count)" && pass=$((pass+1)) || { echo "  FAIL  no light-mode spec sample"; fail=$((fail+1)); }
-
 echo
 echo "== summary: $pass passed, $fail failed =="
 [ $fail -eq 0 ] || exit 1

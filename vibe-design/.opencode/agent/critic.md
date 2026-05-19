@@ -34,11 +34,14 @@ uv run python tools/validate.py review "$RUN_DIR" --artifact "$RUN_DIR/artifacts
 
 这一行覆盖三件事，输出可直接粘到 review.md：
 
-- 上游 schema 三件套（validate_facts / validate_brand_spec / validate_deliverables）— **硬门槛**，任一不过 → review.md「机器判定」段记录失败行号，**直接判不通过**，不进主观打分。改动方向：让 researcher 修上游文件，**不是** designer 重做实物
-- 字族（仅 HTML 类自动跑 check_html_fonts）— **硬门槛**，不过 → designer 改 CSS（这是一行字的修改，没有理由放过）；纯图/纯文 N/A，自动跳过
+- 上游 schema 三件套（validate_facts / validate_brand_spec / validate_deliverables）— **硬门槛**，任一不过 → review.md「机器判定」段记录失败行号，**直接判不通过**，不进主观打分。改动方向：考虑让 researcher 修复上游文件，**不是** designer 重做实物
+- 字族（仅 HTML 类自动跑 check_html_fonts）— **硬门槛**，不过 → 考虑让 designer 修复 CSS（这是一行字的修改，没有理由放过）；纯图/纯文 N/A，自动跳过
 - 色板（图像类自动跑 check_palette_compliance；HTML 自动检同名 png）— **不阻断参考**，写到「色板参考」段
 
-退出码：`0` = 硬门槛全过；`1` = 硬门槛挂；`2` = 文件路径错。色板 FAIL 单独不会让退出码变 1。
+退出码：`0` = 硬门槛全过；`1` = 硬门槛挂；`2` = 文件路径错（实物不存在或拼写错误）。色板 FAIL 单独不会让退出码变 1。
+退出码 `2` → review.md「机器判定」段记录 stderr 内容，直接判定「不通过」并回报 planner 检查路径，不进入后续步骤。
+
+> **v2 评审注意**：上游文件（facts / brand-spec / deliverables）在 v1→v2 之间通常未变，机器判定段可复用 v1.review.md 结果并注明"同 v1.review.md"，跳过重复执行 `validate.py`。
 
 ### ② 读取实物（机器硬门槛全过后必做）
 
@@ -64,8 +67,8 @@ uv run python tools/validate.py review "$RUN_DIR" --artifact "$RUN_DIR/artifacts
 
 **打分前先用 `skill` 工具加载对照手册**（与 designer 共享同一套数值基线，避免凭感觉打分）：
 
-- 视觉类（logo / poster / ui-mockup）：加载 `craft`。其中「五、反 AI slop」的 **P0 硬拒绝** 一旦出现直接主观调分≤2；「层级五向量」「留白 ≥ 40%」「字距规则」「对比度底线」作为「单件构图」「信息层级」两维的具体判据
-- 文案类：加载 `copywriting`。其「反 slop 红线」词表（赋能 / 打造 / 生态 / 全链路…）出现不超过 1 次记住累计，≥2 次「调性统一」下到 2
+- 视觉类（logo / poster / ui-mockup）：加载 `craft`。其中「五、反 AI slop」的 **P0 硬拒绝** 若在图中出现，应在对应维度（通常为调性体现 / 视觉气质）酌情降分；「层级五向量」「留白 ≥ 40%」「字距规则」「对比度底线」作为「单件构图」「信息层级」两维的具体判据
+- 文案类：加载 `copywriting`。其「反 slop 红线」词表（赋能 / 打造 / 生态 / 全链路…）若频繁出现，应在「精准度」或「调性统一」维度酌情降分
 
 加载后再对照下面的维度表打分。**视觉类所有备注必须引用你在 ② 中实际看到的具体观察**（如"mark 笔画粗细不均""留白不足 20%""主体偏左视觉重量失衡"），不准写"构图尚可""整体不错"等没看图也能写的话。
 
@@ -92,14 +95,24 @@ uv run python tools/validate.py review "$RUN_DIR" --artifact "$RUN_DIR/artifacts
 
 #### 文案类（copywriting）
 
-按任务类型自适应换 5 个轴（如"克制 / 动手气质 / 精准 / 记忆点 / 调性统一"），评分尺度与门槛不变。
+固定 5 轴，评分尺度与门槛不变：
+
+| 维度 | 看什么 |
+|---|---|
+| 调性统一 | 文案语气是否与 brand-spec「调性」一致（如"克制"则文案不应夸张煽动） |
+| 精准度 | 用词是否具体、可被反驳（避免"赋能""打造"等空词）；信息点是否准确 |
+| 记忆点 | 是否有可被记住的一句话或一个意象；slogan 是否在 14 字内形成印象 |
+| 结构完整 | 是否覆盖 deliverables 要求的全部文案要素（slogan / 简介 / 定位 等） |
+| 任务完成度 | 规格是否齐（条数、字数、变体数、语言要求） |
+
+> 主观打分表使用时，将视觉类维度行替换为上述 5 轴。
 
 ### ⑤ 通过门槛
 
 - **`validate.py review` 退出码非 0**（schema 或字族任一不过）→ 直接「不通过」，不打主观分
-  - schema 失败 → 改 researcher（看 review.md 里的具体行号）
-  - 字族失败 → 改 designer 的 CSS（一行字的修改）
-- **退出码 0** → 进主观打分。色板段无论 PASS / FAIL 都不阻断
+  - schema 失败 → 考虑让 researcher 修复（看 review.md 里的具体行号）
+  - 字族失败 → 考虑让 designer 修复 CSS（一行字的修改）
+- **退出码 0** → 继续 ② 读取实物 → ③ 色板参考 → ④ 主观打分。色板段无论 PASS / FAIL 都不阻断
 - **主观通过** = 总分 ≥ 18/25（5 维度均值 ≥ 3.6）且**无单项 ≤ 2**
 
 ## review.md 模板（物理分离三段）
@@ -141,6 +154,8 @@ uv run python tools/validate.py review "$RUN_DIR" --artifact "$RUN_DIR/artifacts
 | 任务完成度 | x/5 | <一句话> |
 | **总分** | **xx/25** | |
 
+> 文案类任务将上表维度替换为：调性统一 / 精准度 / 记忆点 / 结构完整 / 任务完成度。
+
 ---
 
 ## 判定
@@ -157,10 +172,11 @@ uv run python tools/validate.py review "$RUN_DIR" --artifact "$RUN_DIR/artifacts
 按重要性排序，每条标根因层：
 
 ### 机器层
-1. **[schema 失配]** <validate_* 的具体行号 → researcher 修>
-2. **[字族外来]** <HTML 用了 X，spec 列的是 Y → designer 改 CSS>
+1. **[schema 失配]** <validate_* 的具体行号 → 考虑让 researcher 修复>
+2. **[字族外来]** <HTML 用了 X，spec 列的是 Y → 考虑让 designer 修复 CSS>
 
 ### 色板参考（温和提示，可选采纳）
+（若色板偏离已在主观段「调性体现」维度扣分，本段精简写"已在主观段体现"，不重复展开）
 1. **[色板参考]** <实际 hex → spec 哪个色 ΔE 多少；如调性受影响才是真问题，否则保留即可>
 
 ### 主观层
