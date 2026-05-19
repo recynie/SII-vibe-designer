@@ -4,6 +4,12 @@
 
 > 历史快照：下方条目记录当时的状态，未回填后续变更。当前主 LLM 已从 `MiniMax-M2.7-highspeed` 切到 SII `gpt-5.5`（见 `vibe-design/opencode.json`）；MiniMax 相关条目反映的是切换前的实测。最新状态请看 README 头部。
 
+## 当前增量
+
+- `tools/gen_image.py` 新增 OpenAI-compatible 图生图 / 编辑模式：`--input-image` 可重复传参考图，`--mask` 支持局部编辑；文生图仍走原双后端路由，图生图在 MiniMax active 时自动路由到 openai。
+- designer prompt 与 logo/poster/ui-mockup/asset-prep skills 已同步图生图使用边界：create 修订可用 `--input-image --candidates 1`，reuse 仍禁用 gen_image。
+- 工具测试新增 gen_image CLI guard：help、MiniMax 显式拒绝图生图、mask 必须配合 input image、candidates 必须 >= 1。
+
 ## 系统骨架
 
 - 项目骨架 + opencode.json 配 MiniMax-M2 provider

@@ -44,7 +44,7 @@ Major version means that the system can:
 | `vibe-design/.opencode/command/design.md` | `/design` 自定义命令定义 |
 | `vibe-design/.opencode/skills/` | designer 使用的领域 skill（logo / poster / copywriting / ui-mockup / asset-prep） |
 | `vibe-design/tools/api_config.py` | Python 脚本共用的 API 凭据加载器（只读 `api.toml`） |
-| `vibe-design/tools/gen_image.py` | 双后端文生图工具，后端由 `api.toml [active].image` 决定 |
+| `vibe-design/tools/gen_image.py` | 双后端文生图 + OpenAI-compatible 图生图/编辑工具，后端由 `api.toml [active].image` 决定；`--input-image` 进入编辑模式 |
 | `vibe-design/tools/html_screenshot.py` | HTML → PNG 截图工具（Playwright + Chromium） |
 | `vibe-design/examples/` | 示例 brief（创智学院 / 朱家角古镇） |
 | `vibe-design/outputs/` | 运行产物输出目录（gitignore） |
