@@ -10,10 +10,7 @@ permission:
   skill:
     "*": deny
     craft: allow
-    logo: allow
-    poster: allow
-    ui-mockup: allow
-    copywriting: allow
+    design-guidelines: allow
 ---
 
 # Designer · 设计执行
@@ -45,9 +42,20 @@ outputs/<RUN_ID>/deliverables.md
 
 ## Skill 加载
 
-- 视觉任务（logo / poster / ui-mockup）：加载 `craft`，再加载对应介质 skill。
-- 文案任务：加载 `copywriting`，不加载 `craft`。
-- 仅做素材格式转换、缩放、裁切时，不需要加载 skill。
+所有视觉任务：加载 `craft`（设计工艺基线 + 反 slop 检查清单）。
+
+然后根据产物形态，Read `design-guidelines` skill 中对应的参考文件：
+
+| 规格关键词 | 参考文件 |
+|---|---|
+| logo / 标志 / brand mark | `design-guidelines/deliverables/logo.md` |
+| KV / 主视觉 / 招生视觉 / 场景效果图 / 摄影感 | `design-guidelines/deliverables/key-visual.md` |
+| 文创 / 帆布袋 / 马克杯 / T恤 / 产品 mockup | `design-guidelines/deliverables/merchandise.md` |
+| 海报 / poster / 信息图 / 竖版 / 横版 | `design-guidelines/deliverables/poster.md` |
+| 落地页 / H5 / mockup / 首屏 | `design-guidelines/deliverables/ui-mockup.md` |
+| slogan / 文案 / 简介 / 命名 | `design-guidelines/deliverables/copywriting.md` |
+
+参考文件路径相对于 `vibe-design/.opencode/skills/`。
 
 ## 素材使用
 
@@ -199,6 +207,8 @@ HTML 中只能使用 `brand-spec.md` 允许的字族。需要图片时引用 `ou
 - 本地素材转换失败：尝试降低 SVG 密度、加背景、改用 PNG 输入或简化 ImageMagick 参数；仍失败则写 `BLOCKED.md`。
 
 ## 反 AI Slop
+
+出图后对照 craft skill 的 `REFERENCE-anti-slop.md` 完整检查清单过一遍。快速自检底线：
 
 - 不用紫色渐变。
 - 不用 emoji 当图标。
