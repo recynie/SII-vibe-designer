@@ -6,12 +6,10 @@
 
 | Skill | 职责 | 核心机制 |
 |---|---|---|
-| `logo.md` | 1024×1024 PNG logo | `gen_image` + 全英文 prompt 结构 + 反写实后缀 |
-| `poster.md` | 主视觉海报 1200×1600 | 自包含 HTML → `html_screenshot.py` → PNG |
-| `copywriting.md` | 品牌文案（slogan + 简介） | 纯 Markdown，禁图禁 HTML |
-| `ui-mockup.md` | Landing / H5 页面 | 自包含 HTML → `html_screenshot.py` → PNG |
+| `craft` | 设计工艺基线 + 反 AI slop 检查清单 | 字排/色彩/层级/构图数值基线 |
+| `design-guidelines` | 产物类型参考手册 | 按 deliverable 类型提供规格、工艺要点、工具链指引 |
 
-**共性模式**：每个 skill 都有「工艺要点」+「反 slop 红线」两段。
+**共性模式**：craft 提供跨产物的设计质量底线，design-guidelines 按产物类型提供具体指引。
 
 ---
 

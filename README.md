@@ -12,7 +12,7 @@
 | `docs/demo-runs/run-20260516-004106-chuangzhi/` | 创智学院（早期版本） | 14 min | 4 类全套 | logo 28/50（v1→v2 迭代触发）· copy 40 · poster 46 · ui 44 |
 | `docs/demo-runs/run-coffee-partial/` | 钝角咖啡（不同领域，泛化测试） | logo 阶段 | brief + spec + logo + critic | logo 36/50（像素级评审） |
 | `docs/demo-runs/run-zhujiajiao-recovered/` | 朱家角古镇（第 3 领域） | logo 阶段 | brief + spec + plan + 6 logos + 2 reviews | 验证 milestone-16 内容审查 fallback |
-| `docs/demo-runs/run-gpt-image-2-evidence/` | 深色复现实证 | 单次 | gpt-image-2 单图观察 | 验证生产图像后端对深色品牌调性的表现 |
+| `docs/demo-runs/run-gpt-image-2-evidence/` | hex 色值复现实证 | 单次 | gpt-image-2 单图 + 直方图分析 | 实测 #000A2E 接近目标 #0D1B2A，验证生产后端 |
 | `docs/demo-runs/run-solenne-gpt-image-2/` | Solenne 香水（gpt-image-2 后端） | logo 阶段 | brief + spec + plan + logo + critic | 32/50 · 第一次完整 e2e 跑生产后端，证明双后端架构透明性 |
 | `docs/demo-runs/run-foundry-copy/` | Foundry Lab（纯文案任务） | 4 min | brief + spec + plan + 3 文案 + 3 reviews + final | 验证 critic 维度自适应：slogan / intro / apps 各 41-42/50 |
 
@@ -21,7 +21,7 @@
 | 题目要求 | 落点 |
 |---|---|
 | 至少三个智能体（规划 / 执行 / 评估）+ 独立上下文 | `vibe-design/.opencode/agent/` 下 4 个 agent：planner（primary）+ researcher / designer / critic（subagent） |
-| 必要的设计工具（文生图/图生图等） | `vibe-design/tools/gen_image.py` 双后端文生图 + OpenAI-compatible 图生图/编辑 + `html_screenshot.py` |
+| 必要的设计工具（文生图等） | `vibe-design/tools/gen_image.py` 双后端文生图 + `html_screenshot.py` |
 | Agent Harness 框架 | opencode 1.4 现成框架（题目允许） |
 | 任务调度 / 信息传递 / 上下文管理 / 错误处理 / 迭代优化 | opencode 原生 + critic 闭环（5 维度评分 + v1→v2 迭代） |
 | 命令行交互 | opencode TUI + 自定义命令 `/design` |
@@ -90,12 +90,6 @@ uv run python vibe-design/tools/verify_facts.py
 uv run python vibe-design/tools/gen_image.py \
   --prompt "minimal flat vector logo, geometric, navy + cyan, no slop" \
   --output /tmp/test.png --backend minimax  # or --backend openai
-
-# 图生图 / 编辑（OpenAI-compatible edits；默认建议单候选）
-uv run python vibe-design/tools/gen_image.py \
-  --input-image /tmp/test.png \
-  --prompt "preserve the geometry, recolor strictly to navy and cyan" \
-  --output /tmp/test-edit.png --backend openai --candidates 1
 ```
 
 ## 端到端验证
@@ -176,7 +170,7 @@ SII-assignment/
     │       ├── copywriting.md
     │       └── ui-mockup.md
     ├── tools/                    # Python CLI（agent 通过 bash 调用）
-    │   ├── gen_image.py          # 双后端文生图 + OpenAI-compatible 图生图/编辑
+    │   ├── gen_image.py          # 双后端文生图
     │   └── html_screenshot.py    # HTML → PNG
     ├── examples/                 # 3 条不同领域 brief
     │   ├── brief-sii-academy.md
@@ -195,19 +189,20 @@ SII-assignment/
 | 图像生成 · 开发省钱 | MiniMax `image-01` | `gen_image --backend minimax` 或 `[active].image = "minimax"` |
 | LLM 备用 | MiniMax `MiniMax-M2.7-highspeed` | opencode.json 已声明，把顶层 `model` 改回去即切换；需要 `MINIMAX_API_KEY` |
 
-切换图像后端：改 `api.toml [active].image = "openai"`（默认）/ `"minimax"`，或 `gen_image --backend minimax` 单次覆盖。文生图对 LLM 屏蔽后端；图生图 / 编辑通过 `--input-image` 使用 OpenAI-compatible `images/edits`，若当前 active image 是 minimax，工具会自动路由到 openai。
+切换图像后端：改 `api.toml [active].image = "openai"`（默认）/ `"minimax"`，或 `gen_image --backend minimax` 单次覆盖。**LLM 完全感知不到**，同一份 agent prompt 跑两个后端。
 
 ## 关键设计决策
 
 1. **串行调度**：原因是 MiniMax-M2 reasoning 在 subagent 并行下会挂起；切到 GPT-5.5 后挂起未再复现，但 planner prompt 仍保留"一次只调一个"以收敛 race 风险
 2. **文件即上下文契约**：subagent 间不互相 @；只通过 `brief.md / brand-spec.md / v?.review.md` 传递信息
 3. **Critic 同时审图与 prompt**：很多 slop 根因在 prompt（generic 词、缺禁忌项），看 prompt 才能给出"改 prompt / 改版式 / 换素材"分层建议
-4. **Critic 直接看图**：当前主模型 GPT-5.5 支持图像理解，critic 用 Read 读取 PNG/截图后基于实物观察打分；色彩只做目视“大体一致”判断
+4. **Critic ImageMagick fallback**：MiniMax-M2 不支持视觉输入时的设计；GPT-5.5 已支持图像理解，critic 可以同时跑机器校验 + 直接看图，但当前 prompt 仍以 ImageMagick 为主——尚未为视觉模型重写 critic
 5. **`--pure` 跳过外部插件**：用户全局插件注入的"parallelize"提示会干扰 subagent，加 `--pure` 启动隔离
 
 ## 已知局限
 
-- **图像生成模型仍不能保证像素级 hex 精确**：系统只要求颜色与 brand-spec 大体一致；若用户需要印刷级精确色值，应在设计软件中做最终校色或使用可控矢量/HTML 方案
+- **`gpt-image-2` 对深色 hex 复现优于 minimax `image-01`，但仍非像素级精确**（实测 ΔE 3-8 区间，散色由 JPEG 压缩 / 抗锯齿引入，非主动配色失误）
+- **critic 当前 prompt 仍假定 LLM 看不到图**（ImageMagick + brand-spec 文字对照），GPT-5.5 的视觉理解能力**未被启用**——是优化空间不是 bug
 - 早期 MiniMax-M2 时代的两个局限：**不支持图像输入** / **subagent 偶发 5+ 分钟长 thinking**（`--pure` 缓解）——切到 GPT-5.5 后均未再复现，保留备查
 
 ## 答辩演示

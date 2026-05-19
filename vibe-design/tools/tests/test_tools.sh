@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Test that Python validation tools work correctly.
-# Runs check_html_fonts and the validate.py aggregator against compliant and violation mock data.
+# Runs check_html_fonts, check_palette_compliance, extract_artifact_palette,
+# and the validate.py aggregator against compliant and violation mock data.
 
 set -u
 
@@ -9,6 +10,9 @@ TOOLS="$ROOT/vibe-design/tools"
 COMPLIANT="$ROOT/vibe-design/tools/tests/mocks/compliant"
 VIOLATION="$ROOT/vibe-design/tools/tests/mocks/violation"
 PY="${PYTHON:-python3}"
+
+# Ensure mock PNGs exist.
+"$PY" "$ROOT/vibe-design/tools/tests/mocks/_make_pngs.py" >/dev/null
 
 pass=0
 fail=0
@@ -40,24 +44,18 @@ expect_fail() {
   fi
 }
 
-# Create a tiny valid PNG for gen_image CLI guard tests.
-DUMMY_PNG="$(mktemp /tmp/vibe-test-XXXXXX.png)"
-"$PY" -c "
-from PIL import Image
-Image.new('RGBA', (4, 4), (0, 0, 0, 0)).save('$DUMMY_PNG')
-" 2>/dev/null || printf '\x89PNG\r\n\x1a\n' > "$DUMMY_PNG"
-
-echo "== gen_image CLI guards =="
-expect_pass "gen_image help mentions input-image" bash -c "'$PY' '$TOOLS/gen_image.py' --help | grep -q -- --input-image"
-expect_fail "minimax rejects image-to-image" "$PY" "$TOOLS/gen_image.py" --backend minimax --input-image "$DUMMY_PNG" --prompt "edit" --output /tmp/gen-image-i2i-guard.png --candidates 1
-expect_fail "mask requires input image" "$PY" "$TOOLS/gen_image.py" --backend openai --mask "$DUMMY_PNG" --prompt "edit" --output /tmp/gen-image-mask-guard.png --candidates 1
-expect_fail "candidates must be positive" "$PY" "$TOOLS/gen_image.py" --backend minimax --prompt "edit" --output /tmp/gen-image-candidates-guard.png --candidates 0
-rm -f "$DUMMY_PNG"
+echo "== extract_artifact_palette =="
+expect_pass "extract runs on compliant image" "$PY" "$TOOLS/extract_artifact_palette.py" "$COMPLIANT/artifact.png"
 
 echo
 echo "== check_html_fonts =="
 expect_pass "compliant HTML passes"  "$PY" "$TOOLS/check_html_fonts.py" --html "$COMPLIANT/landing.html" --spec "$COMPLIANT/brand-spec.md"
 expect_fail "violation HTML fails"   "$PY" "$TOOLS/check_html_fonts.py" --html "$VIOLATION/landing.html" --spec "$COMPLIANT/brand-spec.md"
+
+echo
+echo "== check_palette_compliance =="
+expect_pass "compliant image passes" "$PY" "$TOOLS/check_palette_compliance.py" --image "$COMPLIANT/artifact.png" --spec "$COMPLIANT/brand-spec.md"
+expect_fail "violation image fails"  "$PY" "$TOOLS/check_palette_compliance.py" --image "$VIOLATION/artifact.png" --spec "$COMPLIANT/brand-spec.md"
 
 echo
 echo "== validate.py review aggregator =="

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""gen_image: route image generation / image editing between MiniMax (dev) and gpt-image-2 (prod).
+"""gen_image: route image generation between MiniMax (dev) and gpt-image-2 (prod).
 
 Backend resolution (first match wins):
   --backend CLI flag  >  api.toml [active].image
@@ -12,12 +12,6 @@ Usage:
         --output outputs/run-x/artifacts/logo/v1.png \\
         [--aspect-ratio 1:1] [--size 1024x1024] [--candidates 3]
 
-    # Image-to-image / edit mode (OpenAI-compatible backend only):
-    uv run python tools/gen_image.py \\
-        --input-image outputs/run-x/artifacts/logo/v1.png \\
-        --prompt "keep the same geometry, recolor strictly to navy and cyan" \\
-        --output outputs/run-x/artifacts/logo/v2.png
-
 Exit code 0 on success; prints absolute path(s) of saved file(s) to stdout,
 one per line.
 """
@@ -28,12 +22,10 @@ import argparse
 import base64
 import concurrent.futures
 import json
-import mimetypes
 import sys
 import time
 import urllib.request
 import urllib.error
-import uuid
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -68,70 +60,6 @@ def http_get_bytes(url: str, timeout: int = 180) -> bytes:
     req = urllib.request.Request(url, headers={"User-Agent": DEFAULT_UA})
     with urllib.request.urlopen(req, timeout=timeout) as resp:
         return resp.read()
-
-
-def http_post_multipart(
-    url: str,
-    headers: dict,
-    fields: dict[str, str],
-    files: list[tuple[str, Path]],
-    timeout: int = 600,
-    max_retries: int = 5,
-) -> dict:
-    """POST multipart/form-data with stdlib only.
-
-    `files` is a list of (form_field_name, path). Duplicate field names are
-    allowed; OpenAI-compatible image-edit APIs use that for multiple inputs.
-    """
-    boundary = f"----vibe-design-{uuid.uuid4().hex}"
-    chunks: list[bytes] = []
-
-    for name, value in fields.items():
-        chunks.extend([
-            f"--{boundary}\r\n".encode("utf-8"),
-            f'Content-Disposition: form-data; name="{name}"\r\n\r\n'.encode("utf-8"),
-            str(value).encode("utf-8"),
-            b"\r\n",
-        ])
-
-    for field_name, path in files:
-        filename = path.name
-        content_type = mimetypes.guess_type(filename)[0] or "application/octet-stream"
-        chunks.extend([
-            f"--{boundary}\r\n".encode("utf-8"),
-            (
-                f'Content-Disposition: form-data; name="{field_name}"; '
-                f'filename="{filename}"\r\n'
-            ).encode("utf-8"),
-            f"Content-Type: {content_type}\r\n\r\n".encode("utf-8"),
-            path.read_bytes(),
-            b"\r\n",
-        ])
-
-    chunks.append(f"--{boundary}--\r\n".encode("utf-8"))
-    data = b"".join(chunks)
-    h = {
-        "User-Agent": DEFAULT_UA,
-        "Content-Type": f"multipart/form-data; boundary={boundary}",
-        **headers,
-    }
-
-    last_exc = None
-    for attempt in range(1, max_retries + 1):
-        req = urllib.request.Request(url, data=data, headers=h, method="POST")
-        try:
-            with urllib.request.urlopen(req, timeout=timeout) as resp:
-                return json.loads(resp.read().decode("utf-8"))
-        except (urllib.error.HTTPError, OSError, TimeoutError) as e:
-            last_exc = e
-            if isinstance(e, urllib.error.HTTPError) and 400 <= e.code < 500 and e.code != 429:
-                msg = e.read().decode("utf-8", errors="replace")
-                raise SystemExit(f"HTTP {e.code} from {url}: {msg[:500]}")
-            if attempt < max_retries:
-                wait = min(30 * attempt, 120)
-                print(f"  [retry {attempt}/{max_retries}] {type(e).__name__}, waiting {wait}s...", file=sys.stderr)
-                time.sleep(wait)
-    raise SystemExit(f"All {max_retries} retries failed: {last_exc}")
 
 
 def gen_minimax(prompt: str, aspect_ratio: str) -> bytes:
@@ -195,18 +123,6 @@ def detect_format(data: bytes) -> str:
     raise SystemExit(f"unrecognized image format; first bytes = {head}")
 
 
-def decode_openai_image_response(resp: dict, label: str = "OpenAI") -> bytes:
-    items = resp.get("data") or []
-    if not items:
-        raise SystemExit(f"{label} returned no data: {json.dumps(resp)[:300]}")
-    item = items[0]
-    if "b64_json" in item:
-        return base64.b64decode(item["b64_json"])
-    if "url" in item:
-        return http_get_bytes(item["url"])
-    raise SystemExit(f"{label} returned unexpected shape: {json.dumps(item)[:200]}")
-
-
 def gen_openai(prompt: str, aspect_ratio: str, size: str | None) -> bytes:
     p = api_config.get_provider("openai")
     url = p.images_url or f"{p.base_url}/v1/images/generations"
@@ -218,53 +134,23 @@ def gen_openai(prompt: str, aspect_ratio: str, size: str | None) -> bytes:
         {"Authorization": f"Bearer {p.key}", "Content-Type": "application/json"},
         payload,
     )
-    return decode_openai_image_response(resp)
+    items = resp.get("data") or []
+    if not items:
+        raise SystemExit(f"OpenAI returned no data: {json.dumps(resp)[:300]}")
+    item = items[0]
+    if "b64_json" in item:
+        return base64.b64decode(item["b64_json"])
+    if "url" in item:
+        return http_get_bytes(item["url"])
+    raise SystemExit(f"OpenAI returned unexpected shape: {json.dumps(item)[:200]}")
 
 
-def gen_openai_edit(
-    prompt: str,
-    aspect_ratio: str,
-    size: str | None,
-    input_images: list[Path],
-    mask: Path | None,
-) -> bytes:
-    p = api_config.get_provider("openai")
-    url = p.edits_url or f"{p.base_url}/v1/images/edits"
-    model = p.image_model or "gpt-image-2"
-    chosen_size = size or SIZE_FROM_AR.get(aspect_ratio, "1024x1024")
-    fields = {"model": model, "prompt": prompt, "n": "1", "size": chosen_size}
-    files = [("image", path) for path in input_images]
-    if mask is not None:
-        files.append(("mask", mask))
-    resp = http_post_multipart(
-        url,
-        {"Authorization": f"Bearer {p.key}"},
-        fields,
-        files,
-    )
-    return decode_openai_image_response(resp, label="OpenAI image edit")
-
-
-def gen_candidates(
-    backend: str,
-    prompt: str,
-    aspect_ratio: str,
-    size: str | None,
-    candidates: int,
-    input_images: list[Path] | None = None,
-    mask: Path | None = None,
-) -> list[bytes]:
+def gen_candidates(backend: str, prompt: str, aspect_ratio: str,
+                   size: str | None, candidates: int) -> list[bytes]:
     """Fire *candidates* independent n=1 requests in parallel, return successful results."""
-    input_images = input_images or []
     if backend == "minimax":
-        if input_images or mask:
-            raise SystemExit("MiniMax backend does not support --input-image / --mask in gen_image; use --backend openai.")
         fn = lambda: gen_minimax(prompt, aspect_ratio)
-    elif input_images:
-        fn = lambda: gen_openai_edit(prompt, aspect_ratio, size, input_images, mask)
     else:
-        if mask:
-            raise SystemExit("--mask requires --input-image")
         fn = lambda: gen_openai(prompt, aspect_ratio, size)
 
     if candidates == 1:
@@ -292,31 +178,10 @@ def candidate_path(base: Path, index: int) -> Path:
     return base.with_suffix(f"-{index}{base.suffix}")
 
 
-def positive_int(value: str) -> int:
-    try:
-        parsed = int(value)
-    except ValueError:
-        raise argparse.ArgumentTypeError("must be an integer") from None
-    if parsed < 1:
-        raise argparse.ArgumentTypeError("must be >= 1")
-    return parsed
-
-
 def main() -> int:
     ap = argparse.ArgumentParser(description="Generate an image for the design agent.")
     ap.add_argument("--prompt", required=True)
     ap.add_argument("--output", required=True, help="Output file path (.png)")
-    ap.add_argument(
-        "--input-image",
-        action="append",
-        default=[],
-        help="Input image path for image-to-image/edit mode. Repeat for multiple reference images. OpenAI backend only.",
-    )
-    ap.add_argument(
-        "--mask",
-        default=None,
-        help="Optional mask image for edit mode. Requires --input-image and OpenAI backend.",
-    )
     ap.add_argument(
         "--aspect-ratio",
         default="1:1",
@@ -331,7 +196,7 @@ def main() -> int:
     )
     ap.add_argument(
         "--candidates",
-        type=positive_int,
+        type=int,
         default=3,
         help="Number of candidate images to generate in parallel (default: 3)",
     )
@@ -341,29 +206,8 @@ def main() -> int:
     if backend not in {"minimax", "openai"}:
         raise SystemExit(f"Unknown backend: {backend}")
 
-    input_images = [Path(p).expanduser().resolve() for p in args.input_image]
-    for p in input_images:
-        if not p.is_file():
-            raise SystemExit(f"input image not found: {p}")
-    mask = Path(args.mask).expanduser().resolve() if args.mask else None
-    if mask is not None and not mask.is_file():
-        raise SystemExit(f"mask image not found: {mask}")
-    if input_images and args.backend is None and backend == "minimax":
-        print(
-            "  [gen_image] --input-image requested; active minimax backend does not support image edits, routing to openai",
-            file=sys.stderr,
-        )
-        backend = "openai"
-
-    images = gen_candidates(
-        backend,
-        args.prompt,
-        args.aspect_ratio,
-        args.size,
-        args.candidates,
-        input_images=input_images,
-        mask=mask,
-    )
+    images = gen_candidates(backend, args.prompt, args.aspect_ratio,
+                            args.size, args.candidates)
 
     base_path = Path(args.output).expanduser().resolve()
     base_path.parent.mkdir(parents=True, exist_ok=True)
@@ -387,13 +231,9 @@ def main() -> int:
         out_path.write_bytes(image_bytes)
 
         prompt_path = out_path.with_suffix(out_path.suffix + ".prompt.txt")
-        input_lines = "".join(f"# input_image: {p}\n" for p in input_images)
-        mask_line = f"# mask: {mask}\n" if mask is not None else ""
         prompt_path.write_text(
-            f"# backend: {backend}\n# mode: {'image-to-image' if input_images else 'text-to-image'}\n"
-            f"# format: {real_ext}\n# aspect: {args.aspect_ratio}\n"
-            f"# candidate: {i}/{len(images)}\n"
-            f"{input_lines}{mask_line}\n{args.prompt}\n",
+            f"# backend: {backend}\n# format: {real_ext}\n# aspect: {args.aspect_ratio}\n"
+            f"# candidate: {i}/{len(images)}\n\n{args.prompt}\n",
             encoding="utf-8",
         )
 

@@ -9,6 +9,11 @@ Add tag for *major versions* of this system.
 Major version means that the system can:
 - pass end-to-end pipeline. Minor problems are allowed, but the system must be available.
 
+## File Writing for agnet prompt and skills
+语言清晰、明确，减少意义不明的简写，用技术性的语言撰写agent prompt和skills。
+不要引入不必要的说明。
+修改agent prompt前，思考：agent需要了解这部分内容吗？
+
 ## E2E run
 
 如果用户要求运行e2e或端到端测试，使用下面的任务：
@@ -42,7 +47,7 @@ Major version means that the system can:
 | `vibe-design/opencode.json` | opencode provider 配置（当前主 LLM = SII `gpt-5.5`；MiniMax provider 备用） |
 | `vibe-design/.opencode/agent/` | 四个 agent 的 prompt 定义（planner / researcher / designer / critic） |
 | `vibe-design/.opencode/command/design.md` | `/design` 自定义命令定义 |
-| `vibe-design/.opencode/skills/` | designer 使用的领域 skill（logo / poster / copywriting / ui-mockup） |
+| `vibe-design/.opencode/skills/` | designer 使用的领域 skill（craft / design-guidelines） |
 | `vibe-design/tools/api_config.py` | Python 脚本共用的 API 凭据加载器（只读 `api.toml`） |
 | `vibe-design/tools/gen_image.py` | 双后端文生图 + OpenAI-compatible 图生图/编辑工具，后端由 `api.toml [active].image` 决定；`--input-image` 进入编辑模式 |
 | `vibe-design/tools/html_screenshot.py` | HTML → PNG 截图工具（Playwright + Chromium） |
