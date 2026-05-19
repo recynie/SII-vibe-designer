@@ -14,6 +14,14 @@ RESEARCHER="$AGENTS/researcher.md"
 
 pass=0
 fail=0
+OLD_MODE_WORD="re""use"
+OLD_POLICY_WORD="pol""icy"
+OLD_ASSET_SKILL="asset-""prep"
+OLD_CREATE_MODE="create ""模式"
+OLD_MODE_PREFIX="mode"":"
+OLD_EXACT_USE="exact""-use"
+OLD_ASSET_RULES="资产""规则"
+REMOVED_PATTERN="${OLD_CREATE_MODE}|${OLD_MODE_WORD} 模式|${OLD_MODE_PREFIX} create|${OLD_MODE_PREFIX} ${OLD_MODE_WORD}|${OLD_EXACT_USE}|${OLD_POLICY_WORD}|${OLD_ASSET_RULES}|${OLD_ASSET_SKILL}"
 
 check() {
   local label="$1" rc="$2"
@@ -40,7 +48,8 @@ grep -Pq '^\s*webfetch:\s*allow\s*$' "$RESEARCHER"; check "researcher webfetch a
 echo
 echo "== planner =="
 grep -q 'deliverables\.md' "$PLANNER";                          check "reads deliverables.md"         $?
-grep -Pq '(create 模式|reuse 模式|按\s*mode)' "$PLANNER";       check "routes by mode"                $?
+grep -q 'assets/' "$PLANNER";                                   check "passes assets to designer"     $?
+! grep -Pq "$REMOVED_PATTERN|按\s*mode" "$PLANNER";             check "planner has no mode routing"    $?
 grep -q 'escalate\.md' "$PLANNER";                              check "escalate.md exit hatch"        $?
 grep -Pq '映射|不增不删' "$PLANNER";                             check "plan.md as mapping"            $?
 grep -Pq '严格串行|绝不并行|不要并行' "$PLANNER";                 check "strict serial scheduling"      $?
@@ -77,11 +86,12 @@ grep -Pq '唯一产物.*v\?\.review\.md.*落盘|没落盘.*=.*没评' "$CRITIC";
 
 echo
 echo "== designer =="
-grep -q 'create 模式'       "$DESIGNER"; check "has create mode branch"      $?
-grep -q 'reuse 模式'        "$DESIGNER"; check "has reuse mode branch"       $?
-grep -q '禁调 gen_image'    "$DESIGNER"; check "reuse forbids gen_image"     $?
-grep -Pq '颜色大体一致|大体一致性' "$DESIGNER"; check "designer uses visual color sanity" $?
-grep -q 'asset-prep'        "$DESIGNER"; check "references asset-prep skill" $?
+grep -q 'assets/<filename>' "$DESIGNER"; check "documents asset references"  $?
+grep -Pq '不生成相似替代品|不编造不存在的素材路径' "$DESIGNER"; check "prevents asset fabrication" $?
+grep -Pq 'ImageMagick|convert' "$DESIGNER"; check "documents ImageMagick" $?
+grep -q 'gen_image.py'      "$DESIGNER"; check "documents gen_image"         $?
+grep -q 'html_screenshot.py' "$DESIGNER"; check "documents html screenshot"  $?
+! grep -Pq "$REMOVED_PATTERN" "$DESIGNER"; check "designer has no removed concepts" $?
 
 # -- Skills invariants --
 
@@ -91,10 +101,13 @@ for s in logo poster copywriting ui-mockup; do
   ! grep -Pq '<!doctype html>|<style>|font-family\s*:' "$SKILLS/$s/SKILL.md"
   check "skills/$s no HTML skeleton/font-family" $?
 done
+test ! -e "$SKILLS/asset-""prep";                  check "asset conversion skill removed"   $?
 
-test -f "$SKILLS/asset-prep/SKILL.md";            check "asset-prep/SKILL.md exists"       $?
-grep -q '禁调 gen_image' "$SKILLS/asset-prep/SKILL.md"; check "asset-prep forbids gen_image" $?
-grep -Pq 'Read.*输出图|目视确认' "$SKILLS/asset-prep/SKILL.md"; check "asset-prep has visual self-check" $?
+# -- System dependencies --
+
+echo
+echo "== system deps =="
+command -v convert >/dev/null; check "ImageMagick convert available" $?
 
 echo
 echo "== summary: $pass passed, $fail failed =="

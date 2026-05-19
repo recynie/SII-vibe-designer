@@ -6,9 +6,13 @@
 
 ## 当前增量
 
-- `tools/gen_image.py` 新增 OpenAI-compatible 图生图 / 编辑模式：`--input-image` 可重复传参考图，`--mask` 支持局部编辑；文生图仍走原双后端路由，图生图在 MiniMax active 时自动路由到 openai。
-- designer prompt 与 logo/poster/ui-mockup/asset-prep skills 已同步图生图使用边界：create 修订可用 `--input-image --candidates 1`，reuse 仍禁用 gen_image。
-- 工具测试新增 gen_image CLI guard：help、MiniMax 显式拒绝图生图、mask 必须配合 input image、candidates 必须 >= 1。
+- deliverables 条目移除交付物模式字段，只保留 `<名称> | <规格>`
+- researcher 在规格中直接引用需要使用的 `assets/<filename>`
+- planner 不再按模式分支调度 designer
+- designer 统一根据规格和本地 assets 选择 ImageMagick / gen_image / HTML / markdown
+- 删除 `asset-prep` skill，素材转换说明内联到 designer prompt
+- `tools/gen_image.py` 新增 OpenAI-compatible 图生图 / 编辑模式（`--input-image` / `--mask`）
+- 视觉评审移除色板机器校验，颜色改为 critic 直接看图判断大体一致性
 
 ## 系统骨架
 

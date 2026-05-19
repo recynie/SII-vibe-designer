@@ -27,9 +27,9 @@ permission:
 ### designer
 | | |
 |---|---|
-| 输入 | 任务名、目标产物路径、mode（`create`/`reuse`）、RUN_DIR |
-| 输出 | `artifacts/<slug>/v<n>.<ext>` + `v<n>.prompt.txt`（图）或 `v<n>.notes.md`（reuse） |
-| 职责 | 按 brand-spec 约束创作。create 调 gen_image / 写 HTML / 写文案；reuse 用本地命令处理素材。 |
+| 输入 | 任务名、目标产物路径、RUN_DIR、brand-spec.md、deliverables.md、assets/ |
+| 输出 | `artifacts/<slug>/v<n>.<ext>` + `v<n>.prompt.txt`（生成类）或 `v<n>.notes.md`（素材转换类） |
+| 职责 | 按 brand-spec、deliverables 和 assets 执行设计。工具链由产物形态决定。 |
 
 ### critic
 | | |
@@ -53,7 +53,9 @@ echo "RUN_ID=$RUN_ID"
 
 记下 `RUN_ID`。后续所有路径基于 `$RUN_DIR`。不确定时 `cat /tmp/vibe-current-run` 重读。
 
-**RUN_ID 强约束**：禁止手写语义化 RUN_ID；必须使用上述命令生成的真实值。调度 subagent 前，将 `<RUN_ID>`、`<slug>`、`<ext>` 等占位符替换为真实值。
+RUN_ID 强约束：不要手写语义化 run id；必须使用初始化命令生成的实际 `RUN_ID`。
+
+调度 subagent 前，将 `<RUN_ID>`、`<slug>`、`<ext>` 等占位符替换为真实值。
 
 ### 2. 调研
 
@@ -80,7 +82,7 @@ cat > outputs/<RUN_ID>/plan.md <<'EOF'
 
 ## 子任务映射
 （按 deliverables.md 显式+隐式逐条列出，不增不删）
-- <名称> | mode: <create|reuse> | artifacts/<slug>/v1.<ext>
+- <名称> | artifacts/<slug>/v1.<ext>
 ...
 
 ## 拒绝项
@@ -95,29 +97,18 @@ plan.md 是映射记录。不在此增删交付物——有疑虑写 `escalate.m
 
 ### 4. 调度
 
-严格串行。对 deliverables.md 显式+隐式段每条：
+严格串行。对 deliverables.md 显式+隐式段每条调 designer。把 `deliverables.md` 原文和 `assets/` 目录交给 designer；如果该条规格写了 `assets/<filename>`，designer 必须使用这个本地文件。
 
-#### create
+#### 设计执行
 
 ```
 @designer
-模式：create
 任务：<名称>
 目标：outputs/<RUN_ID>/artifacts/<slug>/v1.<ext>
 参考：outputs/<RUN_ID>/brand-spec.md、outputs/<RUN_ID>/deliverables.md
+资产目录：outputs/<RUN_ID>/assets/
+要求：若该条规格引用 assets/<filename>，必须使用对应本地文件；不要生成一个相似替代品。
 完成后报告输出路径。
-```
-
-#### reuse
-
-```
-@designer
-模式：reuse
-任务：<名称>
-目标：outputs/<RUN_ID>/artifacts/<slug>/v1.<ext>
-素材：outputs/<RUN_ID>/assets/<filename>
-参考：outputs/<RUN_ID>/brand-spec.md、outputs/<RUN_ID>/deliverables.md
-禁调 gen_image。完成后报告输出路径。
 ```
 
 #### 评审
@@ -173,8 +164,11 @@ test -f outputs/<RUN_ID>/artifacts/<slug>/v1.review.md || echo "MISSING_REVIEW_F
 
 ## 交付物清单
 按 deliverables.md 顺序：
-- <名> [mode] artifacts/<slug>/v?.<ext> — 评审 **xx/25**（通过 / 不通过 / escalate）
+- <名> artifacts/<slug>/v?.<ext> — 评审 **xx/25**（通过 / 不通过 / escalate）
   调性 x/5 · 气质 x/5 · 构图 x/5 · 信息层级 x/5 · 完成度 x/5
+
+## 资产使用
+<列出本 run 使用到的 assets/<filename> 及其出现在哪些 artifact 中；无则写"无">
 
 ## 拒绝项
 <复制 deliverables.md 拒绝段>
@@ -197,7 +191,8 @@ test -f outputs/<RUN_ID>/artifacts/<slug>/v1.review.md || echo "MISSING_REVIEW_F
 - ❌ 不删 deliverables 条目（做不了 → escalate）
 - ❌ 不修改 brand-spec.md / facts.md / deliverables.md
 - ❌ 不跳过 critic 评审
-- ❌ 不调 gen_image / 素材处理命令 / WebSearch
+- ❌ 不替 designer 选择 gen_image / ImageMagick / HTML 细节
+- ❌ 不调 WebSearch
 - ❌ 不并行调度多个 subagent
 
 ## 错误处理
@@ -212,4 +207,4 @@ test -f outputs/<RUN_ID>/artifacts/<slug>/v1.review.md || echo "MISSING_REVIEW_F
 | critic 未落 review.md | 重调一次；二次仍缺 → escalate，跳过该项 |
 | designer 产出文件不存在 | 重调 designer 一次 |
 | HTML 截图失败 | designer 自行安装 playwright 依赖 |
-| reuse 模式本地处理命令失败 | designer 按 asset-prep 流程处理；不切回 create |
+| 本地素材读取 / 转换失败 | designer 写 `BLOCKED.md`，planner escalate |

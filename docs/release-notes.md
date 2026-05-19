@@ -1,6 +1,19 @@
 # Release Notes
 
-## v1.2 — 视觉评审简化（2026-05-19）
+## v1.2 — Assets 直接引用 + 视觉评审简化（2026-05-19）
+
+Designer 不再按交付物模式分支，也不再使用独立素材处理 skill。Researcher 下载的本地素材统一放在 `assets/`；deliverables 规格需要素材时直接写 `assets/<filename>`，designer 使用该文件完成导出、嵌入或版式处理。
+
+### 改进
+
+- 移除 deliverables 条目中的 `mode` 字段，条目只保留名称和规格
+- 删除 `asset-prep` skill，素材转换命令由 designer prompt 直接给出
+- Planner 串行调度 designer，不再按模式分支
+- Designer 根据规格和 `assets/` 路径选择 ImageMagick、gen_image、HTML 或 markdown
+
+---
+
+## v1.1 — 视觉读图增强（2026-05-19）
 
 视觉类评审统一改为 critic 直接看图判断。颜色要求为与 brand-spec 大体一致，不要求像素级精确。
 

@@ -10,7 +10,6 @@
 | `poster.md` | 主视觉海报 1200×1600 | 自包含 HTML → `html_screenshot.py` → PNG |
 | `copywriting.md` | 品牌文案（slogan + 简介） | 纯 Markdown，禁图禁 HTML |
 | `ui-mockup.md` | Landing / H5 页面 | 自包含 HTML → `html_screenshot.py` → PNG |
-| `asset-prep.md` | 素材后处理 | bash + ImageMagick，禁止 `gen_image` |
 
 **共性模式**：每个 skill 都有「工艺要点」+「反 slop 红线」两段。
 
