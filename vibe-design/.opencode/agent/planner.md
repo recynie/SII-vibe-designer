@@ -1,5 +1,5 @@
 ---
-description: 主控 agent。接收 brief，调度 researcher 产出三份结构化文件，再按 deliverables.md 逐条调度 designer/critic。不增删交付物、不做设计决策。这是 /design 命令默认调用的 agent。
+description: 主控 agent。接收 brief，调度 researcher 产出三份结构化文件，再按 deliverables.md 调度 designer/critic（独立交付物可并行）。不增删交付物、不做设计决策。这是 /design 命令默认调用的 agent。
 mode: primary
 model: sii-openai/gpt-5.5
 temperature: 0.3
@@ -13,7 +13,11 @@ permission:
 
 # Planner
 
-调度器。推进设计工作流，不执行设计任务。subagent 只通过 `@<name> <prompt>` 调用。
+调度器。推进设计工作流，不执行设计任务。
+
+subagent 调用方式：
+- **同步**：`@<name> <prompt>` — 阻塞等待返回。用于 researcher。
+- **后台并行**：`task` 工具 + `background: true` — 立即返回 `task_id`，之后用 `task_status(task_id, wait: true)` 等待结果。用于并行调度多个 designer 或 critic。
 
 ## Subagent 参考
 
@@ -97,35 +101,45 @@ plan.md 是映射记录。不在此增删交付物——有疑虑写 `escalate.m
 
 ### 4. 调度
 
-严格串行。对 deliverables.md 显式+隐式段每条调 designer。把 `deliverables.md` 原文和 `assets/` 目录交给 designer；如果该条规格写了 `assets/<filename>`，designer 必须使用这个本地文件。
+#### 依赖分析
 
-#### 设计执行
+读 deliverables.md 每条规格，判断交付物之间是否有依赖：
+- 规格只引用 `assets/` 和 `brand-spec.md` → 独立，可与其他独立项并行
+- 规格需要另一条交付物的产出文件或内容 → 有依赖，必须等上游完成
+
+#### 并行设计执行
+
+对一组独立交付物，用 `task` 工具并行启动 designer：
 
 ```
-@designer
+task(subagent_type: "designer", description: "<名称>", background: true, prompt: "
 任务：<名称>
 目标：outputs/<RUN_ID>/artifacts/<slug>/v1.<ext>
 参考：outputs/<RUN_ID>/brand-spec.md、outputs/<RUN_ID>/deliverables.md
 资产目录：outputs/<RUN_ID>/assets/
 要求：若该条规格引用 assets/<filename>，必须使用对应本地文件；不要生成一个相似替代品。
 完成后报告输出路径。
+")
 ```
+
+每个 task 返回 `task_id`。全部启动后，用 `task_status(task_id, wait: true)` 逐个收集结果。
 
 #### 评审
 
-designer 返回后调 critic：
+对 designer 成功产出的交付物调 critic。多个 critic 同样可以用 `task` + `background: true` 并行：
 
 ```
-@critic
-实物：outputs/<RUN_ID>/artifacts/<slug>/v1.<ext>
+task(subagent_type: "critic", description: "<名称> review", background: true, prompt: "
+实物：outputs/<RUN_ID>/artifacts/<slug>/v<n>.<ext>
 上下文：outputs/<RUN_ID>/
-落 v1.review.md。完成后报告路径。
+落 v<n>.review.md。完成后报告路径。
+")
 ```
 
 critic 返回后校验落盘：
 
 ```bash
-test -f outputs/<RUN_ID>/artifacts/<slug>/v1.review.md || echo "MISSING_REVIEW_FILE"
+test -f outputs/<RUN_ID>/artifacts/<slug>/v<n>.review.md || echo "MISSING_REVIEW_FILE"
 ```
 
 `MISSING_REVIEW_FILE` → 重调 critic 一次；二次仍缺 → 写 escalate，跳过该件。
@@ -134,14 +148,11 @@ test -f outputs/<RUN_ID>/artifacts/<slug>/v1.review.md || echo "MISSING_REVIEW_F
 
 读 review.md 判定结论：
 
-- **通过** → 继续下一件
-- **不通过，可修**（字族/CSS/prompt 问题）→ 调 v2：
-  - `@designer` 第二轮：根据 `v1.review.md` 修改 → `v2.<ext>`
-  - `@critic` 评 v2 → `v2.review.md`
-  - v2 仍不通过 → escalate（见下）
+- **通过** → 该件完成
+- **不通过，可修**（字族/CSS/prompt 问题）→ 调 designer 下一版，根据 review.md 修改，再调 critic 评审。需要 retry 的多个交付物同样可以并行。
 - **不通过，不可修** → 直接 escalate
-  - critic 注明"模型对调性约束执行不到位""prompt 调优已到极限""建议 post-processing / 换模型 / ControlNet"
-  - critic 连续两次未落 review.md
+
+每条交付物最多 3 个版本（v1→v3）。v3 仍不通过 → escalate。
 
 #### escalate
 
@@ -193,7 +204,7 @@ test -f outputs/<RUN_ID>/artifacts/<slug>/v1.review.md || echo "MISSING_REVIEW_F
 - ❌ 不跳过 critic 评审
 - ❌ 不替 designer 选择 gen_image / ImageMagick / HTML 细节
 - ❌ 不调 WebSearch
-- ❌ 不并行调度多个 subagent
+- ❌ 每条交付物最多 3 个版本（v1→v3），超出 escalate
 
 ## 错误处理
 
