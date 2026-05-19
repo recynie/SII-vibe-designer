@@ -44,6 +44,11 @@
 ```bash
 # 改 api.toml 里的 [active].image = "minimax" / "openai"，或 gen_image CLI 临时覆盖：
 uv run python tools/gen_image.py --backend minimax ...
+
+# 图生图 / 编辑（OpenAI-compatible edits；建议单候选）：
+uv run python tools/gen_image.py --input-image outputs/<RUN_ID>/artifacts/logo/v1.png \
+  --prompt "preserve the geometry, recolor strictly to navy and cyan" \
+  --output outputs/<RUN_ID>/artifacts/logo/v2.png --candidates 1
 ```
 
 ## 架构
@@ -66,7 +71,7 @@ user → /design <brief>
 `tools/` 下的 Python CLI 由 agent 通过 bash 调用：
 
 - `api_config.py` — Python 脚本共用的 API 凭据加载器（只读 `api.toml`）
-- `gen_image.py` — 文生图，路由 MiniMax / gpt-image-2，凭据走 `api_config`
+- `gen_image.py` — 文生图 + OpenAI-compatible 图生图/编辑（`--input-image` / `--mask`），路由 MiniMax / gpt-image-2，凭据走 `api_config`
 - `html_screenshot.py` — HTML 渲成 PNG，用于 critic 评审版式
 
 ## 例子

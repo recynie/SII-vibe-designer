@@ -48,6 +48,13 @@ echo "== extract_artifact_palette =="
 expect_pass "extract runs on compliant image" "$PY" "$TOOLS/extract_artifact_palette.py" "$COMPLIANT/artifact.png"
 
 echo
+echo "== gen_image CLI guards =="
+expect_pass "gen_image help mentions input-image" bash -c "'$PY' '$TOOLS/gen_image.py' --help | grep -q -- --input-image"
+expect_fail "minimax rejects image-to-image" "$PY" "$TOOLS/gen_image.py" --backend minimax --input-image "$COMPLIANT/artifact.png" --prompt "edit" --output /tmp/gen-image-i2i-guard.png --candidates 1
+expect_fail "mask requires input image" "$PY" "$TOOLS/gen_image.py" --backend openai --mask "$COMPLIANT/artifact.png" --prompt "edit" --output /tmp/gen-image-mask-guard.png --candidates 1
+expect_fail "candidates must be positive" "$PY" "$TOOLS/gen_image.py" --backend minimax --prompt "edit" --output /tmp/gen-image-candidates-guard.png --candidates 0
+
+echo
 echo "== check_html_fonts =="
 expect_pass "compliant HTML passes"  "$PY" "$TOOLS/check_html_fonts.py" --html "$COMPLIANT/landing.html" --spec "$COMPLIANT/brand-spec.md"
 expect_fail "violation HTML fails"   "$PY" "$TOOLS/check_html_fonts.py" --html "$VIOLATION/landing.html" --spec "$COMPLIANT/brand-spec.md"

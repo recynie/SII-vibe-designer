@@ -21,7 +21,7 @@
 | 题目要求 | 落点 |
 |---|---|
 | 至少三个智能体（规划 / 执行 / 评估）+ 独立上下文 | `vibe-design/.opencode/agent/` 下 4 个 agent：planner（primary）+ researcher / designer / critic（subagent） |
-| 必要的设计工具（文生图等） | `vibe-design/tools/gen_image.py` 双后端文生图 + `html_screenshot.py` |
+| 必要的设计工具（文生图/图生图等） | `vibe-design/tools/gen_image.py` 双后端文生图 + OpenAI-compatible 图生图/编辑 + `html_screenshot.py` |
 | Agent Harness 框架 | opencode 1.4 现成框架（题目允许） |
 | 任务调度 / 信息传递 / 上下文管理 / 错误处理 / 迭代优化 | opencode 原生 + critic 闭环（5 维度评分 + v1→v2 迭代） |
 | 命令行交互 | opencode TUI + 自定义命令 `/design` |
@@ -90,6 +90,12 @@ uv run python vibe-design/tools/verify_facts.py
 uv run python vibe-design/tools/gen_image.py \
   --prompt "minimal flat vector logo, geometric, navy + cyan, no slop" \
   --output /tmp/test.png --backend minimax  # or --backend openai
+
+# 图生图 / 编辑（OpenAI-compatible edits；默认建议单候选）
+uv run python vibe-design/tools/gen_image.py \
+  --input-image /tmp/test.png \
+  --prompt "preserve the geometry, recolor strictly to navy and cyan" \
+  --output /tmp/test-edit.png --backend openai --candidates 1
 ```
 
 ## 端到端验证
@@ -170,7 +176,7 @@ SII-assignment/
     │       ├── copywriting.md
     │       └── ui-mockup.md
     ├── tools/                    # Python CLI（agent 通过 bash 调用）
-    │   ├── gen_image.py          # 双后端文生图
+    │   ├── gen_image.py          # 双后端文生图 + OpenAI-compatible 图生图/编辑
     │   └── html_screenshot.py    # HTML → PNG
     ├── examples/                 # 3 条不同领域 brief
     │   ├── brief-sii-academy.md
@@ -189,7 +195,7 @@ SII-assignment/
 | 图像生成 · 开发省钱 | MiniMax `image-01` | `gen_image --backend minimax` 或 `[active].image = "minimax"` |
 | LLM 备用 | MiniMax `MiniMax-M2.7-highspeed` | opencode.json 已声明，把顶层 `model` 改回去即切换；需要 `MINIMAX_API_KEY` |
 
-切换图像后端：改 `api.toml [active].image = "openai"`（默认）/ `"minimax"`，或 `gen_image --backend minimax` 单次覆盖。**LLM 完全感知不到**，同一份 agent prompt 跑两个后端。
+切换图像后端：改 `api.toml [active].image = "openai"`（默认）/ `"minimax"`，或 `gen_image --backend minimax` 单次覆盖。文生图对 LLM 屏蔽后端；图生图 / 编辑通过 `--input-image` 使用 OpenAI-compatible `images/edits`，若当前 active image 是 minimax，工具会自动路由到 openai。
 
 ## 关键设计决策
 

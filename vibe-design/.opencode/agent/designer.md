@@ -62,7 +62,7 @@ Planner 会给你：
 
 **判断口诀**：规格说"PNG 效果图 / 1200×1600 PNG / 渲染图"→ 走 gen_image；说"落地页 / mockup / 排版 / HTML"→ 走 HTML+截图；说"slogan / 文案 / 命名"→ 走 markdown。规格混淆时回看 researcher 的 deliverables.md 第 X 行的形态描述。
 
-**gen_image 调用模板**（不指定 backend，由环境变量决定；默认并行生成 3 候选）：
+**gen_image 调用模板**（默认不指定 backend，由 api.toml 决定；默认并行生成 3 候选）：
 
 ```bash
 uv run python tools/gen_image.py \
@@ -70,6 +70,8 @@ uv run python tools/gen_image.py \
   --output outputs/<RUN_ID>/artifacts/<slug>/v1.png \
   --aspect-ratio 1:1
 ```
+
+当需要修改图像、编辑图像、或根据参考图像创作时，加 `--input-image <已有图片路径>`。
 
 输出：`v1-1.png`, `v1-2.png`, `v1-3.png` + 各自的 `.prompt.txt` sidecar。
 如需单张（用于 poster/ui-mockup 内嵌配图），传 `--candidates 1`。

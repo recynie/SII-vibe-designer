@@ -76,6 +76,7 @@ opencode 已提供 subagent（独立上下文）、自定义 agent / command / s
 | 所有 agent LLM | **SII `gpt-5.5`**（顶层 `model`，OpenAI 兼容 v1/chat/completions） | opencode 顶层配置；备用 `MiniMax-M2.7-highspeed` 已声明但未选中 |
 | 图像生成（开发期） | MiniMax `image-01` | 迭代 prompt 时省钱；`api.toml [active].image = "minimax"` 切换 |
 | 图像生成（正式 run） | **gpt-image-2**（默认） | 答辩与最终交付用 |
+| 图生图 / 编辑 | OpenAI-compatible `images/edits`（默认 gpt-image-2） | `gen_image --input-image` 进入；MiniMax active 时自动路由到 openai |
 
 `gen_image.py` 签名对 LLM 屏蔽后端：
 
@@ -86,7 +87,7 @@ uv run python tools/gen_image.py \
   --aspect-ratio 1:1
 ```
 
-后端由 `vibe-design/tools/api_config.py` 解析（优先级：`--backend` CLI > `api.toml [active].image`），凭据从 `api.toml [providers.<backend>]` 取。Designer prompt 里就一句"调 gen_image"，开发与正式跑同一份 agent 逻辑，避免后端切换引入差异。
+后端由 `vibe-design/tools/api_config.py` 解析（优先级：`--backend` CLI > `api.toml [active].image`），凭据从 `api.toml [providers.<backend>]` 取。Designer prompt 里就一句"调 gen_image"，开发与正式跑同一份 agent 逻辑，避免后端切换引入差异。图生图 / 编辑通过 `--input-image` 调 `edits_url`；若 active image 是 minimax，工具会自动路由到 openai，因为 MiniMax 后端当前不支持该模式。
 
 ---
 
@@ -109,7 +110,7 @@ vibe-design/                      # 项目根
 │       ├── copywriting.md
 │       └── ui-mockup.md
 ├── tools/                        # Python CLI（agent 通过 bash 调用 + 项目内部质检）
-│   ├── gen_image.py              # 双后端文生图（agent 用）
+│   ├── gen_image.py              # 双后端文生图 + OpenAI-compatible 图生图/编辑（agent 用）
 │   ├── html_screenshot.py        # HTML → PNG（agent 用，playwright/chromium）
 │   ├── verify_demo_panel.py      # 内部质检：playwright 检查 PPT D-key panel 链接
 │   └── verify_facts.py           # 内部质检：跨文档事实陈述与仓库一致
@@ -156,7 +157,7 @@ final.md               # planner 的最终交付说明
 ## 7. 实施顺序
 
 1. `opencode.json` + `.env`（`SII_API_KEY`）接通 SII `gpt-5.5`，确认 opencode 能跑通基础对话；备用 provider `minimax-cn-coding-plan/MiniMax-M2.7-highspeed` 已声明，把顶层 `model` 改回去并提供 `MINIMAX_API_KEY` 即切回
-2. `gen_image.py` 路由 minimax / gpt-image-2 + `html_screenshot.py`（playwright）
+2. `gen_image.py` 路由 minimax / gpt-image-2（含 OpenAI-compatible 图生图/编辑）+ `html_screenshot.py`（playwright）
 3. `designer.md` + `critic.md`，跑通"出图 → 评 → 改"最小回路
 4. 加 `researcher.md` + `planner.md`，串成完整链路
 5. `/design` 命令 + `examples/brief-sii-academy.md` 端到端
@@ -194,7 +195,7 @@ final.md               # planner 的最终交付说明
 | 题目要求 | 落点 |
 |---|---|
 | 至少三个智能体（Planner / Designer / Critic）+ 独立上下文 | §2，opencode subagent 天然独立；本系统是 4 个（多了 researcher） |
-| 必要的设计工具（文生图等） | `tools/gen_image.py` + `tools/html_screenshot.py` |
+| 必要的设计工具（文生图/图生图等） | `tools/gen_image.py` + `tools/html_screenshot.py` |
 | Agent Harness 框架 | opencode 1.4（题目允许直接用现成开源） |
 | 任务调度 / 信息传递 / 上下文管理 / 错误处理 / 迭代优化 | opencode 原生 + critic 闭环（§3） |
 | 命令行交互 | opencode TUI + `/design` 命令 |
