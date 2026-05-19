@@ -31,16 +31,16 @@ subagent 调用方式：
 ### designer
 | | |
 |---|---|
-| 输入 | 任务名、目标产物路径、RUN_DIR |
-| 输出 | `artifacts/<slug>/v<n>.<ext>` + `v<n>.prompt.txt`（图）或 HTML 头注释（HTML） |
-| 职责 | 按 brand-spec 约束创作。调 gen_image / 写 HTML / 写文案。工具链由产物形态决定。 |
+| 输入 | 任务名、目标产物目录、RUN_DIR；多子产物时给出子产物清单 |
+| 输出 | 单产物：`artifacts/<slug>/v<n>.<ext>`；多子产物：`artifacts/<slug>/<sub-slug>/v<n>.<ext>` |
+| 职责 | 按 brand-spec 约束创作。调 gen_image / 写 HTML / 写文案。工具链由产物形态决定。一个 designer 处理一个交付物的全部子产物。 |
 
 ### critic
 | | |
 |---|---|
-| 输入 | 实物路径 `artifacts/<slug>/v<n>.<ext>` + RUN_DIR |
+| 输入 | 单产物：`artifacts/<slug>/v<n>.<ext>` + RUN_DIR；多子产物：`artifacts/<slug>/` 目录 + 子产物清单 + RUN_DIR |
 | 输出 | `artifacts/<slug>/v<n>.review.md` |
-| 职责 | 机器校验 + 主观打分。不修改文件、不调度其他 agent。 |
+| 职责 | 机器校验 + 主观打分。多子产物时逐个评分并给出整体判定。不修改文件、不调度其他 agent。 |
 
 ## 流程
 
@@ -86,8 +86,14 @@ cat > outputs/<RUN_ID>/plan.md <<'EOF'
 
 ## 子任务映射
 （按 deliverables.md 显式+隐式逐条列出，不增不删）
+
+单产物条目：
 - <名称> | artifacts/<slug>/v1.<ext>
-...
+
+多子产物条目（deliverables.md 中含缩进子条目的）：
+- <主名称> | artifacts/<parent-slug>/
+  - <子产物名> | artifacts/<parent-slug>/<sub-slug>/v1.<ext>
+  - <子产物名> | artifacts/<parent-slug>/<sub-slug>/v1.<ext>
 
 ## 拒绝项
 （复制 deliverables.md 拒绝段）
@@ -97,7 +103,7 @@ cat > outputs/<RUN_ID>/plan.md <<'EOF'
 EOF
 ```
 
-plan.md 是映射记录。不在此增删交付物——有疑虑写 `escalate.md`。
+plan.md 是映射记录。不在此增删交付物——有疑虑写 `escalate.md`。多子产物条目用嵌套目录结构，每个子产物一个子目录。
 
 ### 4. 调度
 
@@ -111,6 +117,8 @@ plan.md 是映射记录。不在此增删交付物——有疑虑写 `escalate.m
 
 对一组独立交付物，用 `task` 工具并行启动 designer：
 
+**单产物条目**：
+
 ```
 task(subagent_type: "designer", description: "<名称>", background: true, prompt: "
 任务：<名称>
@@ -120,17 +128,49 @@ task(subagent_type: "designer", description: "<名称>", background: true, promp
 ")
 ```
 
+**多子产物条目**（deliverables.md 中含缩进子条目）：
+
+```
+task(subagent_type: "designer", description: "<主名称>", background: true, prompt: "
+任务：<主名称>
+目标目录：outputs/<RUN_ID>/artifacts/<parent-slug>/
+子产物：
+  - <子产物名> → artifacts/<parent-slug>/<sub-slug>/v1.<ext>
+  - <子产物名> → artifacts/<parent-slug>/<sub-slug>/v1.<ext>
+参考：outputs/<RUN_ID>/brand-spec.md、outputs/<RUN_ID>/deliverables.md
+按子产物列出顺序逐个执行（后续子产物可能依赖前面子产物的产出）。完成后报告所有输出路径。
+")
+```
+
+多子产物作为一个 designer 任务整体调度——designer 在一次执行中处理所有子产物。
+
 每个 task 返回 `task_id`。全部启动后，用 `task_status(task_id, wait: true)` 逐个收集结果。
 
 #### 评审
 
 对 designer 成功产出的交付物调 critic。多个 critic 同样可以用 `task` + `background: true` 并行：
 
+**单产物条目**：
+
 ```
 task(subagent_type: "critic", description: "<名称> review", background: true, prompt: "
 实物：outputs/<RUN_ID>/artifacts/<slug>/v<n>.<ext>
 上下文：outputs/<RUN_ID>/
 落 v<n>.review.md。完成后报告路径。
+")
+```
+
+**多子产物条目**：
+
+```
+task(subagent_type: "critic", description: "<主名称> review", background: true, prompt: "
+交付物：<主名称>
+子产物目录：outputs/<RUN_ID>/artifacts/<parent-slug>/
+子产物清单：
+  - <子产物名>：artifacts/<parent-slug>/<sub-slug>/v<n>.<ext>
+  - <子产物名>：artifacts/<parent-slug>/<sub-slug>/v<n>.<ext>
+上下文：outputs/<RUN_ID>/
+逐个评审子产物后给出整体判定，落 artifacts/<parent-slug>/v<n>.review.md。完成后报告路径。
 ")
 ```
 
@@ -178,6 +218,11 @@ test -f outputs/<RUN_ID>/artifacts/<slug>/v<n>.review.md || echo "MISSING_REVIEW
 按 deliverables.md 顺序：
 - <名> artifacts/<slug>/v?.<ext> — 评审 **xx/25**（通过 / 不通过 / escalate）
   调性 x/5 · 气质 x/5 · 构图 x/5 · 信息层级 x/5 · 完成度 x/5
+
+多子产物条目：
+- <主名> artifacts/<parent-slug>/ — 整体评审 **xx/25**（通过 / 不通过 / escalate）
+  - <子产物名> artifacts/<parent-slug>/<sub-slug>/v?.<ext> — x/5
+  - <子产物名> artifacts/<parent-slug>/<sub-slug>/v?.<ext> — x/5
 
 ## 拒绝项
 <复制 deliverables.md 拒绝段>

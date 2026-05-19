@@ -28,8 +28,12 @@ researcher 提供：
 
 Planner 会给你：
 - 任务名（来自 `deliverables.md`）
-- 目标产物路径（`outputs/<RUN_ID>/artifacts/<slug>/v?.<ext>`）
+- 目标产物路径或目录
 - 资产目录（`outputs/<RUN_ID>/assets/`）
+
+**单产物任务**：Planner 给一个目标路径（`outputs/<RUN_ID>/artifacts/<slug>/v?.<ext>`）。
+
+**多子产物任务**：Planner 给一个目标目录（`outputs/<RUN_ID>/artifacts/<parent-slug>/`）+ 子产物清单，每个子产物有名称、子目录路径和规格。你在一次执行中逐个处理所有子产物。
 
 开始前读取：
 
@@ -38,7 +42,7 @@ outputs/<RUN_ID>/brand-spec.md
 outputs/<RUN_ID>/deliverables.md
 ```
 
-第二轮修改时还要读取同目录的 `v1.review.md`。
+第二轮修改时还要读取同目录的 `v1.review.md`（多子产物时在 `artifacts/<parent-slug>/v1.review.md`）。
 
 ## Skill 加载
 
@@ -79,10 +83,22 @@ outputs/<RUN_ID>/deliverables.md
 | 纯文案 markdown | 写 markdown | `v1.md` + `v1.prompt.txt` |
 
 判断规则：
-- 规格写“使用 `assets/...` 导出 / 转换 / 裁切” → 用 ImageMagick 处理本地素材。
-- 规格写“HTML / 落地页 / mockup / 排版” → 写 HTML，并在需要时引用本地素材。
-- 规格写“slogan / 文案 / 命名 / 简介” → 写 markdown。
-- 规格写“PNG 效果图 / 渲染图”且没有指定本地素材作为主体 → 用 `gen_image.py`。
+- 规格写”使用 `assets/...` 导出 / 转换 / 裁切” → 用 ImageMagick 处理本地素材。
+- 规格写”HTML / 落地页 / mockup / 排版” → 写 HTML，并在需要时引用本地素材。
+- 规格写”slogan / 文案 / 命名 / 简介” → 写 markdown。
+- 规格写”PNG 效果图 / 渲染图”且没有指定本地素材作为主体 → 用 `gen_image.py`。
+
+## 多子产物执行
+
+收到多子产物任务时，按 Planner 给出的子产物列表顺序逐个执行：
+
+1. 为每个子产物创建子目录：`mkdir -p outputs/<RUN_ID>/artifacts/<parent-slug>/<sub-slug>`
+2. 根据每个子产物的规格独立选择工具链（不同子产物可以走不同路由）
+3. 根据每个子产物的类型加载对应的 `design-guidelines` 参考文件
+4. 按顺序执行——后续子产物的规格如果引用了前面子产物的产出（如「基于 logo 子产物生成 T 恤效果图」），使用前面子产物的实际输出路径
+5. 每个子产物完成后做视觉自检，再继续下一个
+
+路径规范：`outputs/<RUN_ID>/artifacts/<parent-slug>/<sub-slug>/v<n>.<ext>`。中间文件写到 `outputs/<RUN_ID>/scratch/<parent-slug>/<sub-slug>/`。
 
 ## ImageMagick 示例
 
@@ -158,10 +174,11 @@ HTML 中只能使用 `brand-spec.md` 允许的字族。需要图片时引用 `ou
 
 所有文件只能写到 `outputs/<RUN_ID>/` 下：
 
-- 最终产物：`outputs/<RUN_ID>/artifacts/<slug>/v?.<ext>`
-- 中间文件：`outputs/<RUN_ID>/scratch/<slug>/<name>.<ext>`
+- 单产物最终产物：`outputs/<RUN_ID>/artifacts/<slug>/v?.<ext>`
+- 多子产物最终产物：`outputs/<RUN_ID>/artifacts/<parent-slug>/<sub-slug>/v?.<ext>`
+- 中间文件：`outputs/<RUN_ID>/scratch/<slug>/<name>.<ext>`（多子产物：`scratch/<parent-slug>/<sub-slug>/`）
 
-不要写到 `/tmp/`、`~/` 或 run 目录之外。不要把中间文件放进 `artifacts/<slug>/`。
+不要写到 `/tmp/`、`~/` 或 run 目录之外。不要把中间文件放进 `artifacts/`。
 
 ## 设计约束
 
@@ -189,11 +206,12 @@ HTML 中只能使用 `brand-spec.md` 允许的字族。需要图片时引用 `ou
 
 ## 第二轮修改
 
-读取 `v1.review.md`：
+读取 review.md（单产物：`v1.review.md`；多子产物：`artifacts/<parent-slug>/v1.review.md`）：
 
 - 机器判定失败：按 review 指出的文件、行号、hex、字族修复。
 - 主观分低但机器通过：保留 v1 核心方向，只修 review 指出的具体问题。
 - v2 文件顶部写明来自 `v1.review.md` 的改动依据。
+- 多子产物时，只修改 review 中指出问题的子产物，其余子产物直接保留 v1。
 
 ## 报告
 
