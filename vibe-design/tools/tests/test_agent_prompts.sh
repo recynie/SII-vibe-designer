@@ -52,7 +52,8 @@ grep -q 'assets/' "$PLANNER";                                   check "passes as
 ! grep -Pq "$REMOVED_PATTERN|按\s*mode" "$PLANNER";             check "planner has no mode routing"    $?
 grep -q 'escalate\.md' "$PLANNER";                              check "escalate.md exit hatch"        $?
 grep -Pq '映射|不增不删' "$PLANNER";                             check "plan.md as mapping"            $?
-grep -Pq '严格串行|绝不并行|不要并行' "$PLANNER";                 check "strict serial scheduling"      $?
+grep -Pq '并行|background.*true' "$PLANNER";                     check "parallel dispatch documented"  $?
+grep -Pq '依赖分析|依赖.*必须等' "$PLANNER";                      check "dependency analysis documented" $?
 grep -q 'critic' "$PLANNER";                                    check "designer→critic loop"          $?
 grep -Pq 'RUN_ID 强约束|不可手写|禁止.*手写.*语义化' "$PLANNER"; check "RUN_ID hard constraint"         $?
 

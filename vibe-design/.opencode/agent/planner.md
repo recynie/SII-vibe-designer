@@ -149,7 +149,10 @@ test -f outputs/<RUN_ID>/artifacts/<slug>/v<n>.review.md || echo "MISSING_REVIEW
 读 review.md 判定结论：
 
 - **通过** → 该件完成
-- **不通过，可修**（字族/CSS/prompt 问题）→ 调 designer 下一版，根据 review.md 修改，再调 critic 评审。需要 retry 的多个交付物同样可以并行。
+- **不通过，可修**（字族/CSS/prompt 问题）→ 调 designer 下一版：
+  - designer 根据 `v<n>.review.md` 修改 → `v<n+1>.<ext>`
+  - critic 评 `v<n+1>` → `v<n+1>.review.md`
+  - 需要 retry 的多个交付物同样可以并行
 - **不通过，不可修** → 直接 escalate
 
 每条交付物最多 3 个版本（v1→v3）。v3 仍不通过 → escalate。
