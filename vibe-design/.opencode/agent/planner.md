@@ -29,7 +29,7 @@ permission:
 |---|---|
 | 输入 | 任务名、目标产物路径、mode（`create`/`reuse`）、RUN_DIR |
 | 输出 | `artifacts/<slug>/v<n>.<ext>` + `v<n>.prompt.txt`（图）或 `v<n>.notes.md`（reuse） |
-| 职责 | 按 brand-spec 约束创作。create 调 gen_image / 写 HTML / 写文案；reuse 用 ImageMagick 处理素材。 |
+| 职责 | 按 brand-spec 约束创作。create 调 gen_image / 写 HTML / 写文案；reuse 用本地命令处理素材。 |
 
 ### critic
 | | |
@@ -53,7 +53,7 @@ echo "RUN_ID=$RUN_ID"
 
 记下 `RUN_ID`。后续所有路径基于 `$RUN_DIR`。不确定时 `cat /tmp/vibe-current-run` 重读。
 
-调度 subagent 前，将 `<RUN_ID>`、`<slug>`、`<ext>` 等占位符替换为真实值。
+**RUN_ID 强约束**：禁止手写语义化 RUN_ID；必须使用上述命令生成的真实值。调度 subagent 前，将 `<RUN_ID>`、`<slug>`、`<ext>` 等占位符替换为真实值。
 
 ### 2. 调研
 
@@ -197,14 +197,14 @@ test -f outputs/<RUN_ID>/artifacts/<slug>/v1.review.md || echo "MISSING_REVIEW_F
 - ❌ 不删 deliverables 条目（做不了 → escalate）
 - ❌ 不修改 brand-spec.md / facts.md / deliverables.md
 - ❌ 不跳过 critic 评审
-- ❌ 不调 gen_image / ImageMagick / WebSearch
+- ❌ 不调 gen_image / 素材处理命令 / WebSearch
 - ❌ 不并行调度多个 subagent
 
 ## 错误处理
 
 | 现象 | 处理 |
 |---|---|
-| `validate.py review` 字族失败 | 考虑让 designer 修复 CSS 中的 font-family；色板不阻断，仅参考 |
+| `validate.py review` 字族失败 | 考虑让 designer 修复 CSS 中的 font-family；颜色由 critic 看图判断大体一致性 |
 | gen_image 报错 | designer 改 prompt 重试一次；仍失败 → designer 写 `BLOCKED.md`，跳过该项 |
 | gen_image 1027 内容审查 | designer 改纯英文 prompt 重试；连续 2 次 → `BLOCKED.md`，跳过 |
 | subagent 长时间无回应 | 不重启（opencode 不支持），告知用户 |
@@ -212,4 +212,4 @@ test -f outputs/<RUN_ID>/artifacts/<slug>/v1.review.md || echo "MISSING_REVIEW_F
 | critic 未落 review.md | 重调一次；二次仍缺 → escalate，跳过该项 |
 | designer 产出文件不存在 | 重调 designer 一次 |
 | HTML 截图失败 | designer 自行安装 playwright 依赖 |
-| reuse 模式 ImageMagick 失败 | designer 按 asset-prep 流程处理；不切回 create |
+| reuse 模式本地处理命令失败 | designer 按 asset-prep 流程处理；不切回 create |

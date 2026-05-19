@@ -52,12 +52,11 @@ grep -Pq 'RUN_ID 强约束|不可手写|禁止.*手写.*语义化' "$PLANNER"; c
 echo
 echo "== critic =="
 grep -q '^## 机器判定'   "$CRITIC"; check "has '## 机器判定' section"     $?
-grep -q '^## 色板参考'   "$CRITIC"; check "has '## 色板参考' section"     $?
+grep -q '^## 实物观察'   "$CRITIC"; check "has '## 实物观察' section"     $?
 grep -q '^## 主观打分'   "$CRITIC"; check "has '## 主观打分' section"     $?
 grep -q '^## 改进建议'   "$CRITIC"; check "has '## 改进建议' section"     $?
 grep -q '机器硬门槛结果' "$CRITIC"; check "machine-gate verdict present"  $?
 
-grep -Pq '色板.{0,8}(不阻断|不参与)' "$CRITIC";  check "palette marked non-blocking"  $?
 grep -Pq '字族.{0,12}(必跑|必过|硬门槛)' "$CRITIC"; check "fonts hard-gated"           $?
 
 grep -Pq '\bx/5\b'        "$CRITIC"; check "per-axis range x/5"   $?
@@ -81,7 +80,7 @@ echo "== designer =="
 grep -q 'create 模式'       "$DESIGNER"; check "has create mode branch"      $?
 grep -q 'reuse 模式'        "$DESIGNER"; check "has reuse mode branch"       $?
 grep -q '禁调 gen_image'    "$DESIGNER"; check "reuse forbids gen_image"     $?
-grep -Pq 'imagemagick|ImageMagick|convert' "$DESIGNER"; check "mentions ImageMagick" $?
+grep -Pq '颜色大体一致|大体一致性' "$DESIGNER"; check "designer uses visual color sanity" $?
 grep -q 'asset-prep'        "$DESIGNER"; check "references asset-prep skill" $?
 
 # -- Skills invariants --
@@ -95,13 +94,7 @@ done
 
 test -f "$SKILLS/asset-prep/SKILL.md";            check "asset-prep/SKILL.md exists"       $?
 grep -q '禁调 gen_image' "$SKILLS/asset-prep/SKILL.md"; check "asset-prep forbids gen_image" $?
-grep -q 'convert '        "$SKILLS/asset-prep/SKILL.md"; check "asset-prep has convert recipe" $?
-
-# -- System dependencies --
-
-echo
-echo "== system deps =="
-command -v convert >/dev/null; check "ImageMagick convert available" $?
+grep -Pq 'Read.*输出图|目视确认' "$SKILLS/asset-prep/SKILL.md"; check "asset-prep has visual self-check" $?
 
 echo
 echo "== summary: $pass passed, $fail failed =="

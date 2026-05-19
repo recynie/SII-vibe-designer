@@ -27,7 +27,7 @@ Major version means that the system can:
 |---|---|
 | `README.md` | 项目整体说明，包含架构概览、快速开始、demo run 汇总、已知局限等 |
 | `CHANGELOG.md` | 完整迭代历史记录 |
-| `pyproject.toml` | Python 项目配置（依赖：pillow、playwright） |
+| `pyproject.toml` | Python 项目配置（依赖：playwright） |
 | `uv.lock` | uv 锁文件 |
 | `.venv/` | uv 虚拟环境（Python 3.12.3），通过 `uv sync` 创建，已 gitignore |
 | `.env` | 仅本地，opencode 用 — `opencode.json` 里 `{env:MINIMAX_API_KEY}` 走这里。Python 脚本不再读它 |

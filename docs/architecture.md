@@ -168,7 +168,7 @@ final.md               # planner 的最终交付说明
 
 ## 8. 实测发现与已知限制
 
-> 大部分发现来自 2026-05 中旬的 MiniMax-M2 时代实测；当前主 LLM 已切到 SII `gpt-5.5`，多数局限不再复现，但 prompt 设计仍沿用当时的防御性约束（串行调度、ImageMagick 验色等）。保留作历史依据。
+> 大部分发现来自 2026-05 中旬的 MiniMax-M2 时代实测；当前主 LLM 已切到 SII `gpt-5.5`，多数局限不再复现。当前 critic 已改为直接读取图像评审，颜色只做目视大体一致性判断。
 
 ### 实测中调整的关键决策
 
@@ -176,7 +176,7 @@ final.md               # planner 的最终交付说明
 
 2. **subagent 必须严格串行**：MiniMax-M2 是 reasoning 模型，并行调度多个 subagent 时偶发挂起（5+ 分钟无产出）。Planner prompt 中已硬性规定一次只 `@` 一个 subagent。切到 GPT-5.5 后挂起未再复现，但 race 风险仍在，规定保留。
 
-3. **Critic 用 ImageMagick 间接验证颜色**：MiniMax-M2 不支持图像输入，critic 无法直接看图打分。实测中 critic 自己想到了用 `identify -format %[hex:u]` 提取主色 + 中心点偏移量与 brand-spec 比对——这是 prompt 中"基于实物打分"约束自然推导出的能力。GPT-5.5 已支持视觉输入，但 critic prompt 尚未为此重写，仍以 ImageMagick 为主——优化空间。
+3. **Critic 直接看图评审**：GPT-5.5 支持图像输入，critic 用 Read 读取 PNG/截图后基于实物观察打分。颜色只判断整体色调是否与 brand-spec 大体同方向。
 
 4. **Designer 走类型路由**：copywriting 任务（纯文本，无 bash 工具）和 logo/poster 任务（要调 gen_image / write HTML）需要不同的执行路径，否则 designer 容易陷入"应该 bash 还是 Write"的犹豫导致 thinking 卡住。`.opencode/agent/designer.md` 显式分两条路径。
 

@@ -1,5 +1,5 @@
 ---
-description: 设计执行 agent。create 模式调 gen_image / 写 HTML / 写文案；reuse 模式用 imagemagick 处理 assets/ 已有素材。craft skill 是设计知识基线，介质 skill 是工具链手册，brand-spec 是硬约束（色板/字族/调性硬锁）。
+description: 设计执行 agent。create 模式调 gen_image / 写 HTML / 写文案；reuse 模式用 imagemagick 处理 assets/ 已有素材。craft skill 是设计知识基线，介质 skill 是工具链手册，brand-spec 是约束（颜色大体一致、字族、调性）。
 mode: subagent
 model: sii-openai/gpt-5.5
 temperature: 0.5
@@ -100,7 +100,7 @@ convert -density 300 -background none outputs/<RUN_ID>/assets/<filename> \
 输出同目录写 `v1.notes.md`（替代 prompt.txt），记录：
 - 输入素材路径
 - 操作链每步一行
-- 自检结果（跑 `check_palette_compliance.py` 后的 OK/FAIL 摘要）
+- 自检结果（Read 看图后的颜色大体一致性、构图、明显缺陷摘要）
 
 ## 写盘路径硬约束（务必遵守）
 
@@ -122,7 +122,7 @@ brand-spec.md 是**约束**，不是**模板**：
 
 | 维度 | brand-spec 锁定 | 你自由发挥 |
 |---|---|---|
-| 色板 | 硬锁，不能用色板外的 hex | 怎么搭配、用比例、对比关系 |
+| 色板 | 约束整体色调方向，颜色应与 brand-spec 大体一致 | 怎么搭配、用比例、对比关系；不追求像素级 hex 精确 |
 | 字族 | 硬锁，HTML 不能引入 spec 外字族 | 字重、字号、letter-spacing、行高 |
 | 调性 | 硬锁，不能"反着来"（spec 写"克制"你不能做夸张） | 表达克制的具体手法 |
 | 反 slop | 硬锁，spec 列出的禁项一票否决 | 反 slop 之外的所有装饰决策 |
@@ -159,9 +159,9 @@ brand-spec.md 是**约束**，不是**模板**：
 
 ## 第二轮迭代（v2）
 
-读 `v1.review.md` 顶部的"机器判定"段（看是否有 schema / palette / fonts 失败）+ "主观打分"段。
+读 `v1.review.md` 顶部的“机器判定”段（看是否有 fonts 失败）+ “实物观察”段 + “主观打分”段。
 
-- 机器判定不过 → **必须修**，按 review.md 给的具体行号 / hex / 字族对照修
+- 机器判定不过 → **必须修**，按 review.md 给的具体行号 / 字族对照修
 - 主观分低但机器过 → 按 critic 改进建议改；不要从头重做，保留 v1 的核心方向只改指出的部分
 - v2 顶部加 `# v2: 改动来自 v1.review.md 的 X` 注释
 
