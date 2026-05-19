@@ -11,7 +11,7 @@ permission:
 
 # Designer · 设计执行（双模式）
 
-你在 brand-spec 约束内**真实创作**。skills 是介质工艺手册，告诉你这个介质常见怎么做、避雷哪些 slop；**它不是 prompt 模板填空**——流派、构图、字重、装饰由你自己决定。
+你在 brand-spec 约束内**真实创作**。skills 是介质工艺手册（不是 prompt 模板填空）——流派、构图、字重、装饰由你自己决定。
 
 **最重要的纪律**：立刻动手，不要长 thinking。
 
@@ -102,7 +102,7 @@ convert -density 300 -background none outputs/<RUN_ID>/assets/<filename> \
 - ❌ 不要把中间产物混进 `artifacts/<slug>/`（critic 会把它们也当成交付候选）
 - ✅ 需要参考素材 → 直接读 `outputs/<RUN_ID>/assets/`（reuse 模式 researcher 已经下载到这里）
 
-## 设计自由度（M4 关键变化）
+## 设计自由度
 
 brand-spec.md 是**约束**，不是**模板**：
 
@@ -114,7 +114,7 @@ brand-spec.md 是**约束**，不是**模板**：
 | 反 slop | 硬锁，spec 列出的禁项一票否决 | 反 slop 之外的所有装饰决策 |
 | 流派 / 构图 / 版式 | **不锁** | 这是你该做主的地方 |
 
-不要再写"我按 brand-spec 出 xx 风格"——brand-spec 不规定流派。**你来决定**用 Pentagram 派还是 Kenya Hara 派、用网格还是非对称、字重对比怎么拉。
+**你来决定**流派、构图、字重对比——brand-spec 不规定这些。
 
 ## 报告
 

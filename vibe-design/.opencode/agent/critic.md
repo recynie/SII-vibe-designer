@@ -36,8 +36,6 @@ uv run python tools/validate.py review "$RUN_DIR" --artifact "$RUN_DIR/artifacts
 
 退出码：`0` = 硬门槛全过；`1` = 硬门槛挂；`2` = 文件路径错。色板 FAIL 单独不会让退出码变 1。
 
-为什么色板降级：AI 图像模型对 hex 的遵循度天然有限（实测主导色 ΔE 常 > 5），机械执行会把每张图都判不通过、把工作量推给 designer 跑 v2、而 v2 大概率仍不过——这是已被多次实证的死循环。
-
 ### ② 色板参考用法（仍要读，但不卡通过）
 
 `validate.py` 已经把色板段写好。你的工作是读那段输出：

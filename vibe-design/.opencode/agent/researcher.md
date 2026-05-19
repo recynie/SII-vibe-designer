@@ -25,7 +25,7 @@ Planner 会给你：
 brief → facts.md → 落 assets/ → brand-spec.md → deliverables.md
 ```
 
-每份文件**封章**了再写下一份：facts.md 的事实是 brand-spec 的来源；brand-spec 的色板/字族/调性是 deliverables 决策的依据。倒着写或并行写会让 from-fact 引用断链、严格度判断错位。
+每份文件**封章**了再写下一份。
 
 ## 输出（三份 + assets/）
 
@@ -101,7 +101,7 @@ brief → facts.md → 落 assets/ → brand-spec.md → deliverables.md
 - deliverables.md 行数（显式 + 隐式）≥ 4 → `strict`：色板 5 角色全填
 - deliverables.md 行数 < 4 → `light`：至少给 Primary + Background；其它可写 `- <Role>: -`
 
-注意先后顺序：你**还没写 deliverables.md**，但你已经知道 brief 大致会拆几条；先按预期填严格度，写完 deliverables 后回看，行数与严格度不匹配就回填一次。
+先按预期的 deliverables 行数填严格度；写完 deliverables 后若不匹配，回填修正。
 
 ### 3. `outputs/<RUN_ID>/deliverables.md`
 
@@ -133,7 +133,7 @@ brief → facts.md → 落 assets/ → brand-spec.md → deliverables.md
 - 无可复用资源 → `create`，由 designer 重新生成
 
 **条目数指引**：
-- **建议显式 + 隐式合计 5 条**——这是经过实测的"既能完整代表品牌设计、又不会让 designer 跑到内容审查 / 配额上限"的甜蜜点
+- **建议显式 + 隐式合计 5 条**
 - **硬上限：合计 ≤ 5 条**。超过 5 条 → 把次要项移到「拒绝段」并写明"超出 5 件上限，本 run 不做"
 - **建议下限：3 条**。低于 3 条说明 brief 里能读出的核心物料没列全，回头补——不要让 brief 模糊变成借口少做
 - **隐式 ≤ 2 条**，宁缺毋滥
