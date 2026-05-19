@@ -5,7 +5,6 @@ description = "Vibe Design - multi-agent design system based on opencode harness
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
-    "pillow>=12.2.0",
     "playwright>=1.59",
 ]
 

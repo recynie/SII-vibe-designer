@@ -12,7 +12,7 @@
 | `docs/demo-runs/run-20260516-004106-chuangzhi/` | 创智学院（早期版本） | 14 min | 4 类全套 | logo 28/50（v1→v2 迭代触发）· copy 40 · poster 46 · ui 44 |
 | `docs/demo-runs/run-coffee-partial/` | 钝角咖啡（不同领域，泛化测试） | logo 阶段 | brief + spec + logo + critic | logo 36/50（像素级评审） |
 | `docs/demo-runs/run-zhujiajiao-recovered/` | 朱家角古镇（第 3 领域） | logo 阶段 | brief + spec + plan + 6 logos + 2 reviews | 验证 milestone-16 内容审查 fallback |
-| `docs/demo-runs/run-gpt-image-2-evidence/` | hex 色值复现实证 | 单次 | gpt-image-2 单图 + 直方图分析 | 实测 #000A2E 接近目标 #0D1B2A，验证生产后端 |
+| `docs/demo-runs/run-gpt-image-2-evidence/` | 深色复现实证 | 单次 | gpt-image-2 单图观察 | 验证生产图像后端对深色品牌调性的表现 |
 | `docs/demo-runs/run-solenne-gpt-image-2/` | Solenne 香水（gpt-image-2 后端） | logo 阶段 | brief + spec + plan + logo + critic | 32/50 · 第一次完整 e2e 跑生产后端，证明双后端架构透明性 |
 | `docs/demo-runs/run-foundry-copy/` | Foundry Lab（纯文案任务） | 4 min | brief + spec + plan + 3 文案 + 3 reviews + final | 验证 critic 维度自适应：slogan / intro / apps 各 41-42/50 |
 
@@ -196,13 +196,12 @@ SII-assignment/
 1. **串行调度**：原因是 MiniMax-M2 reasoning 在 subagent 并行下会挂起；切到 GPT-5.5 后挂起未再复现，但 planner prompt 仍保留"一次只调一个"以收敛 race 风险
 2. **文件即上下文契约**：subagent 间不互相 @；只通过 `brief.md / brand-spec.md / v?.review.md` 传递信息
 3. **Critic 同时审图与 prompt**：很多 slop 根因在 prompt（generic 词、缺禁忌项），看 prompt 才能给出"改 prompt / 改版式 / 换素材"分层建议
-4. **Critic ImageMagick fallback**：MiniMax-M2 不支持视觉输入时的设计；GPT-5.5 已支持图像理解，critic 可以同时跑机器校验 + 直接看图，但当前 prompt 仍以 ImageMagick 为主——尚未为视觉模型重写 critic
+4. **Critic 直接看图**：当前主模型 GPT-5.5 支持图像理解，critic 用 Read 读取 PNG/截图后基于实物观察打分；色彩只做目视“大体一致”判断
 5. **`--pure` 跳过外部插件**：用户全局插件注入的"parallelize"提示会干扰 subagent，加 `--pure` 启动隔离
 
 ## 已知局限
 
-- **`gpt-image-2` 对深色 hex 复现优于 minimax `image-01`，但仍非像素级精确**（实测 ΔE 3-8 区间，散色由 JPEG 压缩 / 抗锯齿引入，非主动配色失误）
-- **critic 当前 prompt 仍假定 LLM 看不到图**（ImageMagick + brand-spec 文字对照），GPT-5.5 的视觉理解能力**未被启用**——是优化空间不是 bug
+- **图像生成模型仍不能保证像素级 hex 精确**：系统只要求颜色与 brand-spec 大体一致；若用户需要印刷级精确色值，应在设计软件中做最终校色或使用可控矢量/HTML 方案
 - 早期 MiniMax-M2 时代的两个局限：**不支持图像输入** / **subagent 偶发 5+ 分钟长 thinking**（`--pure` 缓解）——切到 GPT-5.5 后均未再复现，保留备查
 
 ## 答辩演示
