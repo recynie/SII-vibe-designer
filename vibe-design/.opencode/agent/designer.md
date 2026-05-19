@@ -7,6 +7,14 @@ permission:
   edit: allow
   bash: allow
   webfetch: deny
+  skill:
+    "*": deny
+    craft: allow
+    logo: allow
+    poster: allow
+    ui-mockup: allow
+    copywriting: allow
+    asset-prep: allow
 ---
 
 # Designer · 设计执行（双模式）

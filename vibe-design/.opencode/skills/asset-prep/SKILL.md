@@ -1,3 +1,8 @@
+---
+name: asset-prep
+description: Toolchain handbook for the reuse mode — processing existing assets under outputs/<RUN_ID>/assets/ with bash + ImageMagick (convert) into versioned artifacts, with palette-compliance self-check and a v1.notes.md log. Forbids calling gen_image. Use when the deliverable spec declares mode: reuse and references an existing assets/<filename> source (logo SVG re-export, palette swap, canvas resize, etc.) — not for creating new imagery from scratch.
+---
+
 # Skill · Asset-Prep（reuse 模式工艺手册）
 
 reuse 介质：bash + ImageMagick 处理 `outputs/<RUN_ID>/assets/` 已有素材。**禁调 gen_image**（reuse 的核心是不重新生成）。

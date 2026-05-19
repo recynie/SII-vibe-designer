@@ -7,6 +7,10 @@ permission:
   edit: allow
   bash: allow
   webfetch: deny
+  skill:
+    "*": deny
+    craft: allow
+    copywriting: allow
 ---
 
 # Critic · 设计评审（机器 + 主观分离）

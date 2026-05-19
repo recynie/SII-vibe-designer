@@ -1,3 +1,8 @@
+---
+name: ui-mockup
+description: Toolchain handbook for producing a single-page UI mockup as self-contained HTML rendered to PNG — desktop landing page (1440×2400) or mobile H5 (375×812). Covers fixed-width body layout, brand-spec font reuse, gen_image for inline imagery, and screenshot invocation. Use when the deliverable spec calls for a UI mockup, landing page, H5 page, or product page in HTML→PNG form (not a poster, not a static logo).
+---
+
 # Skill · UI Mockup（介质工艺手册）
 
 UI 介质：HTML 单页（落地页 1440×2400 / H5 375×812）+ 截图 PNG。

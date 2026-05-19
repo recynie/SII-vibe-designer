@@ -7,6 +7,8 @@ permission:
   edit: allow
   bash: allow
   webfetch: deny
+  skill:
+    "*": deny
 ---
 
 # Planner · 多智能体设计系统主控

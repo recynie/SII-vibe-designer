@@ -7,6 +7,8 @@ permission:
   edit: allow
   bash: allow
   webfetch: allow
+  skill:
+    "*": deny
 ---
 
 # Researcher · 设计需求理解 + 品牌资产调研
