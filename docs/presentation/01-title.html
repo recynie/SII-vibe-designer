@@ -39,7 +39,7 @@
     font-size: 72px;
     line-height: 1.15;
     letter-spacing: -0.02em;
-    margin-bottom: 28px;
+    margin-bottom: 24px;
   }
   .left h1 span { color: var(--cyan); }
 
@@ -78,7 +78,8 @@
   .right {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 18px;
+    justify-content: center;
   }
 
   .card {
@@ -212,6 +213,18 @@
         <li>任务调度 / 信息传递 / 迭代优化 — Planner 串行调度 + Critic 闭环</li>
         <li>端到端交付 — 创智学院完整品牌设计，12 分钟全自主</li>
       </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <h3>模型与后端</h3>
+        <span class="tag">Model Stack</span>
+      </div>
+      <p>
+        LLM：SII <code>gpt-5.5</code>（OpenAI 兼容 v1/chat/completions）<br>
+        图像：开发迭代 MiniMax <code>image-01</code> · 正式交付 <code>gpt-image-2</code><br>
+        配置统一在 <code>api.toml</code>，切换后端不改 agent 代码
+      </p>
     </div>
   </section>
 </main>
