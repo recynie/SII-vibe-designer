@@ -10,7 +10,7 @@ UI 介质：HTML 单页（落地页 1440×2400 / H5 375×812）+ 截图 PNG。
 ## 工艺要点
 - 自包含 HTML，样式内嵌；body 固定宽
 - 字族沿用 brand-spec `## 字体`（check_html_fonts 会拦外来字族）
-- 配图先 gen_image 出到 `assets/`，HTML 相对路径引用
+- 配图先 gen_image 出到 `assets/`，HTML 相对路径引用（配图通常传 `--candidates 1`，无需多候选）
 - 截图：`uv run python tools/html_screenshot.py --html ... --output ... --width ... --height ...`
 
 ## 反 slop 红线

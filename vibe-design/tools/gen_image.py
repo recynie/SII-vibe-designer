@@ -10,17 +10,20 @@ Usage:
     uv run python tools/gen_image.py \\
         --prompt "minimal logo for a coffee startup, geometric, two-tone" \\
         --output outputs/run-x/artifacts/logo/v1.png \\
-        [--aspect-ratio 1:1] [--size 1024x1024]
+        [--aspect-ratio 1:1] [--size 1024x1024] [--candidates 3]
 
-Exit code 0 on success; prints absolute path of saved file to stdout.
+Exit code 0 on success; prints absolute path(s) of saved file(s) to stdout,
+one per line.
 """
 
 from __future__ import annotations
 
 import argparse
 import base64
+import concurrent.futures
 import json
 import sys
+import time
 import urllib.request
 import urllib.error
 from pathlib import Path
@@ -30,9 +33,6 @@ import api_config
 
 
 DEFAULT_UA = "vibe-design/0.1 (+https://github.com/local)"
-
-
-import time
 
 
 def http_post_json(url: str, headers: dict, body: dict, timeout: int = 600, max_retries: int = 5) -> dict:
@@ -145,6 +145,39 @@ def gen_openai(prompt: str, aspect_ratio: str, size: str | None) -> bytes:
     raise SystemExit(f"OpenAI returned unexpected shape: {json.dumps(item)[:200]}")
 
 
+def gen_candidates(backend: str, prompt: str, aspect_ratio: str,
+                   size: str | None, candidates: int) -> list[bytes]:
+    """Fire *candidates* independent n=1 requests in parallel, return successful results."""
+    if backend == "minimax":
+        fn = lambda: gen_minimax(prompt, aspect_ratio)
+    else:
+        fn = lambda: gen_openai(prompt, aspect_ratio, size)
+
+    if candidates == 1:
+        return [fn()]
+
+    results: list[bytes] = []
+    errors: list[str] = []
+    with concurrent.futures.ThreadPoolExecutor(max_workers=candidates) as pool:
+        futures = {pool.submit(fn): i for i in range(candidates)}
+        for fut in concurrent.futures.as_completed(futures):
+            idx = futures[fut]
+            try:
+                results.append(fut.result())
+            except SystemExit as e:
+                errors.append(f"  candidate {idx + 1}: {e}")
+                print(f"  [gen_image] candidate {idx + 1} failed: {e}", file=sys.stderr)
+
+    if not results:
+        raise SystemExit(f"All {candidates} candidates failed:\n" + "\n".join(errors))
+    return results
+
+
+def candidate_path(base: Path, index: int) -> Path:
+    """v1.png + index 2 → v1-2.png"""
+    return base.with_suffix(f"-{index}{base.suffix}")
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description="Generate an image for the design agent.")
     ap.add_argument("--prompt", required=True)
@@ -161,45 +194,51 @@ def main() -> int:
         choices=["minimax", "openai"],
         help="Override api.toml [active].image for a single call",
     )
+    ap.add_argument(
+        "--candidates",
+        type=int,
+        default=3,
+        help="Number of candidate images to generate in parallel (default: 3)",
+    )
     args = ap.parse_args()
 
     backend = args.backend or api_config.active_image_backend()
     if backend not in {"minimax", "openai"}:
         raise SystemExit(f"Unknown backend: {backend}")
 
-    if backend == "minimax":
-        image_bytes = gen_minimax(args.prompt, args.aspect_ratio)
-    else:
-        image_bytes = gen_openai(args.prompt, args.aspect_ratio, args.size)
+    images = gen_candidates(backend, args.prompt, args.aspect_ratio,
+                            args.size, args.candidates)
 
-    real_ext = detect_format(image_bytes)
-    out_path = Path(args.output).expanduser().resolve()
-    requested_ext = out_path.suffix.lstrip(".").lower()
+    base_path = Path(args.output).expanduser().resolve()
+    base_path.parent.mkdir(parents=True, exist_ok=True)
 
-    # If the upstream returned a different format than the user requested, prefer
-    # the real format (silently re-suffix) so downstream tools that key off the
-    # extension don't get fooled. Warn so the caller notices.
-    if requested_ext != real_ext and not (
-        requested_ext in ("jpg", "jpeg") and real_ext == "jpg"
-    ):
-        new_path = out_path.with_suffix(f".{real_ext}")
-        print(
-            f"  [gen_image] backend returned {real_ext.upper()}, requested .{requested_ext}; "
-            f"writing to {new_path.name} instead",
-            file=sys.stderr,
+    for i, image_bytes in enumerate(images, 1):
+        real_ext = detect_format(image_bytes)
+        out_path = candidate_path(base_path, i)
+        requested_ext = out_path.suffix.lstrip(".").lower()
+
+        if requested_ext != real_ext and not (
+            requested_ext in ("jpg", "jpeg") and real_ext == "jpg"
+        ):
+            new_path = out_path.with_suffix(f".{real_ext}")
+            print(
+                f"  [gen_image] candidate {i}: backend returned {real_ext.upper()}, "
+                f"requested .{requested_ext}; writing to {new_path.name} instead",
+                file=sys.stderr,
+            )
+            out_path = new_path
+
+        out_path.write_bytes(image_bytes)
+
+        prompt_path = out_path.with_suffix(out_path.suffix + ".prompt.txt")
+        prompt_path.write_text(
+            f"# backend: {backend}\n# format: {real_ext}\n# aspect: {args.aspect_ratio}\n"
+            f"# candidate: {i}/{len(images)}\n\n{args.prompt}\n",
+            encoding="utf-8",
         )
-        out_path = new_path
 
-    out_path.parent.mkdir(parents=True, exist_ok=True)
-    out_path.write_bytes(image_bytes)
+        print(str(out_path))
 
-    prompt_path = out_path.with_suffix(out_path.suffix + ".prompt.txt")
-    prompt_path.write_text(
-        f"# backend: {backend}\n# format: {real_ext}\n# aspect: {args.aspect_ratio}\n\n{args.prompt}\n",
-        encoding="utf-8",
-    )
-
-    print(str(out_path))
     return 0
 
 
