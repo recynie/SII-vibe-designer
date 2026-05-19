@@ -87,10 +87,10 @@ cat > outputs/<RUN_ID>/plan.md <<'EOF'
 ## 子任务映射
 （按 deliverables.md 显式+隐式逐条列出，不增不删）
 
-单产物条目：
+单产物条目（包括 HTML+PNG 类，它们是一次 designer 调用产出 v1.html + v1.png，属于同一个 slug 目录）：
 - <名称> | artifacts/<slug>/v1.<ext>
 
-多子产物条目（deliverables.md 中含缩进子条目的）：
+多子产物条目（仅当 deliverables.md 中该条目有 2 空格缩进的子条目行时）：
 - <主名称> | artifacts/<parent-slug>/
   - <子产物名> | artifacts/<parent-slug>/<sub-slug>/v1.<ext>
   - <子产物名> | artifacts/<parent-slug>/<sub-slug>/v1.<ext>
@@ -103,7 +103,11 @@ cat > outputs/<RUN_ID>/plan.md <<'EOF'
 EOF
 ```
 
-plan.md 是映射记录。不在此增删交付物——有疑虑写 `escalate.md`。多子产物条目用嵌套目录结构，每个子产物一个子目录。
+plan.md 是映射记录。不在此增删交付物——有疑虑写 `escalate.md`。
+
+**重要区分**：
+- HTML+PNG 类（如 HTML 海报、HTML mockup）是一次 designer 调用在 `artifacts/<slug>/` 下同时产出 `v1.html` 和 `v1.png`——这是单产物条目，不要拆成子产物。
+- 多子产物仅用于 deliverables.md 中**明确使用 2 空格缩进子条目语法**的情况（如品牌文创设计下的 logo + T恤 + 帆布袋）。
 
 ### 4. 调度
 
