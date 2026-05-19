@@ -9,6 +9,17 @@ dependencies = [
     "playwright>=1.59",
 ]
 
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project.scripts]
+e2e-test = "scripts.run_e2e:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["scripts"]
+
 [tool.uv]
+package = true
 # tools/gen_image.py uses only stdlib (urllib + base64), no deps needed.
 # playwright is for tools/html_screenshot.py.

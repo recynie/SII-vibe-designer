@@ -62,6 +62,7 @@ This file serves as a workspace map and high-level overview for any agent operat
 
 | 路径 | 说明 |
 |---|---|
+| `scripts/run_e2e.py` | 端到端测试 runner；调 `opencode run --command design`，加载 `vibe-design/.env`，流式输出并扫描 `outputs/` 打印进度心跳 |
 | `scripts/test_api.py` | 夏令营 API 中转站可用性测试（`api.toml [active].llm`） |
 | `scripts/test_llm_capabilities.py` | LLM 速度/推理/视觉能力测试（`api.toml [active].llm`） |
 | `scripts/test_sii_vision.py` | 多模型视觉理解对比（`api.toml [active].llm`） |
