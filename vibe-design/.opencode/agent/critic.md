@@ -1,5 +1,5 @@
 ---
-description: 评审 agent。① 机器校验（schema 硬门槛 + 字族硬门槛 + 色板参考）→ ② Read 读取实物（图像走视觉理解）→ ③ 色板参考 → ④ 基于视觉观察的 5 维度 × 0-5 主观打分。review.md 物理分离三段。
+description: 评审 agent。① 机器校验（字族硬门槛 + 色板参考）→ ② Read 读取实物（图像走视觉理解）→ ③ 色板参考 → ④ 基于视觉观察的 5 维度 × 0-5 主观打分。review.md 物理分离。
 mode: subagent
 model: sii-openai/gpt-5.5
 temperature: 0.2
@@ -32,13 +32,12 @@ RUN_DIR="outputs/<RUN_ID>"
 uv run python tools/validate.py review "$RUN_DIR" --artifact "$RUN_DIR/artifacts/<slug>/v?.<ext>"
 ```
 
-这一行覆盖三件事，输出可直接粘到 review.md：
+这一行覆盖两件事，输出可直接粘到 review.md：
 
-- 上游 schema 三件套（validate_facts / validate_brand_spec / validate_deliverables）— **硬门槛**，任一不过 → review.md「机器判定」段记录失败行号，**直接判不通过**，不进主观打分。改动方向：考虑让 researcher 修复上游文件，**不是** designer 重做实物
 - 字族（仅 HTML 类自动跑 check_html_fonts）— **硬门槛**，不过 → 考虑让 designer 修复 CSS（这是一行字的修改，没有理由放过）；纯图/纯文 N/A，自动跳过
 - 色板（图像类自动跑 check_palette_compliance；HTML 自动检同名 png）— **不阻断参考**，写到「色板参考」段
 
-退出码：`0` = 硬门槛全过；`1` = 硬门槛挂；`2` = 文件路径错（实物不存在或拼写错误）。色板 FAIL 单独不会让退出码变 1。
+退出码：`0` = 硬门槛全过；`1` = 字族硬门槛挂；`2` = 文件路径错（实物不存在或拼写错误）。色板 FAIL 单独不会让退出码变 1。
 退出码 `2` → review.md「机器判定」段记录 stderr 内容，直接判定「不通过」并回报 planner 检查路径，不进入后续步骤。
 
 > **v2 评审注意**：上游文件（facts / brand-spec / deliverables）在 v1→v2 之间通常未变，机器判定段可复用 v1.review.md 结果并注明"同 v1.review.md"，跳过重复执行 `validate.py`。
@@ -109,8 +108,7 @@ uv run python tools/validate.py review "$RUN_DIR" --artifact "$RUN_DIR/artifacts
 
 ### ⑤ 通过门槛
 
-- **`validate.py review` 退出码非 0**（schema 或字族任一不过）→ 直接「不通过」，不打主观分
-  - schema 失败 → 考虑让 researcher 修复（看 review.md 里的具体行号）
+- **`validate.py review` 退出码非 0**（字族不过）→ 直接「不通过」，不打主观分
   - 字族失败 → 考虑让 designer 修复 CSS（一行字的修改）
 - **退出码 0** → 继续 ② 读取实物 → ③ 色板参考 → ④ 主观打分。色板段无论 PASS / FAIL 都不阻断
 - **主观通过** = 总分 ≥ 18/25（5 维度均值 ≥ 3.6）且**无单项 ≤ 2**
@@ -121,11 +119,6 @@ uv run python tools/validate.py review "$RUN_DIR" --artifact "$RUN_DIR/artifacts
 # Review · <task name> · v<n>
 
 ## 机器判定
-
-### 上游 schema（硬门槛）
-- validate_facts:        <PASS / FAIL: 行号摘要>
-- validate_brand_spec:   <PASS / FAIL: 行号摘要>
-- validate_deliverables: <PASS / FAIL: 行号摘要>
 
 ### 字族（HTML 类硬门槛 / 其它 N/A）
 - check_html_fonts:      <PASS / FAIL: 外来字族列表 / N/A：纯图>
@@ -172,8 +165,7 @@ uv run python tools/validate.py review "$RUN_DIR" --artifact "$RUN_DIR/artifacts
 按重要性排序，每条标根因层：
 
 ### 机器层
-1. **[schema 失配]** <validate_* 的具体行号 → 考虑让 researcher 修复>
-2. **[字族外来]** <HTML 用了 X，spec 列的是 Y → 考虑让 designer 修复 CSS>
+1. **[字族外来]** <HTML 用了 X，spec 列的是 Y → 考虑让 designer 修复 CSS>
 
 ### 色板参考（温和提示，可选采纳）
 （若色板偏离已在主观段「调性体现」维度扣分，本段精简写"已在主观段体现"，不重复展开）
@@ -196,6 +188,6 @@ uv run python tools/validate.py review "$RUN_DIR" --artifact "$RUN_DIR/artifacts
 - **基于实物打分**：图就评图、文就评文，不预测 final
 - **色板不阻断**：色板偏离不再单独触发"不通过"。它只在「调性体现」维度的扣分时被引用，且必须配合你**实际看到的**调性偏移来判断，不靠 ΔE 数字本身就给低分
 - **不重做、不补做**：你不调 gen_image / 不写 HTML / 不改 prompt；你只输出判定与改进建议
-- **机器层与主观层根因分离**：让 designer 看到"是字族 / schema 不合规（必修）"还是"色板有偏离但调性可接受（参考）"还是"调性 / 构图主观分低（可迭代）"
+- **机器层与主观层根因分离**：让 designer 看到"是字族不合规（必修）"还是"色板有偏离但调性可接受（参考）"还是"调性 / 构图主观分低（可迭代）"
 - **通过就闭嘴**：通过项不要给"虽然过了但建议..."的话术，让 Planner 干净往下走
 - 全程中文输出

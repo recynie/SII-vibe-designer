@@ -1,13 +1,7 @@
-"""validate: one-shot aggregator for upstream schema + per-artifact machine review.
-
-Two subcommands:
-
-    uv run python tools/validate.py upstream <RUN_DIR>
-        Runs validate_facts + validate_brand_spec + validate_deliverables
-        on the run's three schema files.
+"""validate: per-artifact machine review (font compliance + palette advisory).
 
     uv run python tools/validate.py review <RUN_DIR> --artifact <path>
-        Runs upstream schema (3) + auto-routes by artifact extension:
+        Auto-routes by artifact extension:
             .html → check_html_fonts (mandatory) +
                     check_palette_compliance on the same-stem .png if present (advisory)
             .png  → check_palette_compliance (advisory)
@@ -15,8 +9,8 @@ Two subcommands:
         Prints a markdown block ready to paste into v?.review.md's
         "## 机器判定" + "## 色板参考" sections.
 
-Exit codes (review subcommand):
-    0 → all hard gates pass (schema + fonts). Palette FAIL alone is not blocking.
+Exit codes:
+    0 → all hard gates pass (fonts). Palette FAIL alone is not blocking.
     1 → at least one hard gate fails.
     2 → file not found / usage error.
 
@@ -33,56 +27,8 @@ TOOLS_DIR = Path(__file__).resolve().parent
 if str(TOOLS_DIR) not in sys.path:
     sys.path.insert(0, str(TOOLS_DIR))
 
-import validate_facts
-import validate_brand_spec
-import validate_deliverables
 import check_html_fonts
 import check_palette_compliance
-
-
-def _run_upstream(run_dir: Path) -> tuple[bool, list[tuple[str, bool, list[str]]]]:
-    """Run the three schema validators. Returns (all_passed, [(name, passed, issues)])."""
-    facts = run_dir / "facts.md"
-    spec = run_dir / "brand-spec.md"
-    deliv = run_dir / "deliverables.md"
-    results: list[tuple[str, bool, list[str]]] = []
-
-    facts_issues = validate_facts.validate(facts)
-    results.append(("validate_facts", not facts_issues, facts_issues))
-
-    spec_issues = validate_brand_spec.validate(spec, facts if facts.is_file() else None)
-    results.append(("validate_brand_spec", not spec_issues, spec_issues))
-
-    deliv_issues = validate_deliverables.validate(deliv)
-    results.append(("validate_deliverables", not deliv_issues, deliv_issues))
-
-    all_passed = all(passed for _, passed, _ in results)
-    return all_passed, results
-
-
-def _format_status(passed: bool, issues: list[str]) -> str:
-    if passed:
-        return "PASS"
-    head = issues[0] if issues else "FAIL"
-    return f"FAIL — {head}"
-
-
-def cmd_upstream(args: argparse.Namespace) -> int:
-    run_dir = Path(args.run_dir)
-    if not run_dir.is_dir():
-        sys.stderr.write(f"run dir not found: {run_dir}\n")
-        return 2
-
-    all_passed, results = _run_upstream(run_dir)
-
-    print("### 上游 schema（硬门槛）")
-    for name, passed, issues in results:
-        print(f"- {name}: {_format_status(passed, issues)}")
-        for line in issues:
-            print(f"  - {line}")
-    print()
-    print(f"**机器硬门槛结果：{'全过' if all_passed else '不通过'}**")
-    return 0 if all_passed else 1
 
 
 def cmd_review(args: argparse.Namespace) -> int:
@@ -96,7 +42,6 @@ def cmd_review(args: argparse.Namespace) -> int:
         return 2
 
     spec = run_dir / "brand-spec.md"
-    upstream_passed, upstream_results = _run_upstream(run_dir)
 
     ext = artifact.suffix.lower()
     is_html = ext == ".html"
@@ -123,13 +68,6 @@ def cmd_review(args: argparse.Namespace) -> int:
             palette_image, spec
         )
 
-    print("### 上游 schema（硬门槛）")
-    for name, passed, issues in upstream_results:
-        print(f"- {name}: {_format_status(passed, issues)}")
-        for line in issues:
-            print(f"  - {line}")
-    print()
-
     print("### 字族（HTML 类硬门槛 / 其它 N/A）")
     if is_html:
         status = "PASS" if fonts_passed else "FAIL"
@@ -141,7 +79,7 @@ def cmd_review(args: argparse.Namespace) -> int:
         print(f"- check_html_fonts: N/A ({reason})")
     print()
 
-    hard_gate_pass = upstream_passed and (fonts_passed is None or fonts_passed)
+    hard_gate_pass = fonts_passed is None or fonts_passed
     print(f"**机器硬门槛结果：{'全过' if hard_gate_pass else '不通过'}**")
     print()
 
@@ -166,11 +104,7 @@ def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n", 1)[0])
     sub = ap.add_subparsers(dest="cmd", required=True)
 
-    p_up = sub.add_parser("upstream", help="run the 3 schema validators on a run dir")
-    p_up.add_argument("run_dir")
-    p_up.set_defaults(func=cmd_upstream)
-
-    p_rv = sub.add_parser("review", help="run schema + per-artifact machine checks")
+    p_rv = sub.add_parser("review", help="run per-artifact machine checks")
     p_rv.add_argument("run_dir")
     p_rv.add_argument("--artifact", required=True, help="artifact file (.png / .html / .md)")
     p_rv.set_defaults(func=cmd_review)

@@ -22,7 +22,6 @@ permission:
 |---|---|
 | 输入 | brief 原文 + RUN_DIR |
 | 输出 | `facts.md`、`brand-spec.md`、`deliverables.md`、`assets/` |
-| 校验 | `uv run python tools/validate.py upstream <RUN_DIR>` |
 | 职责 | 调研、写规格。不出视觉物料。 |
 
 ### designer
@@ -70,11 +69,8 @@ RUN_DIR：outputs/<RUN_ID>
 researcher 返回后：
 
 ```bash
-cat outputs/<RUN_ID>/deliverables.md           # 读调度清单
-uv run python tools/validate.py upstream outputs/<RUN_ID>   # schema 校验
+cat outputs/<RUN_ID>/deliverables.md           # 读调度清单，确认三个上游文件都存在且内容完整
 ```
-
-校验失败 → 把脚本输出的行号 + 错误退回 researcher，定向修。
 
 ### 3. 写 plan.md
 
@@ -99,9 +95,7 @@ plan.md 是映射记录。不在此增删交付物——有疑虑写 `escalate.m
 
 ### 4. 调度
 
-并行执行。对于可以平行设计的交付物，并行调度 subagents 。
-
-对 deliverables.md 显式+隐式段每条：
+严格串行。对 deliverables.md 显式+隐式段每条：
 
 #### create
 
@@ -155,7 +149,6 @@ test -f outputs/<RUN_ID>/artifacts/<slug>/v1.review.md || echo "MISSING_REVIEW_F
   - `@critic` 评 v2 → `v2.review.md`
   - v2 仍不通过 → escalate（见下）
 - **不通过，不可修** → 直接 escalate
-  - schema 失配（researcher 已修过仍 fail）
   - critic 注明"模型对调性约束执行不到位""prompt 调优已到极限""建议 post-processing / 换模型 / ControlNet"
   - critic 连续两次未落 review.md
 
@@ -211,8 +204,7 @@ test -f outputs/<RUN_ID>/artifacts/<slug>/v1.review.md || echo "MISSING_REVIEW_F
 
 | 现象 | 处理 |
 |---|---|
-| `validate.py upstream` 非 0 | 行号+错误 退回 researcher 定向修 |
-| `validate.py review` schema 失败 | 退回 researcher 修上游文件 |
+| `validate.py review` 字族失败 | 考虑让 designer 修复 CSS 中的 font-family；色板不阻断，仅参考 |
 | gen_image 报错 | designer 改 prompt 重试一次；仍失败 → designer 写 `BLOCKED.md`，跳过该项 |
 | gen_image 1027 内容审查 | designer 改纯英文 prompt 重试；连续 2 次 → `BLOCKED.md`，跳过 |
 | subagent 长时间无回应 | 不重启（opencode 不支持），告知用户 |

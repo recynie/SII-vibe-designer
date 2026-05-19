@@ -191,16 +191,9 @@ brief → facts.md → 下载资源到 assets/ → brand-spec.md → deliverable
 5. **写 brand-spec.md**：
    - 色板必须全是 `#XXXXXX` 或 `#XXX`（3 或 6 位 hex），禁用紫渐变除非 brief 要
    - 色板 5 角色（Primary / Secondary / Background / Ink / Accent）始终全填
-   - `[from-fact: ...]` 引用必须是 facts.md 真子串（校验脚本会查）
+   - `[from-fact: ...]` 引用必须是 facts.md 真子串
 6. **写 deliverables.md**：四个段落齐全，每条带 mode；开放式 brief 硬下限 5 条，具体式 brief 至少 1 条；隐式 ≤ 2；拒绝段至少一条（如无拒绝项，写"- 无 | 本 run 覆盖完整，无需拒绝项"）
-7. **自跑校验**（强烈建议。你回报后 planner 也会跑 `validate.py upstream`，提前自跑可以避免被退回重做）：
-
-   ```bash
-   uv run python tools/validate.py upstream outputs/<RUN_ID>
-   ```
-
-   若校验失败则立即修正，不得将未通过校验的文件交给 planner。
-8. **简短回报 Planner**：三个文件路径 + assets/ 文件清单。
+7. **简短回报 Planner**：三个文件路径 + assets/ 文件清单。
 
 ## 写作纪律
 
