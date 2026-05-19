@@ -178,17 +178,10 @@ brief → facts.md → 落 assets/ → brand-spec.md → deliverables.md
 4. **写 facts.md**：每条事实带标签；不要堆砌，给下游一个清晰的判断锚
 5. **写 brand-spec.md**：
    - 色板必须全是 `#XXXXXX`，禁用紫渐变除非 brief 要
-   - `[from-fact: ...]` 引用必须是 facts.md 真子串（校验脚本会查）
+   - `[from-fact: ...]` 引用必须是 facts.md 真子串
    - 顶部声明严格度
 6. **写 deliverables.md**：四段齐，每条带 mode；至少 1 条；隐式 ≤ 2；拒绝段非空
-7. **自跑校验**（强烈建议，即使 critic 也会跑）：
-
-   ```bash
-   uv run python tools/validate.py upstream outputs/<RUN_ID>
-   ```
-
-   有违规就当场修，不要把不合规的文件交给 planner。
-8. **简短回报 Planner**：三个文件路径 + assets/ 文件清单 + 严格度。
+7. **简短回报 Planner**：三个文件路径 + assets/ 文件清单 + 严格度。
 
 ## 写作纪律
 

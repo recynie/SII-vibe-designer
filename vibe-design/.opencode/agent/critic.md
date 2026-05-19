@@ -32,13 +32,12 @@ RUN_DIR="outputs/<RUN_ID>"
 uv run python tools/validate.py review "$RUN_DIR" --artifact "$RUN_DIR/artifacts/<slug>/v?.<ext>"
 ```
 
-这一行覆盖三件事，输出可直接粘到 review.md：
+这一行覆盖两件事，输出可直接粘到 review.md：
 
-- 上游 schema 三件套（validate_facts / validate_brand_spec / validate_deliverables）— **硬门槛**，任一不过 → review.md「机器判定」段记录失败行号，**直接判不通过**，不进主观打分。改动方向：让 researcher 修上游文件，**不是** designer 重做实物
 - 字族（仅 HTML 类自动跑 check_html_fonts）— **硬门槛**，不过 → designer 改 CSS（这是一行字的修改，没有理由放过）；纯图/纯文 N/A，自动跳过
 - 色板（图像类自动跑 check_palette_compliance；HTML 自动检同名 png）— **不阻断参考**，写到「色板参考」段
 
-退出码：`0` = 硬门槛全过；`1` = 硬门槛挂；`2` = 文件路径错。色板 FAIL 单独不会让退出码变 1。
+退出码：`0` = 硬门槛全过；`1` = 字族硬门槛挂；`2` = 文件路径错。色板 FAIL 单独不会让退出码变 1。
 
 ### ② 读取实物（机器硬门槛全过后必做）
 
@@ -96,8 +95,7 @@ uv run python tools/validate.py review "$RUN_DIR" --artifact "$RUN_DIR/artifacts
 
 ### ⑤ 通过门槛
 
-- **`validate.py review` 退出码非 0**（schema 或字族任一不过）→ 直接「不通过」，不打主观分
-  - schema 失败 → 改 researcher（看 review.md 里的具体行号）
+- **`validate.py review` 退出码非 0**（字族不过）→ 直接「不通过」，不打主观分
   - 字族失败 → 改 designer 的 CSS（一行字的修改）
 - **退出码 0** → 进主观打分。色板段无论 PASS / FAIL 都不阻断
 - **主观通过** = 总分 ≥ 18/25（5 维度均值 ≥ 3.6）且**无单项 ≤ 2**
@@ -108,11 +106,6 @@ uv run python tools/validate.py review "$RUN_DIR" --artifact "$RUN_DIR/artifacts
 # Review · <task name> · v<n>
 
 ## 机器判定
-
-### 上游 schema（硬门槛）
-- validate_facts:        <PASS / FAIL: 行号摘要>
-- validate_brand_spec:   <PASS / FAIL: 行号摘要>
-- validate_deliverables: <PASS / FAIL: 行号摘要>
 
 ### 字族（HTML 类硬门槛 / 其它 N/A）
 - check_html_fonts:      <PASS / FAIL: 外来字族列表 / N/A：纯图>
@@ -157,8 +150,7 @@ uv run python tools/validate.py review "$RUN_DIR" --artifact "$RUN_DIR/artifacts
 按重要性排序，每条标根因层：
 
 ### 机器层
-1. **[schema 失配]** <validate_* 的具体行号 → researcher 修>
-2. **[字族外来]** <HTML 用了 X，spec 列的是 Y → designer 改 CSS>
+1. **[字族外来]** <HTML 用了 X，spec 列的是 Y → designer 改 CSS>
 
 ### 色板参考（温和提示，可选采纳）
 1. **[色板参考]** <实际 hex → spec 哪个色 ΔE 多少；如调性受影响才是真问题，否则保留即可>

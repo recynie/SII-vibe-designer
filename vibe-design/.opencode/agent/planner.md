@@ -61,12 +61,7 @@ RUN_DIR：outputs/<RUN_ID>
 
 researcher 回报后（**不可跳**）：
 
-1. `cat outputs/<RUN_ID>/deliverables.md` 读一遍——这是你的调度清单
-2. **必须自跑 schema 校验**，非 0 退出 → 退回 researcher 修，**不进入第 2 步 plan.md**：
-   ```bash
-   uv run python tools/validate.py upstream outputs/<RUN_ID>
-   ```
-3. 全过才继续。退回 researcher 时附上脚本输出的具体行号 + 错误，让 researcher 定向修，不要让它从头重写。
+1. `cat outputs/<RUN_ID>/deliverables.md` 读一遍——这是你的调度清单，确认三个上游文件（facts.md / brand-spec.md / deliverables.md）都存在且内容完整。
 
 ### 2. 写 plan.md（极简映射，不再生成新内容）
 
@@ -231,7 +226,7 @@ escalate **必须**有 escalate.md 文件落盘，且不能跳过 final.md。
 | subagent 长时间无回应 | 不重启（opencode 不支持），转告用户 |
 | 中转站 429 | 等 30 秒重试一次；否则切到 minimax 后端继续 |
 | MiniMax 内容审查 `output new_sensitive (1027)` | 第一次让 designer 按 prompt fallback 自行改写；第二次仍触发 → 写 BLOCKED.md，跳过本项继续；不死循环 |
-| validate_* 校验失败 | 把行号反馈给 researcher / designer 让他们修；不要自己改文件 |
+| validate.py review 字族失败 | 让 designer 改 CSS 中的 font-family；色板不阻断，仅参考 |
 
 ## 反 AI slop 提醒（仅作传话，不做设计判断）
 
