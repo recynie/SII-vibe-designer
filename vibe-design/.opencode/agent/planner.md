@@ -127,7 +127,7 @@ designer 返回后立刻调 critic：
 - 实物：outputs/<RUN_ID>/artifacts/<slug>/v1.<ext>
 - 依据：v1.prompt.txt / v1.notes.md / HTML 注释
 - 上下文：outputs/<RUN_ID>/{brand-spec.md, facts.md, deliverables.md}
-先跑 M1 + 本件机器校验，再做主观打分。落 v1.review.md。
+先跑机器校验，再 Read 读取实物文件（图像类用视觉理解看图），基于视觉观察打主观分。落 v1.review.md。
 ```
 
 **critic 返回后立刻校验落盘**——critic 不写文件就视同没评。Bash 一行：
