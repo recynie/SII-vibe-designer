@@ -1,6 +1,6 @@
 ---
 name: craft
-description: Numeric design baselines for visual deliverables — typography scale, color ratios, hierarchy vectors, composition rules, anti-AI-slop checklist. Each rule is a checkable number or judgement, not a slogan. Use when producing any visual artifact (logo, poster, UI mockup, infographic). Skip for copywriting-only tasks and for reuse-mode asset processing.
+description: Numeric design baselines for visual deliverables — typography scale, color ratios, hierarchy vectors, composition rules, anti-AI-slop checklist. Each rule is a checkable number or judgement, not a slogan. Use when producing visual design artifacts such as logo, poster, UI mockup, or infographic. Skip for copywriting-only tasks and simple file conversion tasks.
 ---
 
 # Skill · Craft（设计工艺基线）

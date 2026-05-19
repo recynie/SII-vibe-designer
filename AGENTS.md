@@ -42,7 +42,7 @@ Major version means that the system can:
 | `vibe-design/opencode.json` | opencode provider 配置（当前主 LLM = SII `gpt-5.5`；MiniMax provider 备用） |
 | `vibe-design/.opencode/agent/` | 四个 agent 的 prompt 定义（planner / researcher / designer / critic） |
 | `vibe-design/.opencode/command/design.md` | `/design` 自定义命令定义 |
-| `vibe-design/.opencode/skills/` | designer 使用的领域 skill（logo / poster / copywriting / ui-mockup / asset-prep） |
+| `vibe-design/.opencode/skills/` | designer 使用的领域 skill（logo / poster / copywriting / ui-mockup） |
 | `vibe-design/tools/api_config.py` | Python 脚本共用的 API 凭据加载器（只读 `api.toml`） |
 | `vibe-design/tools/gen_image.py` | 双后端文生图工具，后端由 `api.toml [active].image` 决定 |
 | `vibe-design/tools/html_screenshot.py` | HTML → PNG 截图工具（Playwright + Chromium） |

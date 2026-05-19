@@ -25,7 +25,7 @@ SKILLS_DIR = PROJECT / ".opencode" / "skills"
 EXPECTED_ALLOWED = {
     "planner": set(),
     "researcher": set(),
-    "designer": {"craft", "logo", "poster", "ui-mockup", "copywriting", "asset-prep"},
+    "designer": {"craft", "logo", "poster", "ui-mockup", "copywriting"},
     "critic": {"craft", "copywriting"},
 }
 

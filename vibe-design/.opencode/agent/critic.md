@@ -20,7 +20,7 @@ permission:
 ## 输入（Planner 会给你）
 
 - 实物路径：`outputs/<RUN_ID>/artifacts/<slug>/v?.<ext>`
-- 设计依据：同目录 `v?.prompt.txt`（图）/ `v?.notes.md`（reuse）/ HTML 头注释（HTML）
+- 设计依据：同目录 `v?.prompt.txt`（生成类）/ `v?.notes.md`（素材转换类）/ HTML 头注释（HTML）
 - 上下文：`outputs/<RUN_ID>/{facts.md, brand-spec.md, deliverables.md}`
 
 ## 评分流程（顺序固定，不可跳）

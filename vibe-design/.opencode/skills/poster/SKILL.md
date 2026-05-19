@@ -1,6 +1,6 @@
 ---
 name: poster
-description: Design decisions and toolchain handbook for producing a portrait poster, key visual, or infographic as a self-contained HTML rendered to PNG via html_screenshot (default 1200×1600). Covers visual 4-layer structure (eye-catcher/headline/supporting/CTA), portrait composition flow, embedded-style HTML structure, gen_image for inline assets, brand-spec font reuse, and anti-slop red lines. Use when the deliverable spec calls for a poster, key visual, KV, or infographic in HTML→PNG form (not a logo PNG, not an interactive UI page).
+description: Design decisions and toolchain handbook for producing a portrait poster, key visual, or infographic as a self-contained HTML rendered to PNG via html_screenshot (default 1200×1600). Covers visual 4-layer structure, portrait composition flow, embedded-style HTML structure, gen_image for inline imagery, brand-spec font use, and anti-slop red lines. Use when the deliverable spec calls for a poster, key visual, KV, or infographic in HTML→PNG form (not a logo PNG, not an interactive UI page).
 ---
 
 # Skill · Poster（介质工艺手册）
