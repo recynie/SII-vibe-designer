@@ -1,0 +1,340 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>Vibe Design · 系统架构</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@600;700;900&family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+  :root {
+    --navy: #0D1B2A;
+    --teal: #1B4965;
+    --cyan: #00B4D8;
+    --bg: #F8F9FA;
+    --ink: #1A1A2E;
+    --line: #D0D5DC;
+    --muted: color-mix(in oklch, #1A1A2E 50%, transparent);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    width: 1920px; height: 1080px;
+    background: var(--bg); color: var(--ink);
+    font-family: 'Noto Sans SC', system-ui, sans-serif;
+    padding: 56px 80px;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    gap: 32px;
+  }
+
+  header {
+    display: flex; justify-content: space-between; align-items: flex-end;
+    border-bottom: 2px solid var(--ink); padding-bottom: 16px;
+  }
+  h1 {
+    font-family: 'Noto Serif SC', serif; font-weight: 900; font-size: 48px;
+    letter-spacing: -0.02em; color: var(--navy);
+  }
+  .subtitle { font-size: 16px; color: var(--muted); letter-spacing: 0.04em; margin-top: 4px; }
+  .pagenum {
+    font-family: 'JetBrains Mono', monospace; font-size: 13px;
+    color: var(--cyan); letter-spacing: 0.1em; white-space: nowrap;
+  }
+
+  main { display: grid; grid-template-columns: 1.4fr 1fr; gap: 56px; }
+
+  /* Left: Architecture Diagram */
+  .diagram { display: flex; flex-direction: column; gap: 20px; }
+
+  .layer {
+    position: relative;
+  }
+  .layer-tag {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    color: var(--cyan); letter-spacing: 0.12em; text-transform: uppercase;
+    margin-bottom: 10px; font-weight: 500;
+  }
+
+  .user-box {
+    display: inline-flex; align-items: center; gap: 16px;
+    padding: 14px 24px;
+    border: 2px solid var(--ink); background: var(--bg);
+    font-size: 16px; font-weight: 500;
+  }
+  .user-cmd {
+    font-family: 'JetBrains Mono', monospace; font-size: 13px;
+    color: var(--cyan);
+  }
+
+  .connector {
+    width: 2px; height: 20px; background: var(--ink);
+    margin-left: 60px;
+    position: relative;
+  }
+  .connector::after {
+    content: ''; position: absolute; bottom: -5px; left: -4px;
+    border-left: 5px solid transparent; border-right: 5px solid transparent;
+    border-top: 6px solid var(--ink);
+  }
+
+  .planner-box {
+    display: flex; align-items: center; gap: 20px;
+    padding: 18px 28px;
+    background: var(--navy); color: var(--bg);
+    max-width: 480px;
+  }
+  .planner-box h3 {
+    font-family: 'Noto Serif SC', serif; font-weight: 700; font-size: 24px;
+  }
+  .planner-box .role {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    opacity: 0.6; letter-spacing: 0.1em;
+  }
+  .planner-desc {
+    font-size: 13px; opacity: 0.75; line-height: 1.5; margin-top: 4px;
+  }
+
+  .fan-connectors {
+    display: flex; gap: 0; margin-left: 30px; height: 28px; position: relative;
+  }
+  .fan-connectors .line {
+    width: 2px; background: var(--ink);
+    position: absolute; top: 0;
+  }
+  .fan-connectors .line::after {
+    content: ''; position: absolute; bottom: -5px; left: -4px;
+    border-left: 5px solid transparent; border-right: 5px solid transparent;
+    border-top: 6px solid var(--ink);
+  }
+
+  .subagents {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 16px; max-width: 700px;
+  }
+  .subagent {
+    padding: 18px 20px;
+    background: white; border: 1.5px solid var(--navy);
+  }
+  .subagent h4 {
+    font-family: 'Noto Serif SC', serif; font-weight: 700; font-size: 19px;
+    color: var(--navy); margin-bottom: 2px;
+  }
+  .subagent .ctx {
+    font-family: 'JetBrains Mono', monospace; font-size: 10px;
+    color: var(--muted); letter-spacing: 0.1em; margin-bottom: 12px;
+  }
+  .subagent ul {
+    list-style: none; font-size: 13px; line-height: 1.6;
+  }
+  .subagent ul li::before {
+    content: '›'; color: var(--cyan); margin-right: 8px; font-weight: bold;
+  }
+
+  .tools-row {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 16px; max-width: 700px;
+  }
+  .tool-box {
+    padding: 14px 18px;
+    background: color-mix(in oklch, var(--cyan) 8%, white);
+    border-left: 3px solid var(--cyan);
+    font-size: 13px; line-height: 1.55;
+  }
+  .tool-box strong {
+    font-family: 'JetBrains Mono', monospace; color: var(--navy);
+    display: block; margin-bottom: 4px; font-size: 13px;
+  }
+
+  /* Right: Responsibility Split */
+  .right-panel { display: flex; flex-direction: column; gap: 20px; }
+
+  .split-card {
+    background: white; border: 1.5px solid var(--line);
+    padding: 24px 28px;
+  }
+  .split-card h2 {
+    font-family: 'Noto Serif SC', serif; font-weight: 700; font-size: 22px;
+    color: var(--navy); margin-bottom: 16px; padding-bottom: 12px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .split-table {
+    width: 100%; border-collapse: collapse; font-size: 13px;
+  }
+  .split-table th {
+    text-align: left; font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; color: var(--cyan); letter-spacing: 0.08em;
+    text-transform: uppercase; padding: 8px 0; border-bottom: 1px solid var(--line);
+    font-weight: 500;
+  }
+  .split-table td {
+    padding: 10px 0; border-bottom: 1px solid color-mix(in oklch, var(--line) 50%, transparent);
+    line-height: 1.5; vertical-align: top;
+  }
+  .split-table td:first-child { padding-right: 16px; font-weight: 500; }
+  .split-table td code {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    background: var(--bg); padding: 1px 5px; color: var(--navy);
+  }
+
+  .arch-note {
+    background: var(--navy); color: var(--bg);
+    padding: 20px 24px;
+    font-size: 14px; line-height: 1.6;
+  }
+  .arch-note strong { color: var(--cyan); }
+  .arch-note .heading {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    color: var(--cyan); letter-spacing: 0.1em; margin-bottom: 8px;
+    text-transform: uppercase;
+  }
+
+  footer {
+    border-top: 2px solid var(--ink); padding-top: 14px;
+    display: flex; justify-content: space-between; align-items: center;
+    font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--muted);
+  }
+  footer .page { color: var(--cyan); }
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <h1>系统架构 · Agent 拓扑</h1>
+    <div class="subtitle">4 agents · 独立上下文 · 串行调度 · 文件传递信息</div>
+  </div>
+  <div class="pagenum">02 / 05 — ARCHITECTURE</div>
+</header>
+
+<main>
+  <section class="diagram">
+    <div class="layer">
+      <div class="layer-tag">User · 自然语言入口</div>
+      <div class="user-box">
+        <span>设计 brief</span>
+        <span class="user-cmd">/design &lt;brief&gt;</span>
+      </div>
+    </div>
+
+    <div class="connector"></div>
+
+    <div class="layer">
+      <div class="layer-tag">Primary Agent · 调度与汇总</div>
+      <div class="planner-box">
+        <div>
+          <h3>Planner</h3>
+          <div class="role">PRIMARY · OPENCODE 主上下文</div>
+          <div class="planner-desc">解析 brief → 拆子任务 → 串行调度 subagent → 迭代闭环 → 汇总交付</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex; align-items:stretch; margin-left:30px; height:24px; max-width:700px;">
+      <div style="flex:1;display:flex;justify-content:center;"><div style="width:2px;background:var(--ink);position:relative;"><div style="position:absolute;bottom:-5px;left:-4px;border-left:5px solid transparent;border-right:5px solid transparent;border-top:6px solid var(--ink);"></div></div></div>
+      <div style="flex:1;display:flex;justify-content:center;"><div style="width:2px;background:var(--ink);position:relative;"><div style="position:absolute;bottom:-5px;left:-4px;border-left:5px solid transparent;border-right:5px solid transparent;border-top:6px solid var(--ink);"></div></div></div>
+      <div style="flex:1;display:flex;justify-content:center;"><div style="width:2px;background:var(--ink);position:relative;"><div style="position:absolute;bottom:-5px;left:-4px;border-left:5px solid transparent;border-right:5px solid transparent;border-top:6px solid var(--ink);"></div></div></div>
+    </div>
+
+    <div class="layer">
+      <div class="layer-tag">Subagents · 独立上下文 · 串行调度</div>
+      <div class="subagents">
+        <div class="subagent">
+          <h4>Researcher</h4>
+          <div class="ctx">SUBAGENT · WebSearch</div>
+          <ul>
+            <li>主题事实核查</li>
+            <li>写 brief.md（核心信息）</li>
+            <li>写 brand-spec.md（色板字体）</li>
+          </ul>
+        </div>
+        <div class="subagent">
+          <h4>Designer</h4>
+          <div class="ctx">SUBAGENT · Skill 路由</div>
+          <ul>
+            <li>logo / poster（gen_image）</li>
+            <li>copywriting（LLM 直写）</li>
+            <li>ui-mockup（HTML 排版）</li>
+          </ul>
+        </div>
+        <div class="subagent">
+          <h4>Critic</h4>
+          <div class="ctx">SUBAGENT · 视觉审稿</div>
+          <ul>
+            <li>5 维度 0-10 评分</li>
+            <li>同时审图 + 审 prompt</li>
+            <li>反 AI slop 一票否决</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="connector" style="margin-left:180px;"></div>
+
+    <div class="layer">
+      <div class="layer-tag">Tools · 领域工具扩展</div>
+      <div class="tools-row">
+        <div class="tool-box">
+          <strong>gen_image.py</strong>
+          双后端文生图：minimax image-01（开发迭代）/ gpt-image-2（正式交付）。统一 CLI 接口，LLM 无感切换。
+        </div>
+        <div class="tool-box">
+          <strong>html_screenshot.py</strong>
+          Playwright + Chromium。HTML 排版 → PNG 截图，供 Critic 视觉评审。
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="right-panel">
+    <div class="split-card">
+      <h2>职责分界 · 不重写 Harness</h2>
+      <table class="split-table">
+        <thead>
+          <tr><th>工作</th><th>由谁负责</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>调度、上下文隔离</td>
+            <td>opencode 原生 subagent</td>
+          </tr>
+          <tr>
+            <td>工具调用、bash 执行</td>
+            <td>opencode 原生</td>
+          </tr>
+          <tr>
+            <td>错误处理、超时</td>
+            <td>opencode 原生</td>
+          </tr>
+          <tr>
+            <td>设计领域工具</td>
+            <td>自写 Python CLI<br><code>gen_image</code> + <code>html_screenshot</code></td>
+          </tr>
+          <tr>
+            <td>设计领域知识</td>
+            <td>自写 4 个 agent prompt<br>+ 4 个 skill prompt</td>
+          </tr>
+          <tr>
+            <td>入口体验</td>
+            <td>自写 <code>/design</code> 命令</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="arch-note">
+      <div class="heading">Why this matters</div>
+      <p>
+        考察的是 <strong>harness 系统设计能力</strong>，不是从零造轮子。
+        opencode 已经解决了通用调度问题，我们的工作是：
+        识别设计领域的特殊需求，用最少代码做精准扩展——
+        <strong>4 个 prompt + 2 个 CLI + 1 个 command</strong>，
+        即实现完整的品牌设计流水线。
+      </p>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <span>Vibe Design · 基于 opencode harness 扩展</span>
+  <span class="page">02 / 05</span>
+  <span>SII 2026</span>
+</footer>
+</body>
+</html>

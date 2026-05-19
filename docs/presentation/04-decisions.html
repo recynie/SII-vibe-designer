@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>Vibe Design · 关键设计决策</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@600;700;900&family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+  :root {
+    --navy: #0D1B2A;
+    --teal: #1B4965;
+    --cyan: #00B4D8;
+    --bg: #F8F9FA;
+    --ink: #1A1A2E;
+    --line: #D0D5DC;
+    --muted: color-mix(in oklch, #1A1A2E 50%, transparent);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    width: 1920px; height: 1080px;
+    background: var(--bg); color: var(--ink);
+    font-family: 'Noto Sans SC', system-ui, sans-serif;
+    padding: 56px 80px;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    gap: 28px;
+  }
+
+  header {
+    display: flex; justify-content: space-between; align-items: flex-end;
+    border-bottom: 2px solid var(--ink); padding-bottom: 16px;
+  }
+  h1 { font-family: 'Noto Serif SC', serif; font-weight: 900; font-size: 48px; letter-spacing: -0.02em; color: var(--navy); }
+  .subtitle { font-size: 16px; color: var(--muted); letter-spacing: 0.04em; margin-top: 4px; }
+  .pagenum { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--cyan); letter-spacing: 0.1em; }
+
+  main {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 20px;
+  }
+
+  .decision {
+    padding: 28px 28px 24px;
+    display: flex; flex-direction: column;
+    border: 1.5px solid var(--line);
+    background: white;
+    position: relative;
+  }
+
+  .decision-num {
+    position: absolute; top: 0; right: 0;
+    width: 44px; height: 44px;
+    background: var(--navy); color: var(--bg);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 16px; font-weight: 600;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .decision h3 {
+    font-family: 'Noto Serif SC', serif; font-weight: 700;
+    font-size: 20px; color: var(--navy);
+    margin-bottom: 4px; padding-right: 48px;
+  }
+  .decision .tag {
+    font-family: 'JetBrains Mono', monospace; font-size: 10px;
+    color: var(--cyan); letter-spacing: 0.1em; text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+
+  .decision .problem {
+    font-size: 13px; line-height: 1.55; color: var(--ink); opacity: 0.7;
+    margin-bottom: 12px;
+  }
+  .decision .problem strong { opacity: 1; color: var(--ink); }
+
+  .decision .solution {
+    font-size: 13px; line-height: 1.6;
+    padding: 12px 16px;
+    background: color-mix(in oklch, var(--cyan) 6%, var(--bg));
+    border-left: 3px solid var(--cyan);
+    flex-grow: 1;
+  }
+  .decision .solution strong { color: var(--navy); }
+  .decision .solution code {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    color: var(--navy); background: rgba(255,255,255,0.8);
+    padding: 1px 5px;
+  }
+
+  .decision.highlight {
+    background: var(--navy); color: var(--bg);
+    border-color: var(--navy);
+  }
+  .decision.highlight .decision-num {
+    background: var(--cyan); color: var(--navy);
+  }
+  .decision.highlight h3 { color: var(--bg); }
+  .decision.highlight .tag { color: var(--cyan); }
+  .decision.highlight .problem { color: var(--bg); opacity: 0.7; }
+  .decision.highlight .problem strong { color: var(--bg); opacity: 1; }
+  .decision.highlight .solution {
+    background: rgba(255,255,255,0.08);
+    border-left-color: var(--cyan);
+    color: var(--bg);
+  }
+  .decision.highlight .solution strong { color: var(--cyan); }
+  .decision.highlight .solution code {
+    background: rgba(255,255,255,0.1); color: var(--cyan);
+  }
+
+  footer {
+    border-top: 2px solid var(--ink); padding-top: 14px;
+    display: flex; justify-content: space-between;
+    font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--muted);
+  }
+  footer .page { color: var(--cyan); }
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <h1>关键设计决策</h1>
+    <div class="subtitle">从实测中来 · 每条决策背后都有具体的失败案例和验证路径</div>
+  </div>
+  <div class="pagenum">04 / 05 — DECISIONS</div>
+</header>
+
+<main>
+  <div class="decision">
+    <div class="decision-num">01</div>
+    <h3>串行调度，不并行</h3>
+    <div class="tag">Scheduling Discipline</div>
+    <p class="problem">
+      <strong>问题</strong>：并行调度多个 subagent 时，reasoning 模型偶发长时挂起（5+ 分钟无产出）。
+    </p>
+    <div class="solution">
+      <strong>决策</strong>：Planner 一次只 @ 一个 subagent，等返回再调下一个。牺牲理论并行度，换取可预测的执行。切到 GPT-5.5 后挂起未再复现，但规定保留——race 风险始终存在。
+    </div>
+  </div>
+
+  <div class="decision highlight">
+    <div class="decision-num">02</div>
+    <h3>文件即契约</h3>
+    <div class="tag">Context Management</div>
+    <p class="problem">
+      <strong>问题</strong>：subagent 拥有独立上下文，无法直接通信。如何传递设计意图和评审结果？
+    </p>
+    <div class="solution">
+      <strong>决策</strong>：所有信息通过文件传递。Researcher 写 <code>brief.md</code> + <code>brand-spec.md</code>，Designer 读文件出物，Critic 读实物 + prompt 打分写 <code>review.md</code>。每个 agent 读写约定明确，信息无歧义。
+    </div>
+  </div>
+
+  <div class="decision">
+    <div class="decision-num">03</div>
+    <h3>Critic 同时审图与 prompt</h3>
+    <div class="tag">Review Innovation</div>
+    <p class="problem">
+      <strong>问题</strong>：很多设计问题的根因在 prompt，不在产出本身。只看图无法给出有效改进建议。
+    </p>
+    <div class="solution">
+      <strong>决策</strong>：Designer 存盘 <code>v?.prompt.txt</code>，Critic 同时审阅图像和 prompt → 改进建议分三类：<strong>改 prompt</strong>（如去掉 generic 词）/ <strong>改版式</strong>（如调间距）/ <strong>换素材</strong>。分层建议让 Designer 精准修改。
+    </div>
+  </div>
+
+  <div class="decision">
+    <div class="decision-num">04</div>
+    <h3>双图像后端 · LLM 无感</h3>
+    <div class="tag">Tool Architecture</div>
+    <p class="problem">
+      <strong>问题</strong>：开发迭代需要便宜快速的图像模型，正式交付需要高质量模型。切换不应影响 agent 逻辑。
+    </p>
+    <div class="solution">
+      <strong>决策</strong>：<code>gen_image.py</code> 统一 CLI，后端由 <code>api.toml [active].image</code> 配置路由。Designer prompt 只写 "调 gen_image"，不感知后端。开发用 minimax <code>image-01</code> 省钱，交付用 <code>gpt-image-2</code> 高质。
+    </div>
+  </div>
+
+  <div class="decision highlight">
+    <div class="decision-num">05</div>
+    <h3>反 AI slop · 一票否决</h3>
+    <div class="tag">Quality Gate</div>
+    <p class="problem">
+      <strong>问题</strong>：AI 生成设计有典型通病——紫渐变、emoji、Inter 当 display、通用模板拼贴，辨识度为零。
+    </p>
+    <div class="solution">
+      <strong>决策</strong>：Critic 5 维度中"反 slop"项 ≤ 4 分则<strong>整体不通过</strong>。具体禁区写进 prompt：紫渐变、emoji 图标、SVG 画人物、generic 拼贴卡片。品味是硬约束，不是建议。
+    </div>
+  </div>
+
+  <div class="decision">
+    <div class="decision-num">06</div>
+    <h3>内容审查可恢复</h3>
+    <div class="tag">Error Handling</div>
+    <p class="problem">
+      <strong>问题</strong>：朱家角 brief 触发 MiniMax 服务端内容审查（<code>1027</code>），整个 designer 子流程被拦。
+    </p>
+    <div class="solution">
+      <strong>决策</strong>：Designer 触发审查时自动切换到纯英文 prompt + hex+色名双标（如 <code>"sage green #4A7C59"</code>）。Planner prompt 保留 1027 fallback 分支——不是绕过审查，是<strong>改写表达方式</strong>后重试。
+    </div>
+  </div>
+</main>
+
+<footer>
+  <span>Vibe Design · 每条决策源自实测失败，经多次 demo run 验证</span>
+  <span class="page">04 / 05</span>
+  <span>SII 2026</span>
+</footer>
+</body>
+</html>

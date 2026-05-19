@@ -1,0 +1,320 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>Vibe Design · 数据流与迭代</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@600;700;900&family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+  :root {
+    --navy: #0D1B2A;
+    --teal: #1B4965;
+    --cyan: #00B4D8;
+    --bg: #F8F9FA;
+    --ink: #1A1A2E;
+    --line: #D0D5DC;
+    --muted: color-mix(in oklch, #1A1A2E 50%, transparent);
+    --green: #2D6A4F;
+    --red: #C1121F;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    width: 1920px; height: 1080px;
+    background: var(--bg); color: var(--ink);
+    font-family: 'Noto Sans SC', system-ui, sans-serif;
+    padding: 56px 80px;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    gap: 28px;
+  }
+
+  header {
+    display: flex; justify-content: space-between; align-items: flex-end;
+    border-bottom: 2px solid var(--ink); padding-bottom: 16px;
+  }
+  h1 { font-family: 'Noto Serif SC', serif; font-weight: 900; font-size: 48px; letter-spacing: -0.02em; color: var(--navy); }
+  .subtitle { font-size: 16px; color: var(--muted); letter-spacing: 0.04em; margin-top: 4px; }
+  .pagenum { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--cyan); letter-spacing: 0.1em; }
+
+  main { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; }
+
+  /* Left: Pipeline Steps */
+  .pipeline { display: flex; flex-direction: column; gap: 0; }
+
+  .step {
+    display: grid;
+    grid-template-columns: 48px 1fr;
+    gap: 20px;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--line);
+    align-items: start;
+  }
+  .step:last-child { border-bottom: none; }
+
+  .step-num {
+    width: 48px; height: 48px;
+    background: var(--navy); color: var(--bg);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 16px; font-weight: 600;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .step-body h3 {
+    font-family: 'Noto Serif SC', serif; font-weight: 700;
+    font-size: 18px; color: var(--navy);
+    margin-bottom: 4px;
+  }
+  .step-body .agent {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    color: var(--cyan); letter-spacing: 0.08em; margin-bottom: 6px;
+  }
+  .step-body p {
+    font-size: 13px; line-height: 1.55; color: var(--ink); opacity: 0.8;
+  }
+  .step-body code {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    background: color-mix(in oklch, var(--cyan) 10%, white);
+    padding: 1px 5px; color: var(--navy);
+  }
+
+  .step-loop {
+    border: 2px dashed var(--cyan);
+    padding: 14px 20px;
+    margin: 6px 0;
+    background: color-mix(in oklch, var(--cyan) 4%, transparent);
+  }
+  .step-loop .loop-label {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    color: var(--cyan); letter-spacing: 0.08em; margin-bottom: 6px;
+  }
+
+  /* Right: Critic + Iteration */
+  .right-col { display: flex; flex-direction: column; gap: 20px; }
+
+  .critic-card {
+    background: var(--navy); color: var(--bg);
+    padding: 28px 32px;
+  }
+  .critic-card h2 {
+    font-family: 'Noto Serif SC', serif; font-weight: 700; font-size: 24px;
+    margin-bottom: 20px; padding-bottom: 14px;
+    border-bottom: 1px solid rgba(255,255,255,0.15);
+  }
+
+  .dims { display: grid; gap: 10px; }
+  .dim {
+    display: grid; grid-template-columns: 1fr 70px 1fr;
+    gap: 12px; align-items: center;
+    font-size: 13px;
+  }
+  .dim-name { opacity: 0.8; }
+  .dim-score {
+    font-family: 'JetBrains Mono', monospace; font-weight: 600;
+    color: var(--cyan); text-align: center;
+  }
+  .dim-bar {
+    height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px;
+    overflow: hidden;
+  }
+  .dim-bar-fill {
+    height: 100%; background: var(--cyan); border-radius: 3px;
+    transition: width 0.3s;
+  }
+
+  .threshold {
+    margin-top: 18px; padding-top: 16px;
+    border-top: 1px solid rgba(255,255,255,0.15);
+    font-size: 13px; line-height: 1.6;
+  }
+  .threshold strong { color: var(--cyan); }
+
+  .iter-card {
+    background: white; border: 1.5px solid var(--line);
+    padding: 24px 28px;
+  }
+  .iter-card h2 {
+    font-family: 'Noto Serif SC', serif; font-weight: 700; font-size: 22px;
+    color: var(--navy); margin-bottom: 16px; padding-bottom: 12px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .iter-table {
+    width: 100%; border-collapse: collapse; font-size: 13px;
+  }
+  .iter-table th {
+    text-align: left; font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; color: var(--cyan); letter-spacing: 0.08em;
+    text-transform: uppercase; padding: 8px 0; border-bottom: 1px solid var(--line);
+    font-weight: 500;
+  }
+  .iter-table td {
+    padding: 10px 0; border-bottom: 1px solid color-mix(in oklch, var(--line) 50%, transparent);
+    line-height: 1.5; vertical-align: top;
+  }
+  .iter-table td:first-child { font-weight: 500; }
+
+  .file-contract {
+    background: color-mix(in oklch, var(--cyan) 6%, white);
+    border-left: 3px solid var(--cyan);
+    padding: 18px 22px;
+  }
+  .file-contract h3 {
+    font-family: 'JetBrains Mono', monospace; font-size: 12px;
+    color: var(--cyan); letter-spacing: 0.1em; text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .file-list {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 6px 20px;
+    font-size: 13px; line-height: 1.6;
+  }
+  .file-list code {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    color: var(--navy); font-weight: 500;
+  }
+
+  footer {
+    border-top: 2px solid var(--ink); padding-top: 14px;
+    display: flex; justify-content: space-between;
+    font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--muted);
+  }
+  footer .page { color: var(--cyan); }
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <h1>数据流与迭代机制</h1>
+    <div class="subtitle">文件即契约 · Critic 闭环评审 · Designer→Critic→迭代 循环</div>
+  </div>
+  <div class="pagenum">03 / 05 — DATA FLOW</div>
+</header>
+
+<main>
+  <section class="pipeline">
+    <div class="step">
+      <div class="step-num">01</div>
+      <div class="step-body">
+        <h3>Brief 落盘</h3>
+        <div class="agent">RESEARCHER</div>
+        <p>WebSearch 收集主题信息 → 写 <code>brief.md</code>（核心信息、受众、调性）+ <code>brand-spec.md</code>（色板、字体、视觉方向）。下游所有 agent 共读。</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">02</div>
+      <div class="step-body">
+        <h3>Plan 拆解</h3>
+        <div class="agent">PLANNER</div>
+        <p>读 brief + spec → 写 <code>plan.md</code>，列出子任务（logo / poster / copy / ui-mockup），每条标注对应 skill 和迭代策略。</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">03</div>
+      <div class="step-body">
+        <h3>Designer 出物</h3>
+        <div class="agent">DESIGNER · SKILL 路由</div>
+        <p>根据子任务类型加载 skill prompt → 调 <code>gen_image</code> 出图 或 Write HTML → 落 <code>v1.png</code> + <code>v1.prompt.txt</code>。prompt 一起存盘，供 Critic 审。</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">04</div>
+      <div class="step-body">
+        <h3>Critic 评审</h3>
+        <div class="agent">CRITIC · 5 维度</div>
+        <p>读实物（图/截图）+ 读 prompt → 5 维度 0-10 分 → 写 <code>v1.review.md</code>。总分 ≥35 且无单项 ≤4 则通过。</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">05</div>
+      <div class="step-body">
+        <div class="step-loop">
+          <div class="loop-label">↻ 迭代循环 · 最多 2 轮</div>
+          <p style="font-size:13px; line-height:1.55; opacity:0.8;">
+            不通过 → Designer 读 review → 改 prompt 或改版式 → 出 v2 → Critic 再评。<br>
+            2 轮仍不过 → Planner 向用户提问（人在环路的安全阀）。
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">06</div>
+      <div class="step-body">
+        <h3>汇总交付</h3>
+        <div class="agent">PLANNER</div>
+        <p>写 <code>final.md</code>，列所有产物路径、评分、已知局限。两段式回复用户。</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="right-col">
+    <div class="critic-card">
+      <h2>Critic 评分体系 · 5 维度</h2>
+      <div class="dims">
+        <div class="dim">
+          <span class="dim-name">品牌契合（与 brand-spec 一致）</span>
+          <span class="dim-score">0-10</span>
+          <div class="dim-bar"><div class="dim-bar-fill" style="width:70%"></div></div>
+        </div>
+        <div class="dim">
+          <span class="dim-name">信息层级</span>
+          <span class="dim-score">0-10</span>
+          <div class="dim-bar"><div class="dim-bar-fill" style="width:80%"></div></div>
+        </div>
+        <div class="dim">
+          <span class="dim-name">视觉品味（Pentagram 信息建筑派）</span>
+          <span class="dim-score">0-10</span>
+          <div class="dim-bar"><div class="dim-bar-fill" style="width:70%"></div></div>
+        </div>
+        <div class="dim">
+          <span class="dim-name">反 AI slop（一票否决）</span>
+          <span class="dim-score">0-10</span>
+          <div class="dim-bar"><div class="dim-bar-fill" style="width:90%"></div></div>
+        </div>
+        <div class="dim">
+          <span class="dim-name">任务完成度</span>
+          <span class="dim-score">0-10</span>
+          <div class="dim-bar"><div class="dim-bar-fill" style="width:80%"></div></div>
+        </div>
+      </div>
+      <div class="threshold">
+        <strong>通过门槛：≥ 35/50 且无单项 ≤ 4</strong><br>
+        反 AI slop 项 ≤ 4 则整体不通过——紫渐变、emoji 图标、Inter 当 display、SVG 画人物、generic 拼贴卡片均判零。
+      </div>
+    </div>
+
+    <div class="iter-card">
+      <h2>不同介质 · 不同迭代方式</h2>
+      <table class="iter-table">
+        <thead><tr><th>产出类型</th><th>迭代方式</th><th>上限</th></tr></thead>
+        <tbody>
+          <tr><td>图（logo / 插画）</td><td>改 prompt 重出</td><td>2 轮</td></tr>
+          <tr><td>HTML（海报 / UI）</td><td>截图评审 → 改样式</td><td>2 轮</td></tr>
+          <tr><td>文案</td><td>出 3 变体 → 选优改一轮</td><td>1 轮</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="file-contract">
+      <h3>文件即上下文契约</h3>
+      <div class="file-list">
+        <div><code>brief.md</code> — 主题核心信息</div>
+        <div><code>brand-spec.md</code> — 色板字体方向</div>
+        <div><code>plan.md</code> — 子任务清单</div>
+        <div><code>v?.prompt.txt</code> — 生成 prompt</div>
+        <div><code>v?.review.md</code> — Critic 评审</div>
+        <div><code>final.md</code> — 交付汇总</div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <span>Vibe Design · subagent 间不直接通信，所有信息通过文件传递</span>
+  <span class="page">03 / 05</span>
+  <span>SII 2026</span>
+</footer>
+</body>
+</html>

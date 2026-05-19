@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>Vibe Design · 项目概览</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@600;700;900&family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+  :root {
+    --navy: #0D1B2A;
+    --teal: #1B4965;
+    --cyan: #00B4D8;
+    --white: #F8F9FA;
+    --ink: #1A1A2E;
+    --line: #C8CCD3;
+    --muted: color-mix(in oklch, #1A1A2E 50%, transparent);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    width: 1920px; height: 1080px;
+    background: var(--navy);
+    color: var(--white);
+    font-family: 'Noto Sans SC', system-ui, sans-serif;
+    display: grid;
+    grid-template-rows: 1fr auto;
+    overflow: hidden;
+  }
+
+  main {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    padding: 80px 100px 40px;
+    gap: 80px;
+    align-items: center;
+  }
+
+  .left h1 {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 900;
+    font-size: 72px;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    margin-bottom: 28px;
+  }
+  .left h1 span { color: var(--cyan); }
+
+  .tagline {
+    font-size: 22px;
+    font-weight: 300;
+    line-height: 1.6;
+    opacity: 0.8;
+    margin-bottom: 48px;
+    max-width: 600px;
+  }
+
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+  }
+  .stat {
+    border-left: 3px solid var(--cyan);
+    padding-left: 16px;
+  }
+  .stat-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 36px;
+    font-weight: 600;
+    color: var(--cyan);
+    line-height: 1;
+  }
+  .stat-label {
+    font-size: 13px;
+    opacity: 0.6;
+    margin-top: 6px;
+    line-height: 1.4;
+  }
+
+  .right {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .card {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.12);
+    padding: 28px 32px;
+    border-radius: 2px;
+  }
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 14px;
+  }
+  .card h3 {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 700;
+    font-size: 20px;
+  }
+  .card .tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--cyan);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .card p {
+    font-size: 14px;
+    line-height: 1.65;
+    opacity: 0.75;
+  }
+  .card code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--cyan);
+    background: rgba(0,180,216,0.12);
+    padding: 1px 6px;
+    border-radius: 2px;
+  }
+
+  .checklist {
+    list-style: none;
+    display: grid;
+    gap: 8px;
+    margin-top: 10px;
+  }
+  .checklist li {
+    font-size: 14px;
+    line-height: 1.5;
+    opacity: 0.75;
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+  }
+  .checklist li::before {
+    content: '✓';
+    color: var(--cyan);
+    font-weight: 700;
+    font-size: 13px;
+    flex-shrink: 0;
+  }
+
+  footer {
+    padding: 20px 100px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    opacity: 0.4;
+  }
+  .page-indicator {
+    color: var(--cyan);
+    opacity: 1;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+  }
+</style>
+</head>
+<body>
+<main>
+  <section class="left">
+    <h1>Vibe Design<br><span>多智能体</span><br>协同设计系统</h1>
+    <p class="tagline">
+      基于 opencode harness 扩展的命令行设计 agent。<br>
+      一句话 brief 输入，4 个 agent 协同输出完整品牌设计。
+    </p>
+    <div class="stats">
+      <div class="stat">
+        <div class="stat-num">4</div>
+        <div class="stat-label">Agent<br>Planner / Researcher<br>Designer / Critic</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">4</div>
+        <div class="stat-label">Skill<br>logo / poster<br>copywriting / ui</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">2</div>
+        <div class="stat-label">工具<br>gen_image<br>html_screenshot</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">7</div>
+        <div class="stat-label">Demo Run<br>3 个领域验证<br>系统泛化能力</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="right">
+    <div class="card">
+      <div class="card-header">
+        <h3>核心思路</h3>
+        <span class="tag">Design Philosophy</span>
+      </div>
+      <p>
+        不重写 harness，只做<strong>领域扩展</strong>。opencode 提供调度、上下文隔离、工具调用、错误处理；
+        我们只写<strong>设计领域的 agent prompt + 领域工具 + 入口命令</strong>。
+        用 <code>/design &lt;brief&gt;</code> 一键启动全流程。
+      </p>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <h3>题目覆盖</h3>
+        <span class="tag">Requirements</span>
+      </div>
+      <ul class="checklist">
+        <li>至少三个智能体 + 独立上下文 — 实现 4 个（多 Researcher）</li>
+        <li>必要的设计工具 — gen_image 双后端 + html_screenshot</li>
+        <li>Agent Harness 框架 — opencode 1.4 + 自定义扩展</li>
+        <li>任务调度 / 信息传递 / 迭代优化 — Planner 串行调度 + Critic 闭环</li>
+        <li>端到端交付 — 创智学院完整品牌设计，12 分钟全自主</li>
+      </ul>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <span>SII 2026 夏令营 · 多智能体协同设计实训</span>
+  <span class="page-indicator">01 / 05</span>
+  <span>2026.05</span>
+</footer>
+</body>
+</html>

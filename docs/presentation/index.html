@@ -2,38 +2,48 @@
 <html lang="zh-CN">
 <head>
 <meta charset="utf-8">
-<title>Vibe Design · 答辩 PPT</title>
+<title>Vibe Design · 项目介绍</title>
 <style>
   *{margin:0;padding:0;box-sizing:border-box}
-  html,body{height:100%;background:#0A2463;overflow:hidden;font-family:system-ui}
+  html,body{height:100%;background:#0D1B2A;overflow:hidden;font-family:system-ui}
   .stage{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;}
   iframe{display:block;border:none;background:#F8F9FA;box-shadow:0 24px 64px rgba(0,0,0,0.4);
     transform-origin:center;}
   .controls{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);
-    background:rgba(255,255,255,0.92);padding:10px 20px;border-radius:32px;
-    font-family:'JetBrains Mono',monospace;font-size:13px;color:#0A2463;
-    display:flex;align-items:center;gap:14px;box-shadow:0 4px 16px rgba(0,0,0,0.2);}
-  .controls button{background:transparent;border:1px solid #0A2463;color:#0A2463;
-    padding:4px 12px;cursor:pointer;font:inherit;border-radius:16px;}
-  .controls button:hover{background:#0A2463;color:white;}
-  .num{color:#FF6B35;font-weight:700;}
+    background:rgba(255,255,255,0.95);padding:10px 24px;border-radius:32px;
+    font-family:'JetBrains Mono',monospace;font-size:13px;color:#0D1B2A;
+    display:flex;align-items:center;gap:16px;box-shadow:0 4px 16px rgba(0,0,0,0.25);
+    backdrop-filter:blur(8px);}
+  .controls button{background:transparent;border:1px solid #0D1B2A;color:#0D1B2A;
+    padding:5px 14px;cursor:pointer;font:inherit;border-radius:16px;transition:all 0.15s;}
+  .controls button:hover{background:#0D1B2A;color:white;}
+  .num{color:#00B4D8;font-weight:700;}
+  .slide-title{opacity:0.5;font-size:11px;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 </style>
 </head>
 <body>
 <div class="stage">
-  <iframe id="frame" src="01-architecture.html"></iframe>
+  <iframe id="frame" src="01-title.html"></iframe>
 </div>
 <div class="controls">
-  <button onclick="prev()">◀ 上一页</button>
-  <span><span class="num" id="cur">1</span> / <span id="total">3</span></span>
-  <button onclick="next()">下一页 ▶</button>
-  <span style="opacity:0.6">←/→ 翻页 · F 全屏</span>
+  <button onclick="prev()">◀</button>
+  <span><span class="num" id="cur">1</span> / <span id="total">5</span></span>
+  <button onclick="next()">▶</button>
+  <span class="slide-title" id="slideTitle"></span>
+  <span style="opacity:0.4;font-size:11px">← → 翻页 · F 全屏</span>
 </div>
 <script>
-  const slides = ['01-architecture.html', '02-sequence.html', '03-demo.html'];
+  const slides = [
+    {src:'01-title.html', title:'项目概览'},
+    {src:'02-architecture.html', title:'系统架构'},
+    {src:'03-dataflow.html', title:'数据流与迭代'},
+    {src:'04-decisions.html', title:'关键设计决策'},
+    {src:'05-demo.html', title:'实跑 Demo'},
+  ];
   let idx = 0;
   const frame = document.getElementById('frame');
   const cur = document.getElementById('cur');
+  const slideTitle = document.getElementById('slideTitle');
   document.getElementById('total').textContent = slides.length;
 
   function fit() {
@@ -46,8 +56,9 @@
 
   function go(i) {
     idx = (i + slides.length) % slides.length;
-    frame.src = slides[idx];
+    frame.src = slides[idx].src;
     cur.textContent = idx + 1;
+    slideTitle.textContent = slides[idx].title;
     location.hash = idx + 1;
   }
 
@@ -63,6 +74,7 @@
   if (location.hash) go(parseInt(location.hash.slice(1)) - 1);
   fit();
   window.addEventListener('resize', fit);
+  slideTitle.textContent = slides[0].title;
 </script>
 </body>
 </html>
