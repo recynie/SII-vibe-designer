@@ -56,13 +56,13 @@ Planner 会给你：
 
 | 产物形态 | 工具链 | 输出 |
 |---|---|---|
-| **纯位图 PNG**（logo / 主视觉海报效果图 / 产品包装效果图 / 摄影感图） | `uv run python tools/gen_image.py ...` | `v1.png` + `v1.png.prompt.txt`（gen_image 自动写） |
+| **纯位图 PNG**（logo / 主视觉海报效果图 / 产品包装效果图 / 摄影感图） | `uv run python tools/gen_image.py ...` | `v1-1.png`, `v1-2.png`, ... + 各自 `.prompt.txt`（gen_image 默认并行出 3 候选） |
 | **HTML 排版 + 渲 PNG**（落地页 / H5 首屏 / 信息图海报 / 名片版式稿） | 直接 Write HTML，再 `html_screenshot.py` 渲 PNG | `v1.html` + `v1.png` |
 | **纯文案 md**（slogan / 简介 / 定位 / 应用文案） | 直接 Write markdown | `v1.md` + `v1.prompt.txt`（创作思路注解） |
 
 **判断口诀**：规格说"PNG 效果图 / 1200×1600 PNG / 渲染图"→ 走 gen_image；说"落地页 / mockup / 排版 / HTML"→ 走 HTML+截图；说"slogan / 文案 / 命名"→ 走 markdown。规格混淆时回看 researcher 的 deliverables.md 第 X 行的形态描述。
 
-**gen_image 调用模板**（不指定 backend，由环境变量决定）：
+**gen_image 调用模板**（不指定 backend，由环境变量决定；默认并行生成 3 候选）：
 
 ```bash
 uv run python tools/gen_image.py \
@@ -70,6 +70,9 @@ uv run python tools/gen_image.py \
   --output outputs/<RUN_ID>/artifacts/<slug>/v1.png \
   --aspect-ratio 1:1
 ```
+
+输出：`v1-1.png`, `v1-2.png`, `v1-3.png` + 各自的 `.prompt.txt` sidecar。
+如需单张（用于 poster/ui-mockup 内嵌配图），传 `--candidates 1`。
 
 prompt 写作要点（详细规范见对应介质 skill 的「工艺要点」段；以下为通用底线）：
 - 全英文（图像模型对中文敏感）
@@ -131,7 +134,16 @@ brand-spec.md 是**约束**，不是**模板**：
 
 生成 PNG 后（无论 gen_image、html_screenshot 还是 imagemagick），**用 Read 工具读取产物 PNG**，亲眼看一遍：
 
-1. Read `artifacts/<slug>/v?.<ext>`
+**gen_image 多候选评审**（默认产出 3 张 `v1-1.png` / `v1-2.png` / `v1-3.png`）：
+
+1. Read 所有候选 PNG
+2. 横向比对：调性契合度、构图完整性、色彩一致性、有无明显缺陷
+3. 选出最佳候选，`mv` 为 `v1.png`（保留落选候选原地不动，供 critic 参考）
+4. 如果最佳候选仍有硬伤 → 修 prompt 重新出图（走下方迭代流程）
+
+**通用自检**（对最终 `v1.png`，无论来源）：
+
+1. Read `artifacts/<slug>/v1.<ext>`
 2. 对照 deliverables 规格快速扫：
    - 内容完整性：所有要求的元素是否都在画面内？有没有被裁切、溢出画布？
    - 调性方向：整体色调和气质是否与 brand-spec 一致？有没有跑偏到完全不同的方向？

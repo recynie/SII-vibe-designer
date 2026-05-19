@@ -45,6 +45,8 @@ uv run python tools/gen_image.py \
   --aspect-ratio 1:1
 ```
 
+默认并行生成 3 候选（`v1-1.png` / `v1-2.png` / `v1-3.png`）。Read 全部候选，选最佳 `mv` 为 `v1.png`。
+
 ## 反 slop 红线
 - 假国际范装饰（星月、emoji 风插图）
 - 细密线条（vector 后糊）
