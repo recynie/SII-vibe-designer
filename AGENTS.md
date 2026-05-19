@@ -22,7 +22,7 @@ Major version means that the system can:
 
 ## Overview
 
-当前代码库是一个多智能体协同设计系统（Vibe Design），基于 opencode harness 构建。用户输入一句话 brief，系统通过 planner / researcher / designer / critic 四个 agent 协同输出 logo、主视觉海报、品牌文案、UI mockup 等品牌设计产物。这是一个课程实训作业项目。
+当前代码库是一个多智能体协同设计系统（Vibe Design），基于 opencode harness 构建。用户输入一句话 brief，系统通过 planner / researcher / designer / critic 四个 agent 协同输出 logo、主视觉海报、品牌文案、UI mockup 等品牌设计产物。支持多子产物交付物（一个 design 下包含多个子产物，如品牌文创设计包含 logo + T恤 + 帆布袋效果图）。这是一个课程实训作业项目。
 
 ## Workspace Map
 
