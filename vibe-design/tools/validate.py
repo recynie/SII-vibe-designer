@@ -1,16 +1,15 @@
-"""validate: per-artifact machine review (font compliance + palette advisory).
+"""validate: per-artifact machine review (font compliance).
 
     uv run python tools/validate.py review <RUN_DIR> --artifact <path>
         Auto-routes by artifact extension:
-            .html → check_html_fonts (mandatory) +
-                    check_palette_compliance on the same-stem .png if present (advisory)
-            .png  → check_palette_compliance (advisory)
-            .md   → no visual checks (N/A)
+            .html → check_html_fonts (mandatory)
+            .png  → N/A (critic assesses visually)
+            .md   → N/A
         Prints a markdown block ready to paste into v?.review.md's
-        "## 机器判定" + "## 色板参考" sections.
+        "## 机器判定" section.
 
 Exit codes:
-    0 → all hard gates pass (fonts). Palette FAIL alone is not blocking.
+    0 → all hard gates pass (fonts).
     1 → at least one hard gate fails.
     2 → file not found / usage error.
 
@@ -28,7 +27,6 @@ if str(TOOLS_DIR) not in sys.path:
     sys.path.insert(0, str(TOOLS_DIR))
 
 import check_html_fonts
-import check_palette_compliance
 
 
 def cmd_review(args: argparse.Namespace) -> int:
@@ -53,21 +51,6 @@ def cmd_review(args: argparse.Namespace) -> int:
     if is_html:
         fonts_passed, fonts_lines, _ = check_html_fonts.check(artifact, spec)
 
-    palette_image: Path | None = None
-    if is_image:
-        palette_image = artifact
-    elif is_html:
-        sibling_png = artifact.with_suffix(".png")
-        if sibling_png.is_file():
-            palette_image = sibling_png
-
-    palette_passed: bool | None = None
-    palette_lines: list[str] = []
-    if palette_image is not None:
-        palette_passed, palette_lines, _ = check_palette_compliance.check(
-            palette_image, spec
-        )
-
     print("### 字族（HTML 类硬门槛 / 其它 N/A）")
     if is_html:
         status = "PASS" if fonts_passed else "FAIL"
@@ -81,21 +64,6 @@ def cmd_review(args: argparse.Namespace) -> int:
 
     hard_gate_pass = fonts_passed is None or fonts_passed
     print(f"**机器硬门槛结果：{'全过' if hard_gate_pass else '不通过'}**")
-    print()
-
-    print("---")
-    print()
-    print("## 色板参考（不阻断）")
-    print()
-    if palette_image is None:
-        reason = "纯文（无图像）" if is_text else "无可检图像"
-        print(f"- check_palette_compliance: N/A ({reason})")
-    else:
-        status = "PASS" if palette_passed else "FAIL"
-        print(f"- 来源图像：`{palette_image}`")
-        print(f"- check_palette_compliance: {status}")
-        for line in palette_lines:
-            print(f"  - {line}")
 
     return 0 if hard_gate_pass else 1
 

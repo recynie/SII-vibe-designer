@@ -19,18 +19,35 @@ permission:
 
 ## 输入（Planner 会给你）
 
+**单产物任务**：
 - 实物路径：`outputs/<RUN_ID>/artifacts/<slug>/v?.<ext>`
 - 设计依据：同目录 `v?.prompt.txt`（图）/ HTML 头注释（HTML）
 - 上下文：`outputs/<RUN_ID>/{facts.md, brand-spec.md, deliverables.md}`
+
+**多子产物任务**：
+- 交付物名称 + 子产物目录：`outputs/<RUN_ID>/artifacts/<parent-slug>/`
+- 子产物清单：每个子产物的名称和路径（`artifacts/<parent-slug>/<sub-slug>/v?.<ext>`）
+- 上下文：同上
 
 ## 评审流程（顺序固定）
 
 ### ① 机器判定 · 必要硬门槛
 
+**单产物**：
+
 ```bash
 RUN_DIR="outputs/<RUN_ID>"
 uv run python tools/validate.py review "$RUN_DIR" --artifact "$RUN_DIR/artifacts/<slug>/v?.<ext>"
 ```
+
+**多子产物**：对每个子产物分别执行 validate.py：
+
+```bash
+RUN_DIR="outputs/<RUN_ID>"
+uv run python tools/validate.py review "$RUN_DIR" --artifact "$RUN_DIR/artifacts/<parent-slug>/<sub-slug>/v?.<ext>"
+```
+
+任一子产物硬门槛失败 → 整体「不通过」。
 
 这一步只覆盖可被可靠机器判断的硬门槛：
 
@@ -51,6 +68,8 @@ uv run python tools/validate.py review "$RUN_DIR" --artifact "$RUN_DIR/artifacts
 | **PNG**（logo / poster 效果图） | `Read artifacts/<slug>/v?.<ext>`——Read 会把图像送到视觉输入，你能直接看到图 |
 | **HTML + PNG**（落地页 / mockup） | 先 `Read artifacts/<slug>/v?.html`（看源码），再 `Read artifacts/<slug>/v?.png`（看渲染截图） |
 | **纯文 MD**（文案） | `Read artifacts/<slug>/v?.md` |
+
+**多子产物**：逐个读取每个子产物的实物文件。路径为 `artifacts/<parent-slug>/<sub-slug>/v?.<ext>`。
 
 没读实物不准打主观分。凭 prompt 文本或文件名猜图像长什么样是禁止的。
 
@@ -163,7 +182,64 @@ uv run python tools/validate.py review "$RUN_DIR" --artifact "$RUN_DIR/artifacts
 3. **[prompt 问题]** <加什么词、删什么词>
 4. **[素材问题]** <配图选错了 / 缺一张图>
 
-如果反馈是“再好看点”这类含糊话，不要写；明确写“建议返回 Planner 向用户澄清方向”。
+如果反馈是”再好看点”这类含糊话，不要写；明确写”建议返回 Planner 向用户澄清方向”。
+```
+
+### 多子产物 review.md 模板
+
+多子产物任务时，逐个评审子产物后写一份汇总 review，落到 `artifacts/<parent-slug>/v<n>.review.md`：
+
+```markdown
+# Review · <主名称> · v<n>
+
+## 子产物评审
+
+### <子产物名 1>（<sub-slug>）
+
+#### 机器判定
+- check_html_fonts: <PASS / FAIL / N/A>
+
+#### 实物观察
+- 已读取：<artifact 路径>
+- 颜色大体一致性：<一句话>
+- 关键视觉观察：<2-3 条>
+
+#### 主观打分
+
+| 维度 | 分数 | 备注 |
+|---|---|---|
+| 调性体现 | x/5 | <一句话> |
+| 视觉气质 | x/5 | <一句话> |
+| 单件构图 | x/5 | <一句话> |
+| 信息层级 | x/5 | <一句话> |
+| 任务完成度 | x/5 | <一句话> |
+| **小计** | **xx/25** | |
+
+### <子产物名 2>（<sub-slug>）
+
+（同上结构）
+
+---
+
+## 整体判定
+
+**机器硬门槛结果：[全过 / 不通过]**（任一子产物硬门槛失败 = 整体不通过）
+
+**整体评分：xx/25**（取所有子产物主观打分的均值）
+
+**[ 通过 / 不通过 ]**
+
+整体通过条件：机器硬门槛全过 + 均值 ≥ 18/25 + 无子产物单项 ≤ 2。
+
+判定理由（2-3 行）：
+<引用各子产物的具体观察>
+
+---
+
+## 改进建议（仅在不通过时填）
+
+指明需要修改的具体子产物和问题：
+1. **[<子产物名>: <根因层>]** <具体问题和修改方向>
 ```
 
 ## 关键纪律
