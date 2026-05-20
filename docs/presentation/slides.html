@@ -1,0 +1,454 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>Vibe Design · 多智能体协同设计系统</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@700;900&family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap');
+:root {
+  --primary: #0A2463;
+  --secondary: #3E92CC;
+  --accent: #FF6B35;
+  --bg: #F8F9FA;
+  --ink: #1A1A2E;
+  --line: #C8CCD3;
+  --dim: color-mix(in oklch, var(--ink) 50%, transparent);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; overflow: hidden; background: #0A2463; }
+.deck { position: relative; width: 100vw; height: 100vh; }
+.slide {
+  position: absolute; inset: 0;
+  width: 1920px; height: 1080px;
+  transform-origin: top left;
+  background: var(--bg); color: var(--ink);
+  font-family: 'Noto Sans SC', system-ui, sans-serif;
+  opacity: 0; pointer-events: none;
+  transform: scale(1);
+  transition: opacity 0.45s cubic-bezier(0.4,0,0.2,1), filter 0.45s ease;
+  filter: blur(4px);
+}
+.slide.active { opacity: 1; pointer-events: auto; filter: blur(0); }
+.progress {
+  position: fixed; top: 0; left: 0; height: 3px; z-index: 200;
+  background: var(--accent); transition: width 0.4s cubic-bezier(0.4,0,0.2,1);
+}
+.slide header {
+  display: flex; justify-content: space-between; align-items: flex-end;
+  border-bottom: 2px solid var(--ink); padding: 48px 80px 18px;
+}
+.slide header h1 {
+  font-family: 'Noto Serif SC', serif; font-weight: 900;
+  font-size: 48px; color: var(--primary); letter-spacing: -0.02em;
+}
+.slide header .pagenum {
+  font-family: 'JetBrains Mono', monospace; font-size: 14px;
+  color: var(--accent); letter-spacing: 0.1em;
+}
+.slide main { padding: 40px 80px; height: calc(1080px - 130px - 50px); }
+.slide footer {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  padding: 14px 80px; font-size: 12px; color: var(--dim);
+  font-family: 'JetBrains Mono', monospace; letter-spacing: 0.05em;
+  border-top: 1px solid var(--line);
+  display: flex; justify-content: space-between;
+}
+
+/* Animations */
+.slide.active .fade-up {
+  animation: fadeUp 0.6s ease both;
+}
+.slide.active .fade-up:nth-child(1) { animation-delay: 0.1s; }
+.slide.active .fade-up:nth-child(2) { animation-delay: 0.2s; }
+.slide.active .fade-up:nth-child(3) { animation-delay: 0.3s; }
+.slide.active .fade-up:nth-child(4) { animation-delay: 0.4s; }
+.slide.active .fade-up:nth-child(5) { animation-delay: 0.5s; }
+.slide.active .fade-up:nth-child(6) { animation-delay: 0.6s; }
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Navigation */
+.nav {
+  position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 100;
+  background: rgba(255,255,255,0.95); padding: 10px 24px; border-radius: 32px;
+  font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--primary);
+  display: flex; align-items: center; gap: 16px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.15);
+}
+.nav button {
+  background: transparent; border: 1px solid var(--primary); color: var(--primary);
+  padding: 4px 14px; cursor: pointer; font: inherit; border-radius: 16px;
+}
+.nav button:hover { background: var(--primary); color: white; }
+.nav .num { color: var(--accent); font-weight: 700; }
+
+/* 16:9 aspect ratio: 1920x1080 */
+</style>
+</head>
+<body>
+<div class="progress" id="progress" style="width:20%;"></div>
+<div class="deck" id="deck">
+
+<!-- Slide 1: Cover -->
+<div class="slide active" id="s1">
+  <div style="display:grid;grid-template-rows:1fr auto;height:100%;padding:80px;">
+    <div style="display:flex;flex-direction:column;justify-content:center;align-items:flex-start;">
+      <div class="fade-up" style="font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--accent);letter-spacing:0.2em;margin-bottom:24px;">AI FOR DESIGN · 课程实训</div>
+      <h1 class="fade-up" style="font-family:'Noto Serif SC',serif;font-weight:900;font-size:72px;color:var(--primary);line-height:1.2;margin-bottom:20px;">Vibe Design</h1>
+      <p class="fade-up" style="font-family:'Noto Serif SC',serif;font-size:36px;color:var(--ink);font-weight:700;margin-bottom:40px;">多智能体协同设计系统</p>
+      <p class="fade-up" style="font-size:20px;color:var(--dim);max-width:720px;line-height:1.7;">基于 opencode harness 的命令行设计系统。用户输入一句自然语言 brief，系统自主完成需求理解、品牌规范推导、视觉产物生成、机器校验与主观评审，输出完整品牌视觉交付。</p>
+      <div class="fade-up" style="margin-top:48px;display:flex;gap:32px;font-family:'JetBrains Mono',monospace;font-size:14px;color:var(--secondary);">
+        <span>4 Agents</span><span>·</span><span>3 Skills</span><span>·</span><span>5 Python Tools</span><span>·</span><span>E2E Pipeline</span>
+      </div>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:flex-end;border-top:1px solid var(--line);padding-top:18px;">
+      <span style="font-size:13px;color:var(--dim);">opencode + GPT-5.5 + gpt-image-2</span>
+      <span style="font-size:13px;color:var(--dim);">2026.05</span>
+    </div>
+  </div>
+</div>
+
+<!-- Slide 2: System Design -->
+<div class="slide" id="s2">
+  <header>
+    <h1>系统设计</h1>
+    <span class="pagenum">02 / 05</span>
+  </header>
+  <main style="display:grid;grid-template-columns:1.1fr 1fr;gap:56px;padding-top:36px;">
+    <div>
+      <h2 class="fade-up" style="font-family:'Noto Serif SC',serif;font-size:26px;color:var(--primary);margin-bottom:24px;">五项设计原则</h2>
+      <div class="fade-up" style="display:flex;flex-direction:column;gap:16px;">
+        <div style="padding:14px 18px;border-left:3px solid var(--accent);background:color-mix(in oklch, var(--accent) 6%, transparent);">
+          <strong style="font-size:15px;color:var(--primary);">Harness 不重写，只扩展</strong>
+          <p style="font-size:13px;color:var(--dim);margin-top:4px;">opencode 提供调度/上下文/工具调用；本项目只补齐设计能力层</p>
+        </div>
+        <div style="padding:14px 18px;border-left:3px solid var(--secondary);background:color-mix(in oklch, var(--secondary) 6%, transparent);">
+          <strong style="font-size:15px;color:var(--primary);">文件即上下文契约</strong>
+          <p style="font-size:13px;color:var(--dim);margin-top:4px;">Agent 间通过 facts.md / brand-spec.md / deliverables.md 传递决策，不依赖隐式记忆</p>
+        </div>
+        <div style="padding:14px 18px;border-left:3px solid var(--accent);background:color-mix(in oklch, var(--accent) 6%, transparent);">
+          <strong style="font-size:15px;color:var(--primary);">先确定交付物，再并行执行</strong>
+          <p style="font-size:13px;color:var(--dim);margin-top:4px;">Researcher 按 brief 选择 1-5 个交付物；Planner 只按清单调度</p>
+        </div>
+        <div style="padding:14px 18px;border-left:3px solid var(--secondary);background:color-mix(in oklch, var(--secondary) 6%, transparent);">
+          <strong style="font-size:15px;color:var(--primary);">机器硬门槛 + 主观评审分层</strong>
+          <p style="font-size:13px;color:var(--dim);margin-top:4px;">validate.py 做可靠机器检查；Critic 读实物做 5 维主观评分</p>
+        </div>
+        <div style="padding:14px 18px;border-left:3px solid var(--accent);background:color-mix(in oklch, var(--accent) 6%, transparent);">
+          <strong style="font-size:15px;color:var(--primary);">图像后端对 Agent 透明</strong>
+          <p style="font-size:13px;color:var(--dim);margin-top:4px;">统一 CLI 接口，开发/正式后端切换不改 agent prompt</p>
+        </div>
+      </div>
+    </div>
+    <div>
+      <h2 class="fade-up" style="font-family:'Noto Serif SC',serif;font-size:26px;color:var(--primary);margin-bottom:24px;">四 Agent 拓扑</h2>
+      <div class="fade-up" style="background:white;border:1.5px solid var(--line);padding:32px;margin-bottom:24px;">
+        <pre style="font-family:'JetBrains Mono',monospace;font-size:14px;line-height:2;color:var(--ink);">
+  user: /design &lt;brief&gt;
+          │
+          ▼
+  ┌──────────────────┐
+  │ <span style="color:var(--primary);font-weight:700;">Planner</span> (primary) │
+  └──┬─────┬──────┬──┘
+     │     │      │
+     ▼     ▼      ▼
+  <span style="color:var(--secondary);">Researcher</span>  <span style="color:var(--secondary);">Designer</span>  <span style="color:var(--secondary);">Critic</span>
+  (subagent) (subagent) (subagent)</pre>
+      </div>
+      <div class="fade-up" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <div style="padding:12px 16px;background:var(--primary);color:white;font-size:13px;"><strong>Planner</strong><br><span style="opacity:0.8;">调度 · 迭代 · 汇总</span></div>
+        <div style="padding:12px 16px;background:var(--secondary);color:white;font-size:13px;"><strong>Researcher</strong><br><span style="opacity:0.8;">调研 · 规范 · 资产</span></div>
+        <div style="padding:12px 16px;background:var(--secondary);color:white;font-size:13px;"><strong>Designer</strong><br><span style="opacity:0.8;">生图 · HTML · 截图</span></div>
+        <div style="padding:12px 16px;background:color-mix(in oklch, var(--primary) 70%, var(--secondary));color:white;font-size:13px;"><strong>Critic</strong><br><span style="opacity:0.8;">校验 · 评分 · 审阅</span></div>
+      </div>
+    </div>
+  </main>
+  <footer><span>Vibe Design · 系统设计</span><span>AI For Design 2026</span></footer>
+</div>
+
+<!-- Slide 3: Architecture -->
+<div class="slide" id="s3">
+  <header>
+    <h1>系统架构</h1>
+    <span class="pagenum">03 / 05</span>
+  </header>
+  <main style="display:grid;grid-template-columns:1.3fr 1fr;gap:48px;padding-top:32px;">
+    <div>
+      <h2 class="fade-up" style="font-family:'Noto Serif SC',serif;font-size:22px;color:var(--primary);margin-bottom:20px;">数据流与迭代闭环</h2>
+      <div class="fade-up" style="background:white;border:1.5px solid var(--line);padding:28px;margin-bottom:20px;">
+        <pre style="font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.9;color:var(--ink);">
+<span style="color:var(--accent);">Brief</span> ──→ <span style="color:var(--primary);font-weight:700;">Researcher</span>
+              │
+              ├─ facts.md        <span style="color:var(--dim);">(可追溯事实)</span>
+              ├─ brand-spec.md   <span style="color:var(--dim);">(色板/字体/调性)</span>
+              └─ deliverables.md <span style="color:var(--dim);">(交付物清单)</span>
+                    │
+                    ▼
+            <span style="color:var(--primary);font-weight:700;">Planner</span> → plan.md
+                    │
+          ┌─────────┴─────────┐
+          ▼                   ▼
+    <span style="color:var(--secondary);">Designer</span>            <span style="color:var(--secondary);">Designer</span>
+    (artifact A)        (artifact B)
+          │                   │
+          ▼                   ▼
+    <span style="color:#D35400;">Critic</span>              <span style="color:#D35400;">Critic</span>
+    v1.review.md        v1.review.md
+          │                   │
+          ▼                   ▼
+    <span style="color:var(--dim);">Pass? → final.md</span>
+    <span style="color:var(--accent);">Fail? → v2 iteration (max 2)</span></pre>
+      </div>
+      <div class="fade-up" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;">
+        <div style="padding:10px 14px;border:1px solid var(--line);font-size:12px;text-align:center;">
+          <div style="font-family:'JetBrains Mono',monospace;color:var(--accent);font-weight:500;">gen_image.py</div>
+          <div style="color:var(--dim);margin-top:4px;">文生图 CLI</div>
+        </div>
+        <div style="padding:10px 14px;border:1px solid var(--line);font-size:12px;text-align:center;">
+          <div style="font-family:'JetBrains Mono',monospace;color:var(--accent);font-weight:500;">html_screenshot.py</div>
+          <div style="color:var(--dim);margin-top:4px;">HTML→PNG</div>
+        </div>
+        <div style="padding:10px 14px;border:1px solid var(--line);font-size:12px;text-align:center;">
+          <div style="font-family:'JetBrains Mono',monospace;color:var(--accent);font-weight:500;">validate.py</div>
+          <div style="color:var(--dim);margin-top:4px;">机器硬门槛</div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <h2 class="fade-up" style="font-family:'Noto Serif SC',serif;font-size:22px;color:var(--primary);margin-bottom:20px;">能力分层</h2>
+      <div class="fade-up" style="display:flex;flex-direction:column;gap:14px;">
+        <div style="padding:16px 20px;background:var(--primary);color:white;">
+          <div style="font-size:11px;font-family:'JetBrains Mono',monospace;opacity:0.7;letter-spacing:0.1em;">LAYER 1 · ENTRY</div>
+          <div style="font-size:15px;margin-top:6px;font-weight:500;">/design command → Planner</div>
+        </div>
+        <div style="padding:16px 20px;background:var(--secondary);color:white;">
+          <div style="font-size:11px;font-family:'JetBrains Mono',monospace;opacity:0.7;letter-spacing:0.1em;">LAYER 2 · AGENTS</div>
+          <div style="font-size:15px;margin-top:6px;font-weight:500;">4 Agent Prompts (独立上下文 subagent)</div>
+        </div>
+        <div style="padding:16px 20px;background:color-mix(in oklch, var(--accent) 85%, white);color:white;">
+          <div style="font-size:11px;font-family:'JetBrains Mono',monospace;opacity:0.7;letter-spacing:0.1em;">LAYER 3 · TOOLS</div>
+          <div style="font-size:15px;margin-top:6px;font-weight:500;">Python CLI (gen_image / screenshot / validate)</div>
+        </div>
+        <div style="padding:16px 20px;background:var(--ink);color:white;">
+          <div style="font-size:11px;font-family:'JetBrains Mono',monospace;opacity:0.7;letter-spacing:0.1em;">LAYER 4 · SKILLS</div>
+          <div style="font-size:15px;margin-top:6px;font-weight:500;">craft · design-guidelines · ask-user</div>
+        </div>
+      </div>
+      <h2 class="fade-up" style="font-family:'Noto Serif SC',serif;font-size:22px;color:var(--primary);margin:28px 0 16px;">输出目录结构</h2>
+      <div class="fade-up" style="background:white;border:1.5px solid var(--line);padding:16px 20px;">
+        <pre style="font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.7;color:var(--ink);">outputs/run-YYYYMMDD-HHMM-&lt;task&gt;/
+├── facts.md
+├── brand-spec.md
+├── deliverables.md
+├── plan.md
+├── <span style="color:var(--accent);font-weight:500;">final.md</span>
+└── artifacts/
+    ├── logo/v1.png + v1.review.md
+    ├── poster/v1.html + v1.png
+    └── ui-mockup/v1.html + v1.png</pre>
+      </div>
+    </div>
+  </main>
+  <footer><span>Vibe Design · 系统架构</span><span>AI For Design 2026</span></footer>
+</div>
+
+<!-- Slide 4: Implementation -->
+<div class="slide" id="s4">
+  <header>
+    <h1>系统实现</h1>
+    <span class="pagenum">04 / 05</span>
+  </header>
+  <main style="display:grid;grid-template-columns:1fr 1fr;gap:48px;padding-top:32px;">
+    <div>
+      <h2 class="fade-up" style="font-family:'Noto Serif SC',serif;font-size:22px;color:var(--primary);margin-bottom:20px;">技术栈</h2>
+      <div class="fade-up" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:28px;">
+        <div style="padding:16px;border:1.5px solid var(--line);text-align:center;">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:20px;color:var(--primary);font-weight:700;">opencode</div>
+          <div style="font-size:12px;color:var(--dim);margin-top:6px;">Agent Harness</div>
+        </div>
+        <div style="padding:16px;border:1.5px solid var(--line);text-align:center;">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:20px;color:var(--primary);font-weight:700;">Python 3.12</div>
+          <div style="font-size:12px;color:var(--dim);margin-top:6px;">Tools Runtime</div>
+        </div>
+        <div style="padding:16px;border:1.5px solid var(--line);text-align:center;">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:20px;color:var(--primary);font-weight:700;">GPT-5.5</div>
+          <div style="font-size:12px;color:var(--dim);margin-top:6px;">LLM (All Agents)</div>
+        </div>
+        <div style="padding:16px;border:1.5px solid var(--line);text-align:center;">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:20px;color:var(--primary);font-weight:700;">gpt-image-2</div>
+          <div style="font-size:12px;color:var(--dim);margin-top:6px;">Image Generation</div>
+        </div>
+      </div>
+      <h2 class="fade-up" style="font-family:'Noto Serif SC',serif;font-size:22px;color:var(--primary);margin-bottom:16px;">关键实现细节</h2>
+      <div class="fade-up" style="display:flex;flex-direction:column;gap:12px;">
+        <div style="padding:12px 16px;background:white;border:1px solid var(--line);">
+          <strong style="font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--accent);">api.toml</strong>
+          <span style="font-size:13px;color:var(--ink);margin-left:8px;">统一凭据路由，[active] 切换 LLM/Image 后端</span>
+        </div>
+        <div style="padding:12px 16px;background:white;border:1px solid var(--line);">
+          <strong style="font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--accent);">gen_image.py</strong>
+          <span style="font-size:13px;color:var(--ink);margin-left:8px;">双后端（MiniMax/OpenAI），并行候选，自动格式检测</span>
+        </div>
+        <div style="padding:12px 16px;background:white;border:1px solid var(--line);">
+          <strong style="font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--accent);">html_screenshot.py</strong>
+          <span style="font-size:13px;color:var(--ink);margin-left:8px;">Playwright Chromium 渲染 HTML→PNG</span>
+        </div>
+        <div style="padding:12px 16px;background:white;border:1px solid var(--line);">
+          <strong style="font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--accent);">validate.py</strong>
+          <span style="font-size:13px;color:var(--ink);margin-left:8px;">字族合规硬门槛，可扩展检查管线</span>
+        </div>
+      </div>
+    </div>
+    <div>
+      <h2 class="fade-up" style="font-family:'Noto Serif SC',serif;font-size:22px;color:var(--primary);margin-bottom:20px;">Critic 评审机制</h2>
+      <div class="fade-up" style="background:white;border:1.5px solid var(--line);padding:24px;margin-bottom:24px;">
+        <div style="font-size:14px;font-weight:500;color:var(--primary);margin-bottom:16px;">5 维评分体系（每项 0-5 分）</div>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <div style="width:120px;font-size:13px;font-weight:500;">调性体现</div>
+            <div style="flex:1;height:8px;background:var(--line);border-radius:4px;overflow:hidden;"><div style="width:80%;height:100%;background:var(--primary);border-radius:4px;"></div></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;">
+            <div style="width:120px;font-size:13px;font-weight:500;">视觉气质</div>
+            <div style="flex:1;height:8px;background:var(--line);border-radius:4px;overflow:hidden;"><div style="width:85%;height:100%;background:var(--secondary);border-radius:4px;"></div></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;">
+            <div style="width:120px;font-size:13px;font-weight:500;">单件构图</div>
+            <div style="flex:1;height:8px;background:var(--line);border-radius:4px;overflow:hidden;"><div style="width:75%;height:100%;background:var(--primary);border-radius:4px;"></div></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;">
+            <div style="width:120px;font-size:13px;font-weight:500;">信息层级</div>
+            <div style="flex:1;height:8px;background:var(--line);border-radius:4px;overflow:hidden;"><div style="width:90%;height:100%;background:var(--secondary);border-radius:4px;"></div></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;">
+            <div style="width:120px;font-size:13px;font-weight:500;">任务完成度</div>
+            <div style="flex:1;height:8px;background:var(--line);border-radius:4px;overflow:hidden;"><div style="width:88%;height:100%;background:var(--accent);border-radius:4px;"></div></div>
+          </div>
+        </div>
+        <div style="margin-top:16px;padding:10px 14px;background:color-mix(in oklch, var(--accent) 8%, transparent);border-left:3px solid var(--accent);font-size:13px;">
+          通过条件：总分 ≥ 18/25 且无单项 ≤ 2
+        </div>
+      </div>
+      <h2 class="fade-up" style="font-family:'Noto Serif SC',serif;font-size:22px;color:var(--primary);margin-bottom:16px;">迭代策略</h2>
+      <div class="fade-up" style="background:white;border:1.5px solid var(--line);padding:20px;">
+        <div style="display:grid;grid-template-columns:auto 1fr;gap:8px 16px;font-size:13px;line-height:1.8;">
+          <span style="font-family:'JetBrains Mono',monospace;color:var(--accent);font-weight:500;">v1</span>
+          <span>Designer 首次生成 → Critic 评审</span>
+          <span style="font-family:'JetBrains Mono',monospace;color:var(--accent);font-weight:500;">v2</span>
+          <span>未通过 → Designer 根据 review 修改 prompt 重出</span>
+          <span style="font-family:'JetBrains Mono',monospace;color:var(--accent);font-weight:500;">v3</span>
+          <span>仍未通过 → escalate.md，向用户提问</span>
+        </div>
+      </div>
+      <div class="fade-up" style="margin-top:20px;padding:14px 18px;background:var(--primary);color:white;font-size:13px;">
+        <strong>E2E 测试：</strong><code style="font-family:'JetBrains Mono',monospace;background:rgba(255,255,255,0.15);padding:2px 8px;border-radius:3px;">uv run e2e-test --brief "..."</code>
+        <div style="margin-top:6px;opacity:0.8;">idle-based timeout + 进度心跳 + final.md 检测</div>
+      </div>
+    </div>
+  </main>
+  <footer><span>Vibe Design · 系统实现</span><span>AI For Design 2026</span></footer>
+</div>
+
+<!-- Slide 5: Demo Results -->
+<div class="slide" id="s5">
+  <header>
+    <h1>效果展示</h1>
+    <span class="pagenum">05 / 05</span>
+  </header>
+  <main style="display:grid;grid-template-columns:1fr 1fr;gap:48px;padding-top:28px;">
+    <div>
+      <h2 class="fade-up" style="font-family:'Noto Serif SC',serif;font-size:22px;color:var(--primary);margin-bottom:6px;">创智学院品牌形象设计</h2>
+      <p class="fade-up" style="font-size:13px;color:var(--dim);margin-bottom:20px;">Run: run-20260516-011105-chuangzhi-xueyuan · 全自动端到端</p>
+      <div class="fade-up" style="margin-bottom:20px;">
+        <div style="font-size:13px;font-weight:500;color:var(--primary);margin-bottom:10px;">品牌色板</div>
+        <div style="display:flex;gap:8px;">
+          <div style="width:64px;height:64px;background:#0D1B2A;border-radius:4px;display:flex;align-items:flex-end;padding:4px;"><span style="font-size:9px;color:white;font-family:'JetBrains Mono',monospace;">#0D1B2A</span></div>
+          <div style="width:64px;height:64px;background:#1B4965;border-radius:4px;display:flex;align-items:flex-end;padding:4px;"><span style="font-size:9px;color:white;font-family:'JetBrains Mono',monospace;">#1B4965</span></div>
+          <div style="width:64px;height:64px;background:#F8F9FA;border:1px solid var(--line);border-radius:4px;display:flex;align-items:flex-end;padding:4px;"><span style="font-size:9px;color:var(--ink);font-family:'JetBrains Mono',monospace;">#F8F9FA</span></div>
+          <div style="width:64px;height:64px;background:#1A1A2E;border-radius:4px;display:flex;align-items:flex-end;padding:4px;"><span style="font-size:9px;color:white;font-family:'JetBrains Mono',monospace;">#1A1A2E</span></div>
+          <div style="width:64px;height:64px;background:#00B4D8;border-radius:4px;display:flex;align-items:flex-end;padding:4px;"><span style="font-size:9px;color:white;font-family:'JetBrains Mono',monospace;">#00B4D8</span></div>
+        </div>
+      </div>
+      <h3 class="fade-up" style="font-size:15px;color:var(--primary);margin-bottom:12px;">交付物评审结果</h3>
+      <div class="fade-up" style="display:flex;flex-direction:column;gap:10px;">
+        <div style="display:grid;grid-template-columns:100px 1fr 80px 60px;align-items:center;padding:10px 14px;background:white;border:1px solid var(--line);font-size:13px;">
+          <strong>Logo</strong><span style="color:var(--dim);">v2-combo · 组合标志</span><span style="font-family:'JetBrains Mono',monospace;color:var(--accent);">27/50</span><span style="color:#E67E22;">⚠️</span>
+        </div>
+        <div style="display:grid;grid-template-columns:100px 1fr 80px 60px;align-items:center;padding:10px 14px;background:white;border:1px solid var(--line);font-size:13px;">
+          <strong>海报</strong><span style="color:var(--dim);">v1.png · 主视觉竖版</span><span style="font-family:'JetBrains Mono',monospace;color:var(--secondary);">42/50</span><span style="color:#27AE60;">✅</span>
+        </div>
+        <div style="display:grid;grid-template-columns:100px 1fr 80px 60px;align-items:center;padding:10px 14px;background:white;border:1px solid var(--line);font-size:13px;">
+          <strong>文案</strong><span style="color:var(--dim);">v1.txt · 品牌 Slogan</span><span style="font-family:'JetBrains Mono',monospace;color:var(--secondary);">38/50</span><span style="color:#27AE60;">✅</span>
+        </div>
+        <div style="display:grid;grid-template-columns:100px 1fr 80px 60px;align-items:center;padding:10px 14px;background:white;border:1px solid var(--line);font-size:13px;">
+          <strong>UI Mockup</strong><span style="color:var(--dim);">v1.html · 官网首页</span><span style="font-family:'JetBrains Mono',monospace;color:var(--secondary);">45/50</span><span style="color:#27AE60;">✅</span>
+        </div>
+      </div>
+      <div class="fade-up" style="margin-top:16px;padding:12px 16px;background:color-mix(in oklch, var(--secondary) 8%, transparent);border-left:3px solid var(--secondary);font-size:13px;">
+        <strong>Slogan：</strong>「智以深研，创以致用」— 对仗工整，呼应品牌名
+      </div>
+    </div>
+    <div>
+      <h2 class="fade-up" style="font-family:'Noto Serif SC',serif;font-size:22px;color:var(--primary);margin-bottom:16px;">产物预览</h2>
+      <div class="fade-up" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px;">
+        <div style="aspect-ratio:1;background:#0D1B2A;border-radius:4px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;">
+          <div style="font-size:11px;color:rgba(255,255,255,0.6);font-family:'JetBrains Mono',monospace;">LOGO</div>
+          <img src="../demo-runs/run-final-hardened/artifacts/logo/v2-combo-1.png" style="width:85%;height:auto;border-radius:2px;" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+          <div style="display:none;color:rgba(255,255,255,0.4);font-size:11px;">v2-combo-1.png</div>
+        </div>
+        <div style="aspect-ratio:3/4;background:#F8F9FA;border:1px solid var(--line);border-radius:4px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;overflow:hidden;">
+          <div style="font-size:11px;color:var(--dim);font-family:'JetBrains Mono',monospace;">POSTER</div>
+          <img src="../demo-runs/run-final-hardened/artifacts/poster/v1.png" style="width:90%;height:auto;border-radius:2px;" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+          <div style="display:none;color:var(--dim);font-size:11px;">v1.png</div>
+        </div>
+      </div>
+      <div class="fade-up" style="aspect-ratio:16/9;background:#F8F9FA;border:1px solid var(--line);border-radius:4px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;overflow:hidden;">
+        <div style="font-size:11px;color:var(--dim);font-family:'JetBrains Mono',monospace;">UI MOCKUP · 官网首页</div>
+        <img src="../demo-runs/run-final-hardened/artifacts/ui-mockup/v1.png" style="width:95%;height:auto;border-radius:2px;" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+        <div style="display:none;color:var(--dim);font-size:11px;">ui-mockup/v1.png</div>
+      </div>
+      <div class="fade-up" style="margin-top:16px;padding:12px 16px;background:var(--primary);color:white;font-size:13px;text-align:center;">
+        <strong>已知限制：</strong>图像模型无法精确复现 hex 色值 → Logo 需人工校色
+      </div>
+    </div>
+  </main>
+  <footer><span>Vibe Design · 效果展示</span><span>AI For Design 2026</span></footer>
+</div>
+
+</div>
+
+<div class="nav">
+  <button onclick="go(-1)">◀</button>
+  <span><span class="num" id="cur">1</span> / <span id="tot">5</span></span>
+  <button onclick="go(1)">▶</button>
+  <span style="opacity:0.5;font-size:11px;">← → 翻页</span>
+</div>
+
+<script>
+const slides = document.querySelectorAll('.slide');
+let idx = 0;
+function show(i) {
+  idx = Math.max(0, Math.min(slides.length - 1, i));
+  slides.forEach((s, j) => s.classList.toggle('active', j === idx));
+  document.getElementById('cur').textContent = idx + 1;
+  document.getElementById('progress').style.width = ((idx + 1) / slides.length * 100) + '%';
+  fit();
+}
+function go(d) { show(idx + d); }
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === ' ') go(1);
+  if (e.key === 'ArrowLeft') go(-1);
+  if (e.key === 'f') document.documentElement.requestFullscreen?.();
+});
+function fit() {
+  const sw = window.innerWidth, sh = window.innerHeight;
+  const scale = Math.min(sw / 1920, sh / 1080);
+  slides.forEach(s => { s.style.transform = `scale(${scale})`; });
+}
+window.addEventListener('resize', fit);
+fit();
+</script>
+</body>
+</html>
