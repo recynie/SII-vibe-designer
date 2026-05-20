@@ -1,6 +1,6 @@
 # Vibe Design · 系统设计
 
-基于 opencode harness 扩展的多智能体平面设计系统。接收自然语言 brief，自主完成需求理解、任务拆解、设计生成与评估优化，输出通用品牌设计结果（logo / 主视觉 / 文创 / 文案 / 简单 UI 等）。
+基于 opencode harness 扩展的多智能体平面设计系统。接收自然语言 brief，自主完成需求理解、任务拆解、设计生成与评估优化，输出通用品牌视觉设计结果（logo / 主视觉 / 文创 / 简单 UI 等）。
 
 题目里的"创智学院"和"朱家角"只是测试输入。系统不绑定任何特定主题，目录与代码不出现这两个名字。
 
@@ -33,7 +33,7 @@ opencode 已提供 subagent（独立上下文）、自定义 agent / command / s
 ```
 
 **Planner**（primary，主控）
-- 解析 brief → 拆成具体子任务（logo / 主视觉 / 文案 / 应用物料）
+- 解析 brief → 拆成具体子任务（logo / 主视觉 / 文创 / 应用物料）
 - `@researcher` 收集背景 → 落 `brief.md` + `brand-spec.md`
 - 对每个子任务循环：`@designer` → `@critic` → 不过则二次迭代 → 仍不过则向用户提问
 - 最终汇总到 `outputs/<run-id>/`
@@ -43,8 +43,8 @@ opencode 已提供 subagent（独立上下文）、自定义 agent / command / s
 - 输出 `brief.md`（核心信息、受众、调性、约束）+ `brand-spec.md`（色板、字体、关键词）
 
 **Designer**（subagent，单 agent + skill 路由）
-- 调 `gen_image` 出图、写 HTML 排版、写文案
-- 根据子任务类型加载不同 skill prompt（参考 `huashu-design`：logo / 海报 / 文案）
+- 调 `gen_image` 出图、写 HTML 排版
+- 根据子任务类型加载不同 skill prompt（logo / 海报 / UI / 文创等视觉产物）
 - 不出 HTML 草图（介质不匹配时草图无意义）；图直接出，HTML 直接写
 
 **Critic**（subagent）
@@ -63,7 +63,6 @@ opencode 已提供 subagent（独立上下文）、自定义 agent / command / s
 |---|---|---|
 | 图（logo / 插画 / 产品图） | designer 出图 → critic 评图+prompt → designer 改 prompt 重出 | 2 轮，超出向用户提问 |
 | HTML 排版（海报版式 / UI mockup） | designer 直接出完整版 → playwright 截图 → critic 评 → designer 改样式 | 2 轮 |
-| 文案 | designer 出 3 个变体 → critic 选优 + 给修改建议 → designer 改一轮 | 1 轮 |
 
 `critic.md` 写明："基于已写盘的实物打分，不要凭空预测。改进建议要分清是 prompt 问题还是版式问题。"
 
@@ -104,10 +103,8 @@ vibe-design/                      # 项目根
 │   ├── command/
 │   │   └── design.md             # /design <brief>
 │   └── skills/                   # designer 加载的领域 prompt
-│       ├── logo.md
-│       ├── poster.md
-│       ├── copywriting.md
-│       └── ui-mockup.md
+│       ├── craft/
+│       └── design-guidelines/
 ├── tools/                        # Python CLI（agent 通过 bash 调用 + 项目内部质检）
 │   ├── gen_image.py              # 双后端文生图（agent 用）
 │   ├── html_screenshot.py        # HTML → PNG（agent 用，playwright/chromium）
@@ -144,8 +141,8 @@ artifacts/
     v2.png  v2.prompt.txt  v2.review.md
   poster/
     v1.html  v1.png  v1.review.md
-  copy/
-    taglines-v1.md  taglines-v1.review.md
+  ui-mockup/
+    v1.html  v1.png  v1.review.md
 final.md               # planner 的最终交付说明
 ```
 
@@ -178,7 +175,7 @@ final.md               # planner 的最终交付说明
 
 3. **Critic 用 ImageMagick 间接验证颜色**：MiniMax-M2 不支持图像输入，critic 无法直接看图打分。实测中 critic 自己想到了用 `identify -format %[hex:u]` 提取主色 + 中心点偏移量与 brand-spec 比对——这是 prompt 中"基于实物打分"约束自然推导出的能力。GPT-5.5 已支持视觉输入，但 critic prompt 尚未为此重写，仍以 ImageMagick 为主——优化空间。
 
-4. **Designer 走类型路由**：copywriting 任务（纯文本，无 bash 工具）和 logo/poster 任务（要调 gen_image / write HTML）需要不同的执行路径，否则 designer 容易陷入"应该 bash 还是 Write"的犹豫导致 thinking 卡住。`.opencode/agent/designer.md` 显式分两条路径。
+4. **Designer 走视觉产物路由**：HTML 类任务走 `html_screenshot.py`，其它视觉产物走 `gen_image.py`。
 
 ### 模型层限制
 
@@ -198,6 +195,5 @@ final.md               # planner 的最终交付说明
 | Agent Harness 框架 | opencode 1.4（题目允许直接用现成开源） |
 | 任务调度 / 信息传递 / 上下文管理 / 错误处理 / 迭代优化 | opencode 原生 + critic 闭环（§3） |
 | 命令行交互 | opencode TUI + `/design` 命令 |
-| 创意文案生成 | designer 加载 `copywriting.md` skill |
 | "请为创智学院做一套品牌形象设计" 端到端 | `docs/demo-runs/run-20260516-004106-chuangzhi/` 14 分钟全流程产物 |
 | ≤3 页技术 PPT + 架构图 | `docs/presentation/` 3 页 HTML 幻灯片 |

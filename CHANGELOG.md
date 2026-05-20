@@ -4,10 +4,15 @@
 
 > 历史快照：下方条目记录当时的状态，未回填后续变更。当前主 LLM 已从 `MiniMax-M2.7-highspeed` 切到 SII `gpt-5.5`（见 `vibe-design/opencode.json`）；MiniMax 相关条目反映的是切换前的实测。最新状态请看 README 头部。
 
+## 当前调整
+
+- 删除 `design-guidelines/deliverables/copywriting.md`。
+- 删除 designer / critic 中的 copywriting skill 引用。
+
 ## 系统骨架
 
 - 项目骨架 + opencode.json 配 MiniMax-M2 provider
-- 4 个 agent（planner / researcher / designer / critic）+ 4 个 skill（logo / poster / copywriting / ui-mockup）
+- 4 个 agent（planner / researcher / designer / critic）+ 3 个 skill（ask-user / craft / design-guidelines）
 - `tools/gen_image.py` 双后端文生图（minimax / gpt-image-2，env 切换）
 - `tools/html_screenshot.py` HTML → PNG（playwright/chromium）
 - `/design` custom command

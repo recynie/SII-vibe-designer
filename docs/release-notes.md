@@ -60,7 +60,7 @@ Critic 和 Designer 获得视觉理解能力，评审和自检不再"盲猜"。
 
 ### 端到端验证 & Demo Runs
 
-- 7 个 demo run 覆盖 4 个领域（创智学院 / 钝角咖啡 / 朱家角 / Solenne 香水）+ 纯文案任务 + gpt-image-2 后端 + 内容审查 fallback
+- 7 个 demo run 覆盖 4 个领域（创智学院 / 钝角咖啡 / 朱家角 / Solenne 香水）+ gpt-image-2 后端 + 内容审查 fallback
 - 解决 external_directory 死锁、escalate 未落盘、评分尺度残留等实测问题
 - Deliverables 上限规则（显式 + 隐式 ≤ 5）防止 researcher 过度扩展
 
@@ -87,11 +87,11 @@ Critic 和 Designer 获得视觉理解能力，评审和自检不再"盲猜"。
 
 - subagent 严格串行调度（MiniMax-M2 并行会挂起）
 - 文件即上下文契约：agent 间不互相 @，信息流经 `facts.md` / `brand-spec.md` / `v?.review.md`
-- designer 类型路由：copywriting 走 Write，logo/poster 走 gen_image
+- designer 类型路由：logo/poster 等视觉产物走 gen_image，HTML 类产物走 html_screenshot
 - critic 用 ImageMagick 间接验证颜色（MiniMax-M2 不支持视觉输入）
 
 ### 首次端到端
 
-- 创智学院完整 4 类交付：logo / 品牌文案 / 主视觉海报 / 官网首页 mockup
+- 创智学院完整视觉交付：logo / 主视觉海报 / 官网首页 mockup
 - Critic 闭环验证：v1 logo 颜色不符 → 自动启动 v2 prompt 强化
 - 发现 MiniMax image-01 对深色 hex 复现不严格（ΔE ~50 vs gpt-image-2 的 ~22）
