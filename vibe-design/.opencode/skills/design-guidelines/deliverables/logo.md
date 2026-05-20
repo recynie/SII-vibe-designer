@@ -25,7 +25,7 @@
 
 - 描述概念而非描述结果：写 `a shield formed by two overlapping leaves` 而非 `a logo that represents security and nature`
 - 结构：`<主体> + <关键词> + <配色> + <构图> + <质感>`
-- 颜色强约束：`STRICTLY use only #X for X, #Y for Y - NO other colors, NO color shifts`
+- 色彩描述：用品牌主色和强调色描述图形层级，例如 `deep navy primary shape with cyan accent details`
 - 末尾必加：`flat vector, scalable, on solid background, no gradients, no emoji, no photorealistic textures, no faces`
 - 中文品牌名：`containing the Chinese characters "<名>"`（不要让模型自己生中文）
 

@@ -1,18 +1,17 @@
 # Schema · brand-spec.md
 
-`brand-spec.md` 是 researcher 在 facts.md 之后产出的第二份结构化文件。**它是约束不是模板**：色板 / 字族 / 调性是硬锁，流派 / 构图 / 装饰由 designer 自由发挥。
+`brand-spec.md` 是 researcher 在 facts.md 之后产出的第二份结构化文件。它提供设计依据：色彩参考 / 字族 / 调性 / 视觉气质，流派 / 构图 / 装饰由 designer 自由发挥。
 
 ## 顶层结构
 
 ```markdown
 # Brand Spec · <主题名>
 
-## 色板
-- Primary: #XXXXXX [from-fact: <事实片段>]
-- Secondary: #XXXXXX [inferred: <理由>]
-- Background: #XXXXXX [inferred: 中性底色搭配]
-- Ink: #XXXXXX [inferred: 高对比正文色]
-- Accent: #XXXXXX [inferred: 强调点]
+## 色彩参考
+- Primary: <颜色名称或色彩方向，可附 hex> [from-fact: <事实片段> 或 inferred: <理由>]
+- Background: <背景色方向> [inferred: 中性底色搭配]
+- Ink: <正文色方向> [inferred: 高对比正文色]
+- Accent: <强调色方向> [inferred: 强调点]
 
 ## 字体
 - Display: <字族名> [from-fact: <事实片段>]
@@ -31,7 +30,7 @@
 
 ## 字段标签语法
 
-每个**带值字段**（色板每条、字体每条）必须以下列两种标签之一收尾：
+每个**带值字段**（色彩参考每条、字体每条）必须以下列两种标签之一收尾：
 
 | 标签 | 含义 | 形态 |
 |---|---|---|
@@ -43,24 +42,21 @@
 ## 校验规则（`tools/validate_brand_spec.py`）
 
 1. 第一行必须以 `# Brand Spec` 开头
-2. 必须包含 `## 色板` `## 字体` `## 调性` 三个一级章节（顺序可调，但都要有）
-3. `## 色板` 下每行 `- <角色>: #HEX` 必须命中 `[from-fact: ...]` 或 `[inferred: ...]` 标签之一
+2. 必须包含 `## 色彩参考` `## 字体` `## 调性` 三个一级章节（顺序可调，但都要有）
+3. `## 色彩参考` 下每行 `- <角色>: <颜色描述>` 必须命中 `[from-fact: ...]` 或 `[inferred: ...]` 标签之一
 4. `## 字体` 下每行 `- <角色>: <名>` 同上
 5. 所有 `[from-fact: <片段>]` 引用必须能在同 RUN_DIR 的 `facts.md` 中找到子串匹配（区分大小写不严格，去除首尾空白）
-6. 所有 hex 必须形如 `#` 后跟 3 或 6 位 16 进制（不接受 `rgba()` / `oklch()` 等）
-7. 如果某 `## 色板` 行声明 `[from-fact: <片段>]` 且该 fact 中含完整 6 位 hex（如 `#1A73E8`），spec 行的 hex 必须与 fact 中的 hex 完全一致
 
 ## 示例（合规）
 
 ```markdown
 # Brand Spec · 创智学院
 
-## 色板
-- Primary: #1A73E8 [from-fact: 主色 #1A73E8]
-- Secondary: #00A86B [inferred: 成长绿表达进阶]
-- Background: #FAFBFC [inferred: 近白底保证可读]
-- Ink: #1F2937 [inferred: 深灰高对比]
-- Accent: #F59E0B [inferred: 能量橙提示 CTA]
+## 色彩参考
+- Primary: 明亮蓝色（#1A73E8） [from-fact: 主色 #1A73E8]
+- Background: 近白背景 [inferred: 保证可读]
+- Ink: 深灰文字 [inferred: 高对比正文色]
+- Accent: 能量橙 [inferred: 提示 CTA]
 
 ## 字体
 - Display: Noto Serif SC [inferred: 中文学术调性]
@@ -81,10 +77,10 @@
 
 ```markdown
 # Brand Spec · X
-## 色板
-- Primary: #FFF [inferred: 太亮]   ← 仅 3 位 hex 不合 hex 严格写法（不强制）
-- Secondary: #00A86B               ← 缺标签
-- Ink: #ABC123 [from-fact: 黑色]   ← 引用片段在 facts.md 找不到
+## 色彩参考
+- Primary: 明亮蓝色
+- Secondary: 成长绿               ← 缺标签
+- Ink: 深灰 [from-fact: 黑色]      ← 引用片段在 facts.md 找不到
 ```
 
 校验脚本必须分别报告：缺标签、from-fact 失配。

@@ -17,14 +17,14 @@
 1. **描述产品实体**：材质、角度、光照、放置表面
 2. **描述品牌设计在产品上的呈现**：印刷内容、位置、颜色
 
-示例结构：`A white canvas tote bag, front view, flat lay on light wooden surface, soft studio lighting. The bag front is printed with [brand logo/pattern] in [brand hex colors], covering 60% of the front area. Clean white background, no other objects.`
+示例结构：`A white canvas tote bag, front view, flat lay on light wooden surface, soft studio lighting. The bag front is printed with [brand logo/pattern] using the brand color mood, covering 60% of the front area. Clean white background, no other objects.`
 
 ### 通用要点
 
 - 光照：柔和棚拍，干净背景（白色、浅灰或原木表面）
 - 角度：正面视角为主（清晰度优先）；45 度角可增加纵深感
 - 产品底色：通常白色/本色，品牌设计作为印刷内容呈现
-- 颜色约束：`The printed design uses ONLY #X and #Y from the brand palette on a white product base`
+- 色彩提示：`The printed design uses the brand primary color mood with an accent on a white product base`
 - 多产品效果图时用 `--candidates 1` 控制调用量
 
 ### 调用

@@ -23,10 +23,10 @@ PROJECT = ROOT / "vibe-design"
 SKILLS_DIR = PROJECT / ".opencode" / "skills"
 
 EXPECTED_ALLOWED = {
-    "planner": set(),
-    "researcher": set(),
-    "designer": {"craft", "logo", "poster", "ui-mockup", "copywriting", "asset-prep"},
-    "critic": {"craft", "copywriting"},
+    "planner": {"ask-user"},
+    "researcher": {"design-guidelines"},
+    "designer": {"craft", "design-guidelines"},
+    "critic": {"craft"},
 }
 
 

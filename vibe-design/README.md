@@ -4,15 +4,16 @@
 
 ## 用途
 
-接收一句自然语言 brief（如「请为某品牌做一套品牌形象设计」），自动产出 logo / 主视觉 / 文案 / 简单 UI 等设计交付物。
+接收一句自然语言 brief（如「请为某品牌做一套品牌形象设计」），自动产出 logo / 主视觉 / 文创物料 / 简单 UI 等视觉设计交付物。
 
 ## 快速开始
 
-1. 仓库根目录的 `.env` 已配置 `MINIMAX_API_KEY`（opencode 用）。
-2. 仓库根目录的 `api.toml` 已配置 Python 脚本要用的 provider 与 `[active]` 选择器（参考 `../api.toml.example`）。
-3. 进入项目目录：
+1. 仓库根目录的 `api.toml` 已配置 Python 脚本要用的 provider 与 `[active]` 选择器（参考 `../api.toml.example`）。
+2. `vibe-design/.env` 已配置 opencode 要用的环境变量；手动启动 opencode 前需要显式加载。
+3. 进入项目目录并加载环境变量：
    ```bash
    cd vibe-design
+   set -a; . ./.env; set +a
    ```
 4. 启动 opencode（`--pure` 跳过全局插件，避免 workflow rules 注入干扰 subagent）：
    ```bash

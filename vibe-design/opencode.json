@@ -52,10 +52,42 @@
           "limit": { "context": 131072, "output": 16384 }
         }
       }
+    },
+    "findcg-claude": {
+      "npm": "@ai-sdk/anthropic",
+      "name": "FindCG Claude",
+      "options": {
+        "baseURL": "https://www.findcg.com/v1",
+        "apiKey": "{env:FINDCG_CLAUDE_API_KEY}"
+      },
+      "models": {
+        "claude-sonnet-4-6": {
+          "name": "Claude Sonnet 4.6",
+          "limit": { "context": 200000, "output": 8192 }
+        },
+        "claude-opus-4-6": {
+          "name": "Claude Opus 4.6",
+          "limit": { "context": 1000000, "output": 8192 }
+        }
+      }
+    },
+    "findcg-openai": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "FindCG OpenAI",
+      "options": {
+        "baseURL": "https://www.findcg.com/v1",
+        "apiKey": "{env:FINDCG_OPENAI_API_KEY}"
+      },
+      "models": {
+        "gpt-5.5": {
+          "name": "GPT-5.5",
+          "limit": { "context": 1050000, "output": 16384 }
+        }
+      }
     }
   },
-  "model": "sii-openai/gpt-5.5",
-  "small_model": "sii-openai/gpt-4.1-nano",
+  "model": "findcg-openai/gpt-5.5",
+  "small_model": "findcg-openai/gpt-5.5",
   "permission": {
     "edit": "allow",
     "bash": "allow",
