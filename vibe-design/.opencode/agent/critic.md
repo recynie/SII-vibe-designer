@@ -87,7 +87,7 @@ uv run python tools/validate.py review "$RUN_DIR" --artifact "$RUN_DIR/artifacts
 
 ### ④ 问题评审（基于实物观察 + 设计预期对照）
 
-评审前先加载对照手册：视觉类（logo / poster / ui-mockup / mockup）加载 `craft`。
+评审前先加载对照手册：视觉类（logo / poster / mockup）加载 `craft`。
 
 你要主动检查以下方面，并把发现写成具体问题，而不是抽象意见：
 
