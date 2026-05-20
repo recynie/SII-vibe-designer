@@ -54,12 +54,12 @@
   .logo-item img { width: 100%; aspect-ratio: 1; object-fit: contain; background: var(--bg); border: 1px solid var(--line); padding: 12px; }
   .logo-item .label { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--grey); letter-spacing: 0.1em; margin-top: 8px; text-transform: uppercase; }
 
-  /* slogan card */
-  .slogan-card { background: white; padding: 24px 28px; border: 1.5px solid var(--line); }
-  .slogan-card h2 { font-family: 'Noto Serif SC', serif; font-weight: 700; font-size: 22px; color: var(--primary); padding-bottom: 12px; margin-bottom: 14px; border-bottom: 1px solid var(--line); }
-  .slogan-list { display: flex; flex-direction: column; gap: 14px; }
-  .slogan-item .tag { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--accent); letter-spacing: 0.1em; margin-bottom: 4px; }
-  .slogan-item .text { font-family: 'Noto Serif SC', serif; font-weight: 700; font-size: 26px; color: var(--ink); line-height: 1.25; }
+  /* visual spec card */
+  .visual-card { background: white; padding: 24px 28px; border: 1.5px solid var(--line); }
+  .visual-card h2 { font-family: 'Noto Serif SC', serif; font-weight: 700; font-size: 22px; color: var(--primary); padding-bottom: 12px; margin-bottom: 14px; border-bottom: 1px solid var(--line); }
+  .visual-list { display: flex; flex-direction: column; gap: 14px; }
+  .visual-item .tag { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--accent); letter-spacing: 0.1em; margin-bottom: 4px; }
+  .visual-item .text { font-family: 'Noto Serif SC', serif; font-weight: 700; font-size: 24px; color: var(--ink); line-height: 1.25; }
 
   /* critic card */
   .critic-card { background: var(--primary); color: var(--bg); padding: 24px 28px; }
@@ -117,20 +117,20 @@
       </div>
     </div>
 
-    <div class="slogan-card">
-      <h2>Slogan · 三条变体 <span style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--accent); font-weight: 400; letter-spacing: 0.1em;">DESIGNER · copywriting</span></h2>
-      <div class="slogan-list">
-        <div class="slogan-item">
-          <div class="tag">A · 学术克制</div>
-          <div class="text">「做真学问，真做学问。」</div>
+    <div class="visual-card">
+      <h2>Brand Spec · 视觉令牌 <span style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--accent); font-weight: 400; letter-spacing: 0.1em;">RESEARCHER · design-guidelines</span></h2>
+      <div class="visual-list">
+        <div class="visual-item">
+          <div class="tag">PRIMARY / ACCENT</div>
+          <div class="text">#0A2463 · #FF6B35</div>
         </div>
-        <div class="slogan-item">
-          <div class="tag">B · 进取活力</div>
-          <div class="text">「在 AI 时代，站立潮头。」</div>
+        <div class="visual-item">
+          <div class="tag">TYPOGRAPHY</div>
+          <div class="text">Noto Serif SC + Noto Sans SC</div>
         </div>
-        <div class="slogan-item">
-          <div class="tag">C · 通用稳健</div>
-          <div class="text">「这里的课堂，接轨真实世界。」</div>
+        <div class="visual-item">
+          <div class="tag">POSTURE</div>
+          <div class="text">学术稳重 · 现代克制 · 信息建筑感</div>
         </div>
       </div>
     </div>
@@ -156,10 +156,10 @@
     <div class="metrics">
       <h2>运行指标</h2>
       <div class="metric-rows">
-        <div class="metric-row"><span class="name">END-TO-END</span><span class="val">2 分 30 秒（最小验证版 · logo + slogan + 汇总）</span></div>
+        <div class="metric-row"><span class="name">END-TO-END</span><span class="val">2 分 30 秒（最小验证版 · logo + 汇总）</span></div>
         <div class="metric-row"><span class="name">LLM 调用</span><span class="val">researcher 1 · designer 2 · critic 1 · planner ≈ 6 turn</span></div>
         <div class="metric-row"><span class="name">图像生成</span><span class="val">3 张 1024×1024 · MiniMax <code>image-01</code> 后端</span></div>
-        <div class="metric-row"><span class="name">文件产物</span><span class="val">brief.md · brand-spec.md · plan.md · 6 个 prompt.txt · 3 个 png · copy/v1.md · final.md</span></div>
+        <div class="metric-row"><span class="name">文件产物</span><span class="val">brief.md · brand-spec.md · plan.md · 6 个 prompt.txt · 3 个 png · final.md</span></div>
         <div class="metric-row"><span class="name">RUN 目录</span><span class="val"><code>outputs/run-20260516-002629-创智学院/</code></span></div>
         <div class="metric-row"><span class="name">泛化验证</span><span class="val">3 条 example brief：SII / 朱家角 / 钝角咖啡（同一系统）</span></div>
       </div>

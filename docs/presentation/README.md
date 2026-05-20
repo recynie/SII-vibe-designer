@@ -18,7 +18,7 @@ xdg-open docs/presentation/index.html  # Linux
 |---|---|---|
 | 01 | 系统架构 | Planner + 3 subagents + 2 tools 拓扑图 |
 | 02 | 调度时序 | 串行调度时序图 + 5 条关键设计纪律 |
-| 03 | Demo | 实跑创智学院 brief 的真实产出（logo + slogan + critic 评分） |
+| 03 | Demo | 实跑创智学院 brief 的真实视觉产出（logo + critic 评分 + 运行指标） |
 
 ## 静态截图
 
