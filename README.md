@@ -39,11 +39,11 @@ agent 之间不依赖隐式聊天记忆传递关键决策。Researcher 先落三
 
 独立交付物可以并行启动 designer 和 critic；存在产物依赖时按依赖顺序执行。默认建议每批最多 2 个 designer，避免图像 API 并发限制。
 
-### 4. 机器硬门槛和主观评审分层
+### 4. 机器硬门槛和问题评审分层
 
-`validate.py` 只做可靠的机器硬门槛，目前主要是 HTML 字族是否符合 `brand-spec.md`。视觉质量由 critic 直接读取实物图片或 HTML 截图后打分，以整体色调和品牌气质判断颜色方向。
+`validate.py` 只做可靠的机器硬门槛，目前主要是 HTML 字族是否符合 `brand-spec.md`。视觉质量由 critic 直接读取实物图片或 HTML 截图后检查，以整体色调和品牌气质判断颜色方向，并输出可执行问题清单。
 
-Critic 的 5 个维度均为 0-5 分：调性体现、视觉气质、单件构图、信息层级、任务完成度。通过条件是总分 ≥ 18/25 且无单项 ≤ 2。
+Critic 不再给主观分或最终通过结论，而是列出 `BLOCKER / MAJOR / MINOR / NIT` 严重度的问题、证据和修改方向。Planner 读取 review 后决定是否让 designer 重做：`BLOCKER` 必须修复或 escalate，`MAJOR` 默认重做，只有 `MINOR / NIT` 通常接受并记录。
 
 ### 5. 图像后端对 agent 透明
 
@@ -89,8 +89,8 @@ Critic (subagent)
           │
           ▼
 Planner
-  ├─ 不通过可修：v1 -> v2 -> v3
-  ├─ 不可修或超轮次：escalate.md
+  ├─ 按 critic 问题严重度判断是否 v1 -> v2 -> v3
+  ├─ BLOCKER/MAJOR 不可修或超轮次：escalate.md
   └─ final.md
 ```
 
@@ -103,7 +103,7 @@ Planner
 | `planner` | primary | 无 webfetch；仅可用 `ask-user` skill | 建 run 目录，澄清需求，调用 researcher，按 deliverables 写 plan，调度 designer/critic，处理迭代和汇总 |
 | `researcher` | subagent | 可 webfetch；可用 `design-guidelines` | 调研公开事实和 brief 信号，下载必要资产，写 `facts.md / brand-spec.md / deliverables.md` |
 | `designer` | subagent | 不 webfetch；可用 `craft`、`design-guidelines` | 按交付物形态调用生图或写 HTML，生成可评审 artifact，自检并选择最佳候选 |
-| `critic` | subagent | 不 webfetch；可用 `craft` | 先跑机器校验，再读实物，按 5 维评分，写 review，不修改设计 |
+| `critic` | subagent | 不 webfetch；可用 `craft` | 先跑机器校验，再读实物，列出结构化问题、严重度、证据和修改方向，不打分、不决定是否通过 |
 
 ## 数据与输出结构
 

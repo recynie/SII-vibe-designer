@@ -48,7 +48,7 @@ The core pipeline uses four opencode agents:
 | `planner` | Primary orchestrator. Initializes run directories, clarifies user intent, calls subagents, maps deliverables to artifact paths, handles retries/escalation, writes `final.md`. |
 | `researcher` | Subagent for brief understanding and fact gathering. Writes `facts.md`, `brand-spec.md` with color references, `deliverables.md`, and downloads assets. |
 | `designer` | Subagent for artifact production. Calls `gen_image.py` for image deliverables or writes HTML and screenshots it for UI/poster deliverables. |
-| `critic` | Subagent for review. Runs machine checks, reads the actual artifact, scores it, and writes `v?.review.md`. |
+| `critic` | Subagent for review. Runs machine checks, reads the actual artifact, lists structured issues with severity/evidence/fix direction, and writes `v?.review.md`; planner decides whether to revise. |
 
 The project supports single deliverables and multi-sub-artifact deliverables. Example: one “brand merchandise design” deliverable can contain a logo, T-shirt mockup, tote bag mockup, and mug mockup under one parent artifact directory.
 
@@ -82,7 +82,7 @@ This is a course practicum project for an AI For Design assignment.
 | `vibe-design/.opencode/agent/planner.md` | Primary orchestrator prompt. Uses `ask-user`; no webfetch. |
 | `vibe-design/.opencode/agent/researcher.md` | Research prompt. Uses webfetch and `design-guidelines`; writes `facts.md`, `brand-spec.md`, `deliverables.md`. |
 | `vibe-design/.opencode/agent/designer.md` | Artifact production prompt. Uses `craft` and `design-guidelines`; routes deliverables to gen_image or HTML screenshot. |
-| `vibe-design/.opencode/agent/critic.md` | Review prompt. Uses `craft`; runs `validate.py`, reads artifacts, writes `v?.review.md`. |
+| `vibe-design/.opencode/agent/critic.md` | Review prompt. Uses `craft`; runs `validate.py`, reads artifacts, writes structured issue lists to `v?.review.md`. |
 | `vibe-design/.opencode/command/design.md` | `/design` entry command. Sends the brief to `planner`. |
 | `vibe-design/.opencode/skills/ask-user/` | Skill for clarifying user design requirements. Ask about intent and scope, not searchable facts. |
 | `vibe-design/.opencode/skills/craft/` | Design craft baseline, anti-slop checklist, and local OFL font assets under `fonts/`. |
@@ -125,6 +125,7 @@ This is a course practicum project for an AI For Design assignment.
 | Path | Description |
 |---|---|
 | `docs/architecture.md` | Detailed system architecture and historical design decisions. Some model/history statements may need synchronization with root README after architecture changes. |
+| `docs/technical-report.md` | Technical report for course/presentation use. Describes overall design, system architecture, implementation details, and experiment-result analysis. |
 | `docs/release-notes.md` | Release notes for handoff/presentation context. |
 | `docs/task/` | Original AI For Design assignment PDF and Markdown. |
 | `docs/APIs/` | Summer-camp commercial API manual and API availability test report. |

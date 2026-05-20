@@ -46,7 +46,8 @@ outputs/<RUN_ID>/deliverables.md
 
 ## 输出
 
-总结你的设计产品，包括简短说明以及设计产品路径。
+总结你的设计产品。
+所有文件编辑的说明：包括简短说明以及文件绝对路径。
 
 
 ## Skill 加载
@@ -127,7 +128,7 @@ uv run python tools/gen_image.py \
 | `--output` | 最终产物的目标基础路径 | 必填；传 `.../v1.png` 时，工具先写候选 `v1-1.png`、`v1-2.png` 等，不会自动写 `v1.png` |
 | `--aspect-ratio` | 画面比例 | 常用 `1:1`、`3:4`、`4:3`、`16:9`、`9:16`；按 deliverables 形态选择 |
 | `--candidates` | 一次调用生成的候选图数量 | 默认 `3`；`--candidates 1` 只生成 `v1-1.png`，用于控制成本和多子产物任务调用量 |
-| `--input-image` | 参考图 / 待编辑图路径 | 只有图生图、局部编辑、基于已有产物延展时使用 |
+| `--input-image` | 参考图 / 待编辑图路径 | 只有图生图、图像编辑、基于已有产物延展时使用 |
 
 候选文件命名规则：
 - `--output .../v1.png --candidates 3` → 生成 `v1-1.png`、`v1-2.png`、`v1-3.png` 和对应 `.prompt.txt`。
@@ -212,27 +213,14 @@ HTML 中只能使用 `brand-spec.md` 允许的字族。需要图片时引用 `ou
 
 读取 review.md（单产物：`v1.review.md`；多子产物：`artifacts/<parent-slug>/v1.review.md`）：
 
-- 机器判定失败：按 review 指出的文件、行号、hex、字族修复。
-- 主观分低但机器通过：保留 v1 核心方向，只修 review 指出的具体问题。
+- 机器判定失败或存在 `BLOCKER`：按 review 指出的文件、行号、字族、缺失内容、裁切、遮挡或规格问题修复。
+- 存在 `MAJOR`：保留 v1 核心方向，只修 review 指出的具体问题，避免重做成另一个无关方案。
+- 只有 `MINOR` / `NIT` 时，按 planner 指定的问题修；不要自行扩大修改范围。
 - v2 文件顶部写明来自 `v1.review.md` 的改动依据。
 - 多子产物时，只修改 review 中指出问题的子产物，其余子产物直接保留 v1。
-
-## 报告
-
-返回所有写盘文件的绝对路径，一行一个。不要返回图片 base64。
 
 ## 出错处理
 
 - `gen_image` 失败：读 stderr，调整 prompt 重试一次；仍失败则写 `BLOCKED.md`。
 - 内容审查失败：改成更中性的英文 prompt 重试一次；仍失败则写 `BLOCKED.md`。
 - HTML 截图失败：安装或修复 Playwright Chromium 后重试。
-
-## 反 AI Slop
-
-出图后对照 craft skill 的 `REFERENCE-anti-slop.md` 完整检查清单过一遍。快速自检底线：
-
-- 不用紫色渐变。
-- 不用 emoji 当图标。
-- 不用圆角卡片加左侧彩色边框作为默认装饰。
-- 不用 Inter / Roboto / Arial 作为 display 字体，除非 brand-spec 明确指定。
-- 中文标点使用「」，不用英文引号。

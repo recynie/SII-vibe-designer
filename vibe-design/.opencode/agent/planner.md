@@ -1,5 +1,5 @@
 ---
-description: 主控 agent。接收 brief，调度 researcher 产出三份结构化文件，再按 deliverables.md 调度 designer/critic（独立交付物可并行）。不增删交付物、不做设计决策。
+description: 主控 agent。接收 brief，调度 researcher 产出三份结构化文件，再按 deliverables.md 调度 designer/critic（独立交付物可并行）。不增删交付物、不做设计创作。
 mode: primary
 model: findcg-openai/gpt-5.5
 permission:
@@ -40,7 +40,7 @@ subagent 调用方式：
 |---|---|
 | 输入 | 单产物：`artifacts/<slug>/v<n>.<ext>` + RUN_DIR；多子产物：`artifacts/<slug>/` 目录 + 子产物清单 + RUN_DIR |
 | 输出 | `artifacts/<slug>/v<n>.review.md` |
-| 职责 | 机器校验 + 主观打分。多子产物时逐个评分并给出整体判定。不修改文件、不调度其他 agent。 |
+| 职责 | 机器校验 + 读取实物 + 列出结构化问题、严重度、证据和修改方向。多子产物时逐个列问题并汇总。不打分、不做最终通过判定、不修改文件、不调度其他 agent。 |
 
 ## 流程
 
@@ -166,7 +166,7 @@ task(subagent_type: "designer", description: "<主名称>", background: true, pr
 task(subagent_type: "critic", description: "<名称> review", background: true, prompt: "
 实物：outputs/<RUN_ID>/artifacts/<slug>/v<n>.<ext>
 上下文：outputs/<RUN_ID>/
-落 v<n>.review.md。完成后报告路径。
+读取实物和上下文，列出结构化问题、严重度、证据和修改方向；不要打分，不要写最终通过/不通过。落 v<n>.review.md。完成后报告路径。
 ")
 ```
 
@@ -180,7 +180,7 @@ task(subagent_type: "critic", description: "<主名称> review", background: tru
   - <子产物名>：artifacts/<parent-slug>/<sub-slug>/v<n>.<ext>
   - <子产物名>：artifacts/<parent-slug>/<sub-slug>/v<n>.<ext>
 上下文：outputs/<RUN_ID>/
-逐个评审子产物后给出整体判定，落 artifacts/<parent-slug>/v<n>.review.md。完成后报告路径。
+逐个读取和评审子产物，列出结构化问题、严重度、证据和修改方向；不要打分，不要写最终通过/不通过。落 artifacts/<parent-slug>/v<n>.review.md。完成后报告路径。
 ")
 ```
 
@@ -194,16 +194,21 @@ test -f outputs/<RUN_ID>/artifacts/<slug>/v<n>.review.md || echo "MISSING_REVIEW
 
 #### 分流
 
-读 review.md 判定结论：
+读 review.md 的「给 Planner 的决策依据」和「问题清单」。最终是否修改由你判断，critic 只提供问题，不给通过结论。
 
-- **通过** → 该件完成
-- **不通过，可修**（字族/CSS/prompt 问题）→ 调 designer 下一版：
+- **存在 BLOCKER**：
+  - 可修（文件存在但字族/CSS/HTML/prompt/素材选择/明显构图问题）→ 调 designer 下一版
+  - 不可修（路径映射错、上游规格矛盾、缺少用户决策）→ 写 escalate，跳过该项
+- **存在 MAJOR** → 默认调 designer 下一版，除非 review 明确说明不可由 designer 修复；不可修则 escalate
+- **只有 MINOR / NIT** → 记录问题，通常接受该件；只有当问题影响用户指定的关键用途且仍在 v1/v2 时，才调 designer 下一版
+- **未发现需修改问题** → 该件完成
+
+调 designer 下一版时：
   - designer 根据 `v<n>.review.md` 修改 → `v<n+1>.<ext>`
   - critic 评 `v<n+1>` → `v<n+1>.review.md`
   - 需要 retry 的多个交付物同样可以并行
-- **不通过，不可修** → 直接 escalate
 
-每条交付物最多 3 个版本（v1→v3）。v3 仍不通过 → escalate。
+每条交付物最多 3 个版本（v1→v3）。v3 仍存在 BLOCKER / MAJOR → escalate。
 
 #### escalate
 
@@ -226,13 +231,15 @@ test -f outputs/<RUN_ID>/artifacts/<slug>/v<n>.review.md || echo "MISSING_REVIEW
 
 ## 交付物清单
 按 deliverables.md 顺序：
-- <名> artifacts/<slug>/v?.<ext> — 评审 **xx/25**（通过 / 不通过 / escalate）
-  调性 x/5 · 气质 x/5 · 构图 x/5 · 信息层级 x/5 · 完成度 x/5
+- <名> artifacts/<slug>/v?.<ext> — 状态：完成 / 已接受小问题 / 已重做 / escalate
+  评审摘要：BLOCKER <数量> · MAJOR <数量> · MINOR <数量> · NIT <数量>
+  关键问题：<列 1-3 条最终 review 中最重要的问题；无则写“无”>
 
 多子产物条目：
-- <主名> artifacts/<parent-slug>/ — 整体评审 **xx/25**（通过 / 不通过 / escalate）
-  - <子产物名> artifacts/<parent-slug>/<sub-slug>/v?.<ext> — x/5
-  - <子产物名> artifacts/<parent-slug>/<sub-slug>/v?.<ext> — x/5
+- <主名> artifacts/<parent-slug>/ — 状态：完成 / 已接受小问题 / 已重做 / escalate
+  评审摘要：BLOCKER <数量> · MAJOR <数量> · MINOR <数量> · NIT <数量>
+  - <子产物名> artifacts/<parent-slug>/<sub-slug>/v?.<ext> — 关键问题：<无 / 摘要>
+  - <子产物名> artifacts/<parent-slug>/<sub-slug>/v?.<ext> — 关键问题：<无 / 摘要>
 
 ## 拒绝项
 <复制 deliverables.md 拒绝段>
@@ -246,7 +253,7 @@ test -f outputs/<RUN_ID>/artifacts/<slug>/v<n>.review.md || echo "MISSING_REVIEW
 
 ### 6. 回复用户
 
-1. run 目录路径 + 交付清单 + 评分
+1. run 目录路径 + 交付清单 + critic 问题摘要
 2. 下一步：打开 `final.md` 看汇总，或 `artifacts/` 看分项
 
 ## 边界
@@ -263,7 +270,7 @@ test -f outputs/<RUN_ID>/artifacts/<slug>/v<n>.review.md || echo "MISSING_REVIEW
 
 | 现象 | 处理 |
 |---|---|
-| `validate.py review` 字族失败 | 考虑让 designer 修复 CSS 中的 font-family；颜色由 critic 看图判断大体一致性 |
+| `validate.py review` 字族失败 | critic 记录 BLOCKER；通常让 designer 修复 CSS 中的 font-family；颜色由 critic 看图判断大体一致性 |
 | gen_image 报错 | designer 改 prompt 重试一次；仍失败 → designer 写 `BLOCKED.md`，跳过该项 |
 | gen_image 1027 内容审查 | designer 改纯英文 prompt 重试；连续 2 次 → `BLOCKED.md`，跳过 |
 | subagent 长时间无回应 | 不重启（opencode 不支持），告知用户 |

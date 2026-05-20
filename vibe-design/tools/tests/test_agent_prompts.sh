@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
-# Test that agent prompts and skill files have correct structural invariants.
-# Verifies frontmatter, required sections, scoring config, and system deps.
+# Test that current agent prompts and runtime skills keep their core contracts.
 
 set -u
 
@@ -17,90 +16,90 @@ fail=0
 
 check() {
   local label="$1" rc="$2"
-  if [ "$rc" -eq 0 ]; then echo "  PASS  $label"; pass=$((pass+1));
-  else echo "  FAIL  $label"; fail=$((fail+1)); fi
+  if [ "$rc" -eq 0 ]; then
+    echo "  PASS  $label"
+    pass=$((pass+1))
+  else
+    echo "  FAIL  $label"
+    fail=$((fail+1))
+  fi
 }
 
 check_not() {
   local label="$1" rc="$2"
-  if [ "$rc" -ne 0 ]; then echo "  PASS  $label"; pass=$((pass+1));
-  else echo "  FAIL  $label"; fail=$((fail+1)); fi
+  if [ "$rc" -ne 0 ]; then
+    echo "  PASS  $label"
+    pass=$((pass+1))
+  else
+    echo "  FAIL  $label"
+    fail=$((fail+1))
+  fi
 }
 
-# -- Agent frontmatter: webfetch permissions --
-
 echo "== agent frontmatter =="
-grep -Pq '^\s*webfetch:\s*deny\s*$'  "$PLANNER";    check "planner webfetch deny"    $?
-grep -Pq '^\s*webfetch:\s*deny\s*$'  "$DESIGNER";   check "designer webfetch deny"   $?
-grep -Pq '^\s*webfetch:\s*deny\s*$'  "$CRITIC";     check "critic webfetch deny"     $?
-grep -Pq '^\s*webfetch:\s*allow\s*$' "$RESEARCHER"; check "researcher webfetch allow" $?
-
-# -- Planner invariants --
+grep -Pq '^\s*webfetch:\s*deny\s*$'  "$PLANNER";    check "planner webfetch deny"      $?
+grep -Pq '^\s*webfetch:\s*deny\s*$'  "$DESIGNER";   check "designer webfetch deny"     $?
+grep -Pq '^\s*webfetch:\s*deny\s*$'  "$CRITIC";     check "critic webfetch deny"       $?
+grep -Pq '^\s*webfetch:\s*allow\s*$' "$RESEARCHER"; check "researcher webfetch allow"  $?
 
 echo
 echo "== planner =="
-grep -q 'deliverables\.md' "$PLANNER";                          check "reads deliverables.md"         $?
-grep -Pq '(create 模式|reuse 模式|按\s*mode)' "$PLANNER";       check "routes by mode"                $?
-grep -q 'escalate\.md' "$PLANNER";                              check "escalate.md exit hatch"        $?
-grep -Pq '映射|不增不删' "$PLANNER";                             check "plan.md as mapping"            $?
-grep -Pq '严格串行|绝不并行|不要并行' "$PLANNER";                 check "strict serial scheduling"      $?
-grep -q 'critic' "$PLANNER";                                    check "designer→critic loop"          $?
-
-# -- Critic invariants --
+grep -q 'deliverables\.md' "$PLANNER";               check "reads deliverables.md"       $?
+grep -q 'ask-user' "$PLANNER";                       check "uses ask-user skill"         $?
+grep -q 'plan\.md' "$PLANNER";                       check "writes plan.md"              $?
+grep -Pq '不增不删|不在 deliverables\.md 之外加交付物' "$PLANNER"; check "does not change scope" $?
+grep -q 'task_status' "$PLANNER";                    check "tracks background tasks"     $?
+grep -q 'v<n+1>' "$PLANNER";                         check "has retry version flow"      $?
+grep -q 'escalate\.md' "$PLANNER";                   check "escalate.md exit hatch"      $?
+grep -q 'BLOCKER' "$PLANNER";                        check "routes BLOCKER issues"       $?
+grep -q 'MAJOR' "$PLANNER";                          check "routes MAJOR issues"         $?
+grep -q 'MINOR / NIT' "$PLANNER";                    check "can accept minor issues"     $?
+grep -Pq '不要打分|不做最终通过判定' "$PLANNER";       check "critic no-score contract"    $?
 
 echo
 echo "== critic =="
-grep -q '^## 机器判定'   "$CRITIC"; check "has '## 机器判定' section"     $?
-grep -q '^## 色板参考'   "$CRITIC"; check "has '## 色板参考' section"     $?
-grep -q '^## 主观打分'   "$CRITIC"; check "has '## 主观打分' section"     $?
-grep -q '^## 改进建议'   "$CRITIC"; check "has '## 改进建议' section"     $?
-grep -q '机器硬门槛结果' "$CRITIC"; check "machine-gate verdict present"  $?
-
-grep -Pq '色板.{0,8}(不阻断|不参与)' "$CRITIC";  check "palette marked non-blocking"  $?
-grep -Pq '字族.{0,12}(必跑|必过|硬门槛)' "$CRITIC"; check "fonts hard-gated"           $?
-
-grep -Pq '\bx/5\b'        "$CRITIC"; check "per-axis range x/5"   $?
-grep -Pq '\*\*xx/25\*\*'  "$CRITIC"; check "total range xx/25"    $?
-grep -Pq '总分.{0,4}≥\s*18' "$CRITIC"; check "pass threshold ≥18" $?
-grep -Pq '无单项\s*≤\s*2'   "$CRITIC"; check "no-axis ≤2 floor"   $?
-
-grep -q '调性体现'                "$CRITIC"; check "axis: 调性体现"   $?
-grep -q '视觉气质'                "$CRITIC"; check "axis: 视觉气质"   $?
-grep -Pq '单件构图|构图品质'      "$CRITIC"; check "axis: 单件构图"   $?
-grep -q '信息层级'                "$CRITIC"; check "axis: 信息层级"   $?
-grep -q '任务完成度'              "$CRITIC"; check "axis: 任务完成度" $?
-
-grep -Pq 'validate\.py review'   "$CRITIC"; check "uses validate.py review"          $?
+grep -q '^## 评审流程' "$CRITIC";                    check "has review process"          $?
+grep -q '^### ① 机器判定' "$CRITIC";                 check "has machine gate step"       $?
+grep -q '^### ② 提取设计预期' "$CRITIC";             check "extracts design expectations" $?
+grep -q '^### ③ 读取实物' "$CRITIC";                 check "reads artifact step"         $?
+grep -q '^### ④ 问题评审' "$CRITIC";                 check "has issue review step"       $?
+grep -q '^## 严重度定义' "$CRITIC";                  check "defines severity"            $?
+grep -q '^## review.md 模板' "$CRITIC";              check "has review template"         $?
+grep -q '^## 问题清单' "$CRITIC";                    check "template has issue list"     $?
+grep -q '^## 给 Planner 的决策依据' "$CRITIC";       check "template has planner basis"  $?
+grep -Pq 'validate\.py review' "$CRITIC";            check "uses validate.py review"     $?
+grep -Pq 'BLOCKER.*MAJOR.*MINOR.*NIT|BLOCKER / MAJOR / MINOR / NIT' "$CRITIC"; check "severity labels present" $?
+grep -Pq '不打分|不写总分' "$CRITIC";                check "forbids scoring"             $?
+grep -Pq '不做最终通过判定|不给最终' "$CRITIC";       check "forbids final pass verdict"  $?
 grep -Pq '唯一产物.*v\?\.review\.md.*落盘|没落盘.*=.*没评' "$CRITIC"; check "review.md write-to-disk" $?
-
-# -- Designer invariants --
+grep -q '^## 主观打分' "$CRITIC";                    check_not "no subjective score section" $?
+grep -Pq '\*\*xx/25\*\*|总分.{0,4}≥\s*18|无单项\s*≤\s*2' "$CRITIC"; check_not "no score threshold" $?
 
 echo
 echo "== designer =="
-grep -q 'create 模式'       "$DESIGNER"; check "has create mode branch"      $?
-grep -q 'reuse 模式'        "$DESIGNER"; check "has reuse mode branch"       $?
-grep -q '禁调 gen_image'    "$DESIGNER"; check "reuse forbids gen_image"     $?
-grep -Pq 'imagemagick|ImageMagick|convert' "$DESIGNER"; check "mentions ImageMagick" $?
-grep -q 'asset-prep'        "$DESIGNER"; check "references asset-prep skill" $?
+grep -q 'gen_image\.py' "$DESIGNER";                 check "uses gen_image.py"           $?
+grep -q 'html_screenshot\.py' "$DESIGNER";           check "uses html_screenshot.py"     $?
+grep -q '候选评审' "$DESIGNER";                       check "reviews candidates"          $?
+grep -q '视觉自检' "$DESIGNER";                       check "does visual self-check"      $?
+grep -q 'brand-spec\.md' "$DESIGNER";                check "reads brand-spec.md"         $?
+grep -q 'deliverables\.md' "$DESIGNER";              check "reads deliverables.md"       $?
+grep -q 'BLOCKER' "$DESIGNER";                       check "handles BLOCKER review"      $?
+grep -q 'MAJOR' "$DESIGNER";                         check "handles MAJOR review"        $?
+grep -Pq 'MINOR.*NIT' "$DESIGNER";                   check "handles minor review issues" $?
 
-# -- Skills invariants --
+echo
+echo "== researcher =="
+grep -q 'facts\.md' "$RESEARCHER";                   check "writes facts.md"             $?
+grep -q 'brand-spec\.md' "$RESEARCHER";              check "writes brand-spec.md"        $?
+grep -q 'deliverables\.md' "$RESEARCHER";            check "writes deliverables.md"      $?
+grep -q 'design-guidelines' "$RESEARCHER";           check "uses design-guidelines skill" $?
 
 echo
 echo "== skills =="
-for s in logo poster copywriting ui-mockup; do
-  ! grep -Pq '<!doctype html>|<style>|font-family\s*:' "$SKILLS/$s/SKILL.md"
-  check "skills/$s no HTML skeleton/font-family" $?
-done
-
-test -f "$SKILLS/asset-prep/SKILL.md";            check "asset-prep/SKILL.md exists"       $?
-grep -q '禁调 gen_image' "$SKILLS/asset-prep/SKILL.md"; check "asset-prep forbids gen_image" $?
-grep -q 'convert '        "$SKILLS/asset-prep/SKILL.md"; check "asset-prep has convert recipe" $?
-
-# -- System dependencies --
-
-echo
-echo "== system deps =="
-command -v convert >/dev/null; check "ImageMagick convert available" $?
+test -f "$SKILLS/ask-user/SKILL.md";                 check "ask-user skill exists"       $?
+test -f "$SKILLS/craft/SKILL.md";                    check "craft skill exists"          $?
+test -d "$SKILLS/craft/fonts";                       check "craft fonts exist"           $?
+test -f "$SKILLS/design-guidelines/SKILL.md";        check "design-guidelines skill exists" $?
 
 echo
 echo "== summary: $pass passed, $fail failed =="
