@@ -24,9 +24,9 @@ Usage examples::
     # brief from file (relative to repo root)
     uv run e2e-test --brief-file vibe-design/examples/brief-sii-academy.md
 
-    # override model & timeout
+    # override model & idle timeout
     uv run e2e-test --brief-file vibe-design/examples/brief-coffee-startup.md \
-        --model sii-openai/gpt-4.1 --timeout 900
+        --model sii-openai/gpt-4.1 --idle-timeout 600
 """
 
 from __future__ import annotations
@@ -53,6 +53,7 @@ DOTENV_PATH = VIBE_DIR / ".env"
 OPENCODE_JSON = VIBE_DIR / "opencode.json"
 OUTPUTS_DIR = VIBE_DIR / "outputs"
 PROGRESS_INTERVAL_SECONDS = 30
+IDLE_TIMEOUT_SECONDS = 300  # kill if no output for 5 minutes
 PROGRESS_ROOT_FILES = ("facts.md", "brand-spec.md", "deliverables.md", "plan.md", "final.md", "escalate.md")
 
 
@@ -227,20 +228,18 @@ def run_with_pty(
     *,
     cwd: Path,
     env: dict[str, str],
-    timeout: int,
+    idle_timeout: int,
     progress: ProgressReporter | None = None,
 ) -> int:
     """Spawn *cmd* in a PTY so Node.js thinks it has a real terminal and
     flushes stdout eagerly.  Streams all output to the caller's stdout in
-    real-time.  Returns the child exit code, or 124 on timeout.
+    real-time.  Returns the child exit code, or 124 on idle timeout.
     """
-    # Try to use a PTY for unbuffered, real-time output.
-    # Fall back to plain subprocess if pty is unavailable (Windows).
     try:
-        import pty as _pty  # noqa: F401 – just checking availability
-        return _run_pty(cmd, cwd=cwd, env=env, timeout=timeout, progress=progress)
+        import pty as _pty  # noqa: F401
+        return _run_pty(cmd, cwd=cwd, env=env, idle_timeout=idle_timeout, progress=progress)
     except ImportError:
-        return _run_plain(cmd, cwd=cwd, env=env, timeout=timeout)
+        return _run_plain(cmd, cwd=cwd, env=env, idle_timeout=idle_timeout)
 
 
 def _run_pty(
@@ -248,7 +247,7 @@ def _run_pty(
     *,
     cwd: Path,
     env: dict[str, str],
-    timeout: int,
+    idle_timeout: int,
     progress: ProgressReporter | None,
 ) -> int:
     """PTY-based implementation (Linux / macOS)."""
@@ -264,39 +263,37 @@ def _run_pty(
         stdout=slave_fd,
         stderr=slave_fd,
     )
-    os.close(slave_fd)  # parent doesn't need the slave side
+    os.close(slave_fd)
 
-    deadline = time.monotonic() + timeout
+    last_output_at = time.monotonic()
     timed_out = False
 
     try:
         while True:
-            remaining = deadline - time.monotonic()
-            if remaining <= 0:
+            idle_elapsed = time.monotonic() - last_output_at
+            if idle_elapsed >= idle_timeout:
                 timed_out = True
                 break
 
-            ready, _, _ = select.select([master_fd], [], [], min(remaining, 1.0))
+            ready, _, _ = select.select([master_fd], [], [], 1.0)
             if ready:
                 try:
                     data = os.read(master_fd, 4096)
                 except OSError as exc:
                     if exc.errno == errno.EIO:
-                        # child closed its end
                         break
                     raise
                 if not data:
                     break
                 sys.stdout.buffer.write(data)
                 sys.stdout.buffer.flush()
+                last_output_at = time.monotonic()
 
             if progress:
                 progress.poll()
 
-            # check if child has exited (non-blocking)
             ret = proc.poll()
             if ret is not None:
-                # drain remaining output
                 while True:
                     rd, _, _ = select.select([master_fd], [], [], 0.1)
                     if not rd:
@@ -317,7 +314,8 @@ def _run_pty(
         progress.poll(force=True)
 
     if timed_out:
-        print(f"\n⏰  Timeout ({timeout}s) reached – killing opencode.", file=sys.stderr)
+        idle_min = idle_timeout // 60
+        print(f"\n⏰  Idle timeout ({idle_min}min without output) – killing opencode.", file=sys.stderr)
         proc.kill()
         proc.wait()
         return 124
@@ -333,19 +331,20 @@ def _run_plain(
     *,
     cwd: Path,
     env: dict[str, str],
-    timeout: int,
+    idle_timeout: int,
 ) -> int:
-    """Fallback: plain subprocess (no PTY)."""
+    """Fallback: plain subprocess (no PTY). Uses idle_timeout as a hard cap."""
     try:
         proc = subprocess.run(
             cmd,
             cwd=cwd,
             env=env,
-            timeout=timeout,
+            timeout=idle_timeout,
         )
         return proc.returncode
     except subprocess.TimeoutExpired:
-        print(f"\n⏰  Timeout ({timeout}s) reached.", file=sys.stderr)
+        idle_min = idle_timeout // 60
+        print(f"\n⏰  Idle timeout ({idle_min}min) reached.", file=sys.stderr)
         return 124
 
 
@@ -428,7 +427,7 @@ def build_parser() -> argparse.ArgumentParser:
             "  uv run e2e-test --brief '请为创智学院做一套品牌形象设计'\n"
             "  uv run e2e-test --brief-file vibe-design/examples/brief-sii-academy.md\n"
             "  uv run e2e-test --brief-file vibe-design/examples/brief-coffee-startup.md "
-            "--model sii-openai/gpt-4.1 --timeout 900\n"
+            "--model sii-openai/gpt-4.1 --idle-timeout 600\n"
         ),
     )
 
@@ -452,11 +451,11 @@ def build_parser() -> argparse.ArgumentParser:
         help=f"Override the LLM model (provider/model). Default: from opencode.json ({default_model()}).",
     )
     p.add_argument(
-        "--timeout",
+        "--idle-timeout",
         type=int,
-        default=600,
+        default=None,
         metavar="SECS",
-        help="Timeout in seconds for the entire run (default: 600).",
+        help=f"Kill if no output for this many seconds (default: {IDLE_TIMEOUT_SECONDS}).",
     )
     p.add_argument(
         "--env-file",
@@ -521,9 +520,11 @@ def main(argv: list[str] | None = None) -> None:
     model = args.model or default_model()
     cmd = ["opencode", "run", "--command", "design", "--model", model, brief_text]
 
+    idle_timeout = args.idle_timeout or IDLE_TIMEOUT_SECONDS
+
     print(f"🚀  Starting Vibe Design e2e run")
     print(f"    Model   : {model}")
-    print(f"    Timeout : {args.timeout}s")
+    print(f"    Idle timeout: {idle_timeout}s ({idle_timeout // 60}min without output)")
     print(f"    Progress: every {PROGRESS_INTERVAL_SECONDS}s")
     print(f"    Brief   : {brief_text[:120]}{'…' if len(brief_text) > 120 else ''}")
     print(f"    CWD     : {VIBE_DIR}")
@@ -538,7 +539,7 @@ def main(argv: list[str] | None = None) -> None:
 
     # ---- run ---------------------------------------------------------------
     progress = ProgressReporter(existing_runs)
-    exit_code = run_with_pty(cmd, cwd=VIBE_DIR, env=child_env, timeout=args.timeout, progress=progress)
+    exit_code = run_with_pty(cmd, cwd=VIBE_DIR, env=child_env, idle_timeout=idle_timeout, progress=progress)
 
     # ---- find the new run directory ----------------------------------------
     run_dir: Path | None = None
