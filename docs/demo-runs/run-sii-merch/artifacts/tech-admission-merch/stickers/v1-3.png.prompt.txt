@@ -1,0 +1,6 @@
+# backend: openai
+# format: png
+# aspect: 4:3
+# candidate: 3/3
+
+A premium design presentation board for Shanghai Innovation Institute admissions merchandise: sticker pack mockup on the left, several die-cut stickers placed on a light grey tabletop with realistic paper thickness and soft shadows; on the right a flat printable sticker sheet layout showing individual sticker designs. Use ONLY #113E98, #0168B7, #F4F8FF, #232323 and a tiny #F97316 accent. Sticker motifs: AI data-flow paths, coordinate grid tile, SII letter module, precise wordmark text 上海创智学院, Shanghai Innovation Institute, and compact admissions tech labels without any year or motto. Calm technology, professional, clean, structured. Same PNG board, #F4F8FF background, generous spacing. NO purple gradients, NO neon glow, NO emoji, NO mascot, NO shield crest, NO laurel, NO invented year, NO fake motto, NO warped text, NO over-dense tiny lines.

@@ -1,0 +1,6 @@
+# backend: openai
+# format: png
+# aspect: 4:3
+# candidate: 2/3
+
+Campus youth notebook merchandise presentation board for Shanghai Innovation Institute, one polished PNG board. Left: realistic photo-style mockup of a slim A5 notebook on a clean pale desk, slightly angled, soft studio daylight, visible cover print and paper texture. Right: flat front cover artwork shown as a rectangular print layout. Theme: fresh student daily notebook for SII new students, structured but warm, maker-community hand-journal modules, not childish. Cover: light blue-gray #F4F8FF base, large SII in #113E98, exact readable 上海创智学院 and Shanghai Innovation Institute, small 新生纪念 phrase without any year. Graphics: modular campus path line, coordinate dots, notebook/lab/laptop micro symbols, orange #F97316 index tab accent, secondary blue #0168B7 thin rules, ink #232323 for small text. Generous whitespace, precise editorial alignment, no shield, no crest, no mascot, no emoji, no purple gradients, no neon glow, no warped text, no fake motto.

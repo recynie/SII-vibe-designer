@@ -1,0 +1,6 @@
+# backend: openai
+# format: png
+# aspect: 4:3
+# candidate: 2/3
+
+Campus youth sticker merchandise presentation board for Shanghai Innovation Institute, one clean PNG board. Left zone: realistic photo-style mockup of a small sticker sheet and several die-cut stickers on a pale blue-white desk surface, soft studio light, real paper edges and shadows. Right zone: flat layout grid of individual sticker artworks. Theme: hand-journal maker modules for study, experiment, campus daily use; mature, not childish. Stickers include readable SII, 上海创智学院, Shanghai Innovation Institute, plus minimal symbols: laptop, notebook, lab flask, coordinate grid, maker wrench line, campus route dot, abstract spark made from geometry (not emoji). Palette ONLY #F4F8FF, #113E98, #0168B7, #F97316 small accents, #232323 ink. Rounded die-cut white borders, precise spacing, generous blank margins, no mascots, no shields, no crests, no ribbons, no purple gradients, no neon glow, no warped text, no fake slogans, no years.

@@ -1,0 +1,6 @@
+# backend: openai
+# format: png
+# aspect: 4:3
+# candidate: 2/3
+
+Campus youth badge merchandise presentation board for Shanghai Innovation Institute, a single refined PNG board. Left: realistic photo-style mockup of enamel pin badges on a pale fabric and paper surface, soft natural studio shadows, tangible metal rim but not luxury. Right: flat badge artwork layout, one circular badge and one soft irregular geometric badge shown as clean vector-like print designs. Theme: daily wearable friendly freshman/maker community, mature and not childish. Use exact readable text SII and 上海创智学院 only, no year. Badge graphics: SII letter module, abstract campus route dot, notebook corner, small orange maker tab, structured grid. Palette ONLY #F4F8FF, #113E98, #0168B7, #F97316, #232323; mostly blue on light base with tiny orange accent. Generous whitespace, precise alignment, no traditional shield, no crest, no laurel, no ribbon, no mascot, no emoji, no purple gradients, no neon glow, no warped text, no fake motto.

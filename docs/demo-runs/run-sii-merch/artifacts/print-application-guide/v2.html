@@ -1,0 +1,584 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>上海创智学院文创印刷应用规范页</title>
+  <!-- v2 updated per v1.review.md: restrict all CSS font-family usage to montserrat-medium and sourcehansanscn-regular only. -->
+  <style>
+    :root {
+      --primary: #113E98;
+      --secondary: #0168B7;
+      --background: #F4F8FF;
+      --ink: #232323;
+      --accent: #F97316;
+      --paper: #FBFDFF;
+      --line: rgba(17, 62, 152, 0.18);
+      --soft: rgba(1, 104, 183, 0.08);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      width: 1200px;
+      min-height: 1600px;
+      background: var(--background);
+      color: var(--ink);
+      font-family: "sourcehansanscn-regular", sans-serif;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: geometricPrecision;
+    }
+
+    .page {
+      position: relative;
+      width: 1200px;
+      height: 1600px;
+      padding: 74px 78px 70px;
+      overflow: hidden;
+      background:
+        linear-gradient(90deg, rgba(17,62,152,0.055) 1px, transparent 1px),
+        linear-gradient(180deg, rgba(17,62,152,0.055) 1px, transparent 1px),
+        var(--background);
+      background-size: 40px 40px;
+    }
+
+    .page::before {
+      content: "";
+      position: absolute;
+      right: -210px;
+      top: -180px;
+      width: 540px;
+      height: 540px;
+      border: 1px solid rgba(1,104,183,0.14);
+      transform: rotate(18deg);
+      background: rgba(255,255,255,0.42);
+    }
+
+    .page::after {
+      content: "";
+      position: absolute;
+      left: 78px;
+      bottom: 58px;
+      width: 1044px;
+      height: 1px;
+      background: var(--line);
+    }
+
+    .header {
+      position: relative;
+      display: grid;
+      grid-template-columns: 1fr 330px;
+      gap: 64px;
+      align-items: start;
+      z-index: 1;
+    }
+
+    .kicker {
+      margin: 0 0 22px;
+      color: var(--secondary);
+      font-family: "montserrat-medium", "sourcehansanscn-regular", sans-serif;
+      font-size: 13px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      max-width: 680px;
+      color: var(--primary);
+      font-family: "montserrat-medium", "sourcehansanscn-regular", sans-serif;
+      font-size: 58px;
+      line-height: 1.05;
+      letter-spacing: -0.025em;
+      font-weight: 500;
+      text-wrap: pretty;
+    }
+
+    .intro {
+      max-width: 650px;
+      margin: 28px 0 0;
+      font-size: 17px;
+      line-height: 1.72;
+      color: rgba(35,35,35,0.78);
+    }
+
+    .brand-lockup {
+      padding: 28px 30px 30px;
+      background: rgba(255,255,255,0.74);
+      border: 1px solid var(--line);
+      min-height: 206px;
+    }
+
+    .brand-lockup img {
+      display: block;
+      width: 244px;
+      height: auto;
+      margin-bottom: 34px;
+    }
+
+    .meta-row {
+      display: grid;
+      grid-template-columns: 92px 1fr;
+      gap: 16px;
+      padding-top: 14px;
+      border-top: 1px solid var(--line);
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .meta-row strong {
+      color: var(--primary);
+      font-family: "montserrat-medium", "sourcehansanscn-regular", sans-serif;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+    }
+
+    .section-label {
+      margin: 0 0 16px;
+      color: var(--primary);
+      font-family: "montserrat-medium", "sourcehansanscn-regular", sans-serif;
+      font-size: 18px;
+      font-weight: 500;
+      letter-spacing: -0.01em;
+    }
+
+    .grid {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: 1.03fr 0.97fr;
+      gap: 30px;
+      margin-top: 48px;
+    }
+
+    .panel {
+      background: rgba(255,255,255,0.70);
+      border: 1px solid var(--line);
+      padding: 26px 28px;
+    }
+
+    .panel.compact { padding: 24px 24px; }
+
+    .series {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    .series-card {
+      min-height: 212px;
+      padding: 20px 20px 18px;
+      border: 1px solid var(--line);
+      background: var(--paper);
+    }
+
+    .series-card.dark {
+      background: var(--primary);
+      color: #F4F8FF;
+      border-color: var(--primary);
+    }
+
+    .series-card.light {
+      background: linear-gradient(180deg, #FFFFFF 0%, #F4F8FF 100%);
+    }
+
+    .series-title {
+      margin: 0 0 10px;
+      font-family: "montserrat-medium", "sourcehansanscn-regular", sans-serif;
+      font-size: 24px;
+      line-height: 1.15;
+      font-weight: 500;
+      letter-spacing: -0.02em;
+    }
+
+    .series-card p {
+      margin: 0;
+      font-size: 13px;
+      line-height: 1.62;
+      opacity: 0.84;
+    }
+
+    .swatches {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .swatch {
+      min-height: 72px;
+      padding: 9px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      border: 1px solid rgba(35,35,35,0.08);
+      font-family: "montserrat-medium", "sourcehansanscn-regular", sans-serif;
+      font-size: 10px;
+      line-height: 1.25;
+      letter-spacing: 0.02em;
+    }
+
+    .swatch.light-ink { color: #F4F8FF; }
+    .s-primary { background: var(--primary); }
+    .s-secondary { background: var(--secondary); }
+    .s-bg { background: var(--background); }
+    .s-ink { background: var(--ink); }
+    .s-accent { background: var(--accent); }
+
+    .rules {
+      display: grid;
+      gap: 14px;
+    }
+
+    .rule {
+      display: grid;
+      grid-template-columns: 36px 1fr;
+      gap: 16px;
+      align-items: start;
+      padding-bottom: 14px;
+      border-bottom: 1px solid rgba(17,62,152,0.13);
+    }
+
+    .rule:last-child { border-bottom: 0; padding-bottom: 0; }
+
+    .num {
+      width: 36px;
+      height: 36px;
+      display: grid;
+      place-items: center;
+      background: var(--soft);
+      color: var(--primary);
+      font-family: "montserrat-medium", "sourcehansanscn-regular", sans-serif;
+      font-size: 13px;
+      letter-spacing: 0.06em;
+    }
+
+    .rule h3 {
+      margin: 0 0 4px;
+      color: var(--ink);
+      font-size: 16px;
+      line-height: 1.35;
+      font-weight: 500;
+    }
+
+    .rule p {
+      margin: 0;
+      font-size: 12.5px;
+      line-height: 1.62;
+      color: rgba(35,35,35,0.72);
+    }
+
+    .type-logo {
+      display: grid;
+      grid-template-columns: 0.95fr 1.05fr;
+      gap: 18px;
+      margin-top: 18px;
+    }
+
+    .mini-box {
+      min-height: 176px;
+      padding: 18px;
+      border: 1px solid var(--line);
+      background: var(--paper);
+    }
+
+    .mini-box h3 {
+      margin: 0 0 12px;
+      color: var(--primary);
+      font-family: "montserrat-medium", "sourcehansanscn-regular", sans-serif;
+      font-size: 15px;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+    }
+
+    .type-demo .display {
+      margin: 0 0 8px;
+      color: var(--primary);
+      font-family: "montserrat-medium", "sourcehansanscn-regular", sans-serif;
+      font-size: 32px;
+      line-height: 1.05;
+      letter-spacing: -0.025em;
+    }
+
+    .type-demo .body-demo {
+      margin: 0;
+      font-family: "sourcehansanscn-regular", sans-serif;
+      font-size: 14px;
+      line-height: 1.7;
+      color: rgba(35,35,35,0.76);
+    }
+
+    .logo-demo {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .logo-sample {
+      min-height: 78px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(17,62,152,0.16);
+      background: #FFFFFF;
+      padding: 12px;
+    }
+
+    .logo-sample.blue {
+      background: var(--primary);
+    }
+
+    .logo-sample img { width: 118px; height: auto; }
+    .logo-sample.blue img { filter: brightness(0) invert(1); }
+
+    .clearspace {
+      margin-top: 12px;
+      font-size: 12px;
+      line-height: 1.55;
+      color: rgba(35,35,35,0.72);
+    }
+
+    .motifs {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .motif {
+      height: 92px;
+      position: relative;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      background: #FFFFFF;
+    }
+
+    .motif.gridline {
+      background:
+        linear-gradient(90deg, rgba(1,104,183,0.22) 1px, transparent 1px),
+        linear-gradient(180deg, rgba(1,104,183,0.22) 1px, transparent 1px),
+        #FFFFFF;
+      background-size: 18px 18px;
+    }
+
+    .motif.stream::before,
+    .motif.stream::after {
+      content: "";
+      position: absolute;
+      height: 2px;
+      background: var(--secondary);
+      left: 15px;
+      right: 18px;
+      top: 30px;
+      box-shadow: 0 18px 0 rgba(1,104,183,0.46), 34px 36px 0 rgba(249,115,22,0.74);
+    }
+
+    .motif.module::before {
+      content: "SII";
+      position: absolute;
+      inset: 18px;
+      display: grid;
+      place-items: center;
+      color: var(--primary);
+      border: 2px solid var(--primary);
+      font-family: "montserrat-medium", "sourcehansanscn-regular", sans-serif;
+      font-size: 22px;
+      letter-spacing: 0.08em;
+    }
+
+    .motif.note::before {
+      content: "";
+      position: absolute;
+      left: 16px;
+      top: 16px;
+      width: 48px;
+      height: 44px;
+      border: 2px solid var(--accent);
+      background: rgba(249,115,22,0.08);
+      transform: rotate(-4deg);
+      box-shadow: 20px 18px 0 rgba(17,62,152,0.10);
+    }
+
+    .motif span {
+      position: absolute;
+      left: 10px;
+      bottom: 8px;
+      color: rgba(35,35,35,0.72);
+      font-size: 11px;
+      letter-spacing: 0.01em;
+    }
+
+    .carrier-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-top: 14px;
+    }
+
+    .carrier {
+      min-height: 122px;
+      padding: 16px 16px 14px;
+      background: rgba(255,255,255,0.78);
+      border: 1px solid var(--line);
+    }
+
+    .carrier h3 {
+      margin: 0 0 8px;
+      color: var(--primary);
+      font-family: "montserrat-medium", "sourcehansanscn-regular", sans-serif;
+      font-size: 15px;
+      font-weight: 500;
+    }
+
+    .carrier p {
+      margin: 0;
+      font-size: 12px;
+      line-height: 1.58;
+      color: rgba(35,35,35,0.72);
+    }
+
+    .ban-list {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px 16px;
+      margin: 14px 0 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .ban-list li {
+      position: relative;
+      padding-left: 18px;
+      font-size: 12.5px;
+      line-height: 1.5;
+      color: rgba(35,35,35,0.76);
+    }
+
+    .ban-list li::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0.66em;
+      width: 8px;
+      height: 1px;
+      background: var(--accent);
+    }
+
+    .footer {
+      position: absolute;
+      left: 78px;
+      right: 78px;
+      bottom: 72px;
+      display: flex;
+      justify-content: space-between;
+      color: rgba(35,35,35,0.60);
+      font-size: 12px;
+      letter-spacing: 0.02em;
+      z-index: 1;
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="header">
+      <div>
+        <p class="kicker">PRINT APPLICATION GUIDE · MERCHANDISE SYSTEM</p>
+        <h1>文创印刷应用规范页</h1>
+        <p class="intro">用于上海创智学院两套文创系列的印刷延展：科技招生系列保持冷静、专业与结构化；校园青春系列保持清爽、日用与新生友好。所有载体只使用已确认的「上海创智学院」「SII」「Shanghai Innovation Institute」。</p>
+      </div>
+      <aside class="brand-lockup">
+        <img src="../../assets/sii-logo.svg" alt="上海创智学院 SII logo" />
+        <div class="meta-row"><strong>Logo</strong><span>使用官网标志资产，不重绘、不改变比例、不拆分图文关系。</span></div>
+      </aside>
+    </header>
+
+    <section class="grid">
+      <div class="panel">
+        <h2 class="section-label">01 · 两系列色板</h2>
+        <div class="series">
+          <article class="series-card dark">
+            <h3 class="series-title">科技招生系列</h3>
+            <p>主色为品牌蓝与官网主蓝，适合深色或冷白底；图形语言使用网格、数据流、芯片线路与空间透视，强调招生宣传与专业可信。</p>
+          </article>
+          <article class="series-card light">
+            <h3 class="series-title">校园青春系列</h3>
+            <p>以浅蓝灰底、品牌蓝和活力橙形成差异；采用手账式模块与创客日常符号，保持年轻但避免低龄卡通。</p>
+          </article>
+        </div>
+        <div class="swatches" aria-label="brand color palette">
+          <div class="swatch light-ink s-primary">Primary<br>#113E98</div>
+          <div class="swatch light-ink s-secondary">Secondary<br>#0168B7</div>
+          <div class="swatch s-bg">Background<br>#F4F8FF</div>
+          <div class="swatch light-ink s-ink">Ink<br>#232323</div>
+          <div class="swatch s-accent">Accent<br>#F97316</div>
+        </div>
+      </div>
+
+      <div class="panel compact">
+        <h2 class="section-label">02 · 总则</h2>
+        <div class="rules">
+          <div class="rule"><div class="num">A</div><div><h3>印刷面积纪律</h3><p>单个载体主图形占可印刷区域 35%–65%；贴纸和徽章可提高至 75%，但保留 10% 以上安全边。</p></div></div>
+          <div class="rule"><div class="num">B</div><div><h3>系列区分</h3><p>科技招生系列不使用橙色作大面积背景；校园青春系列不使用黑蓝重底和高密度线路满版。</p></div></div>
+          <div class="rule"><div class="num">C</div><div><h3>文字信息</h3><p>中文名称必须写作「上海创智学院」；英文只使用 SII 或 Shanghai Innovation Institute。</p></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="grid" style="margin-top:30px;">
+      <div class="panel">
+        <h2 class="section-label">03 · 字体与 Logo 使用</h2>
+        <div class="type-logo">
+          <div class="mini-box type-demo">
+            <h3>Typography</h3>
+            <p class="display">montserrat-medium</p>
+            <p class="body-demo">sourcehansanscn-regular 用于中文正文、载体说明与辅助信息。标题与正文层级保持 2.5× 以上落差。</p>
+          </div>
+          <div class="mini-box">
+            <h3>Logo lockup</h3>
+            <div class="logo-demo">
+              <div class="logo-sample"><img src="../../assets/sii-logo.svg" alt="logo on white" /></div>
+              <div class="logo-sample blue"><img src="../../assets/sii-logo.svg" alt="logo on blue" /></div>
+            </div>
+            <p class="clearspace">四周留白 ≥ 标志图形高度的 0.25×；最小印刷宽度建议 ≥ 28mm。禁止拉伸、描边、重排或与新图形合成校徽。</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2 class="section-label">04 · 图形母题</h2>
+        <div class="motifs">
+          <div class="motif gridline"><span>坐标网格</span></div>
+          <div class="motif stream"><span>AI 数据流</span></div>
+          <div class="motif module"><span>SII 字母模块</span></div>
+          <div class="motif note"><span>创客手账模块</span></div>
+        </div>
+        <ul class="ban-list">
+          <li>不使用紫渐变、emoji 图标或无关水印</li>
+          <li>不使用幼稚吉祥物、儿童玩具感插画</li>
+          <li>不使用盾牌、橄榄枝、绶带、复杂纹章</li>
+          <li>不编造校训、年份、院系、排名或导师姓名</li>
+          <li>不把其他机构含义混入 SII</li>
+          <li>不改变官网 logo 的比例和字形</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="panel" style="position:relative; z-index:1; margin-top:30px;">
+      <h2 class="section-label">05 · 6 类载体应用规则</h2>
+      <div class="carrier-grid">
+        <article class="carrier"><h3>帆布袋</h3><p>正面竖向构图；主图形居中或上移 8%。科技版用蓝色网格主视觉，青春版用浅底与橙色小模块。</p></article>
+        <article class="carrier"><h3>T 恤</h3><p>胸前图形宽 90–120mm；背部可放大至 260mm。深浅两用时先保证蓝白单色可读。</p></article>
+        <article class="carrier"><h3>贴纸</h3><p>单枚保持 3–5mm 白边；组合拼版不超过 8 枚。使用数据流、坐标、SII 模块，文字短而准确。</p></article>
+        <article class="carrier"><h3>徽章</h3><p>圆形或异形均可；边缘安全区 ≥ 12%。避免校徽化中心对称，使用简洁蓝色符号系统。</p></article>
+        <article class="carrier"><h3>笔记本</h3><p>封面信息分三层：Logo、系列标题、抽象图形。科技版允许满版蓝，青春版以浅蓝灰留白为主。</p></article>
+        <article class="carrier"><h3>水杯</h3><p>杯身展开采用 180° 主视觉 + 180° 呼吸留白；线性图案优先，避免细小文字绕杯一圈。</p></article>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <span>Shanghai Innovation Institute · merchandise print system</span>
+      <span>Palette / Typography / Logo / Motifs / Restrictions / 6 carriers</span>
+    </footer>
+  </main>
+</body>
+</html>

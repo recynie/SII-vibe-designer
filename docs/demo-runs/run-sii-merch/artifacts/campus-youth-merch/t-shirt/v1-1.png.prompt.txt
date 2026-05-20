@@ -1,0 +1,6 @@
+# backend: openai
+# format: png
+# aspect: 4:3
+# candidate: 1/3
+
+Campus youth merchandise presentation board for Shanghai Innovation Institute, single refined PNG board with realistic photo-style T-shirt mockup plus flat print layouts. Left: clean white cotton T-shirt on pale studio surface, soft shadows, front chest print visible. Right: two flat print artworks labeled visually by position only: small chest mark and larger back print composition. Theme: SII freshman keepsake, fresh campus maker energy, mature and not childish. Use exact readable text SII, 上海创智学院, Shanghai Innovation Institute, and 新生纪念; do not add any year. Artwork: crisp SII letter module, small campus path line, notebook/lab/laptop micro symbols, orange registration tabs. Palette ONLY #F4F8FF, #113E98, #0168B7, #F97316, #232323 on white fabric. Editorial product photography, generous whitespace, precise alignment, no shield, no crest, no mascot, no emoji, no purple gradients, no neon glow, no warped text, no fake dates.

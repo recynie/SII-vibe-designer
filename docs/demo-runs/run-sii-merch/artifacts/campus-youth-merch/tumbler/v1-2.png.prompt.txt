@@ -1,0 +1,6 @@
+# backend: openai
+# format: png
+# aspect: 4:3
+# candidate: 2/3
+
+Campus youth tumbler merchandise presentation board for Shanghai Innovation Institute, one refined PNG board. Left: realistic photo-style mockup of a bright daily-use white or light silver tumbler standing on a pale studio surface with soft shadows, printed wrap design visible. Right: flat horizontal cup-body wrap artwork, clean rectangular expansion layout. Theme: fresh campus maker daily life, clearly different from dark technology recruitment style, mature and not childish. Use exact readable text SII, 上海创智学院, Shanghai Innovation Institute; no year and no fake motto. Wrap artwork: airy blue line pattern of campus route dots, notebook grid, lab/laptop micro symbols, large SII module, small orange maker tabs. Palette ONLY #F4F8FF, #113E98, #0168B7, #F97316 tiny accents, #232323 ink on white/silver product. Editorial product photography, real contact surface, generous whitespace, no shield, no crest, no mascot, no emoji, no purple gradients, no neon glow, no warped text, no clutter.
