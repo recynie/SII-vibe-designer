@@ -1,4 +1,0 @@
-# backend: minimax
-# aspect: 1:1
-
-flat vector logo mark for 创智学院, abstract geometric representation of intelligence and innovation, neural network nodes forming a stylized C (创) character shape, two-tone using #1A2B4A (deep ink blue) and #00B8A9 (vibrant cyan), on a clean #F7F9FC background, geometric and precise, minimalist, scalable, pentagram information architecture style, no gradients, no emoji, no faces, no purple, no warm colors, ONLY use #1A2B4A and #00B8A9 as colors

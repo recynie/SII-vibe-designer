@@ -1,0 +1,6 @@
+# backend: openai
+# format: png
+# aspect: 1:1
+# candidate: 2/3
+
+minimalist flat vector logo wordmark for 创智学院, containing the Chinese characters 创智学院, academic and stable, modern and innovative, two-tone using #0D1B2A and #00B4D8, on a clean #F8F9FA background, geometric and timeless, scalable, designed in the style of Pentagram information architecture, serif typography style suggesting academic heritage, clean and minimal, no gradients, no emoji, no photorealistic textures, no faces, no generic SVG humans, no purple gradient, no Web 2.0 glossy effects

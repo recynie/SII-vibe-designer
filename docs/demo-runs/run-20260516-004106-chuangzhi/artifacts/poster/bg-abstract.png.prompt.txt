@@ -1,4 +1,0 @@
-# backend: minimax
-# aspect: 16:9
-
-Abstract geometric architectural visualization, precise hexagonal and triangular grid structures, deep navy blue #1A2B4A and teal #00B8A9 color palette, minimalist isometric shapes floating in space, editorial design style, no purple gradients, no emoji, no text, clean modern aesthetic

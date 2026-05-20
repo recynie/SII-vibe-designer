@@ -1,4 +1,0 @@
-# backend: minimax
-# aspect: 1:1
-
-flat vector combo logo for 创智学院, geometric mark on left - abstract neural network nodes forming stylized C shape in #1A2B4A with #00B8A9 accent, Chinese text 创智学院 on right in heavy bold #1A2B4A with subtle cyan geometric accent, on clean #F7F9FC background, pentagram information architecture style, balanced composition, scalable, no gradients, no emoji, no faces, no purple, no warm colors, ONLY use #1A2B4A and #00B8A9 as colors

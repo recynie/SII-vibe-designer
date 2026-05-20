@@ -1,4 +1,0 @@
-# backend: minimax
-# aspect: 1:1
-
-flat vector wordmark logo for 创智学院, stylized text with geometric precision, Chinese characters 创智学院 in heavy bold sans-serif, with a subtle abstract C-shape geometric accent, primary color #1A2B4A (deep ink blue) with cyan accent #00B8A9 on clean #F7F9FC background, pentagram minimalist style, clean and professional, scalable, no gradients, no emoji, no faces, no purple, no warm colors, ONLY use #1A2B4A and #00B8A9 as colors

@@ -1,4 +1,0 @@
-# backend: minimax
-# aspect: 1:1
-
-flat vector logo mark, abstract geometric symbol representing innovation and wisdom, neural network nodes connected by clean lines forming a triangular core, two-tone using #1A2B4A and #00B8A9, on clean off-white background #F7F9FC, geometric and precise, minimalist, scalable, designed in the style of Pentagram design studio, no gradients, no emoji, no photorealistic textures, no faces, no generic SVG humans, no purple gradient, no Web 2.0 glossy effects, no text

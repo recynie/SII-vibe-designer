@@ -1,0 +1,6 @@
+# backend: openai
+# format: png
+# aspect: 1:1
+# candidate: 3/3
+
+ABSOLUTELY MUST use #0D1B2A deep navy blue as the dominant color for the main logo symbol and #00B4D8 bright cyan as accent color for highlights or secondary elements - NO other colors for main elements - flat vector logo symbol for 创智学院, academic and stable, modern and innovative, on a clean #F8F9FA background, geometric and timeless, scalable, designed in the style of Pentagram information architecture, abstract geometric form suggesting AI neural network nodes or data streams, STRICTLY use only #0D1B2A for main symbol and #00B4D8 for accent elements - NO other colors on logo, no gradients, no emoji, no photorealistic textures, no faces, no generic SVG humans, no purple gradient, no Web 2.0 glossy effects
