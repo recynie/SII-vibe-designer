@@ -174,8 +174,10 @@ def gen_candidates(backend: str, prompt: str, aspect_ratio: str,
 
 
 def candidate_path(base: Path, index: int) -> Path:
-    """v1.png + index 2 → v1-2.png"""
-    return base.with_suffix(f"-{index}{base.suffix}")
+    """Return candidate path, e.g. v1.png + index 2 -> v1-2.png."""
+    if index < 1:
+        raise ValueError(f"candidate index must be >= 1, got {index}")
+    return base.with_name(f"{base.stem}-{index}{base.suffix}")
 
 
 def main() -> int:
