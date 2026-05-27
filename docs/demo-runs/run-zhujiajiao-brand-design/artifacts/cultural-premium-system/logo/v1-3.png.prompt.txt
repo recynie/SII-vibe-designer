@@ -1,0 +1,6 @@
+# backend: openai
+# format: png
+# aspect: 1:1
+# candidate: 3/3
+
+Premium cultural emblem logo for Zhujiajiao ancient water town, a restrained badge formed by the five arches of Fangsheng Bridge and a single calm water ripple negative space, subtle hint of Jiangnan garden window geometry, containing the Chinese characters "朱家角" as a dignified seal-like wordmark beneath the mark. Primary color deep ink teal / dark water ink, accent warm stone grey and rice-paper gold, on warm rice-paper white background. Minimal geometry, balanced thick strokes, high-end museum identity, poetic historical depth, no lanterns, no clouds, no fan motifs, no red-gold tourist style. flat vector, scalable, on solid background, no gradients, no emoji, no photorealistic textures, no faces

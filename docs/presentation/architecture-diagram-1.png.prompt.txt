@@ -1,0 +1,19 @@
+# backend: openai
+# format: png
+# aspect: 16:9
+# candidate: 1/3
+
+A clean, professional system architecture diagram for a multi-agent AI design system. White background, modern flat design style with subtle shadows. The diagram shows:
+
+TOP LAYER labeled "User Interface": A single entry point box "/design <brief>" with an arrow pointing down.
+
+MIDDLE LAYER labeled "opencode Harness" (shown as a large rounded container): Contains the orchestration infrastructure - context isolation, tool dispatch, subagent scheduling, error handling. Inside this container are 4 agent boxes arranged in a hierarchy:
+- "Planner" (primary orchestrator) at the top center, colored in deep blue
+- Three subagents below connected by arrows from Planner: "Researcher" (green), "Designer" (orange), "Critic" (purple)
+- A circular arrow between Designer and Critic showing the iteration loop, labeled "review cycle (max 2 rounds)"
+
+BOTTOM LAYER labeled "Tool Layer": Two tool boxes - "gen_image.py (text-to-image)" and "html_screenshot.py (HTML→PNG)" connected to Designer with dashed arrows. A "WebSearch / WebFetch" box connected to Researcher.
+
+RIGHT SIDE: A vertical file flow showing outputs: facts.md → brand-spec.md → deliverables.md → artifacts/ → final.md
+
+Style: Blueprint/technical diagram aesthetic. Use a consistent color palette (navy, teal, coral, lavender). Clean sans-serif labels. No decorative elements. Arrows are clean with proper direction indicators. The overall layout reads top-to-bottom and left-to-right. Suitable for a technical presentation slide at 16:9 aspect ratio.

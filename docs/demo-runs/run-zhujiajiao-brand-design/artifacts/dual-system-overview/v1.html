@@ -1,0 +1,710 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>双方案品牌提案总览 · 上海朱家角</title>
+  <style>
+    :root {
+      --paper: #f5efe4;
+      --paper-2: #fbf8f2;
+      --ink: #1f2428;
+      --muted: #67707a;
+      --line: rgba(31, 36, 40, 0.12);
+      --teal: #2f8f86;
+      --teal-2: #89cfc3;
+      --yellow: #f0c94a;
+      --navy: #1d3440;
+      --gray: #a79d91;
+      --gold: #c5a66a;
+      --warm: #f3e7d4;
+      --panel-shadow: 0 16px 50px rgba(39, 47, 56, 0.08);
+    }
+
+    * { box-sizing: border-box; }
+    html, body {
+      width: 1440px;
+      height: 1800px;
+      margin: 0;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 16% 10%, rgba(47, 143, 134, 0.10), transparent 24%),
+        radial-gradient(circle at 86% 14%, rgba(197, 166, 106, 0.11), transparent 22%),
+        linear-gradient(180deg, #f7f2e8 0%, #f3ecdf 100%);
+      color: var(--ink);
+      font-family: "Noto Sans SC", "Source Han Sans SC", "Microsoft YaHei", sans-serif;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: geometricPrecision;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(rgba(31, 36, 40, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(31, 36, 40, 0.02) 1px, transparent 1px);
+      background-size: 44px 44px;
+      mask-image: linear-gradient(180deg, rgba(0,0,0,0.15), rgba(0,0,0,0.03));
+      opacity: 0.35;
+    }
+
+    .page {
+      width: 100%;
+      height: 100%;
+      padding: 42px;
+      position: relative;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 24px;
+      margin-bottom: 24px;
+    }
+
+    .title-block {
+      max-width: 860px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 12px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 16px;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 34px;
+      height: 1px;
+      background: currentColor;
+      opacity: 0.65;
+    }
+
+    h1 {
+      margin: 0;
+      font-family: "Noto Serif SC", "Source Han Serif SC", "Songti SC", serif;
+      font-size: 60px;
+      line-height: 0.98;
+      letter-spacing: -0.04em;
+      font-weight: 600;
+    }
+
+    .subtitle {
+      margin-top: 16px;
+      max-width: 780px;
+      font-size: 18px;
+      line-height: 1.6;
+      color: var(--muted);
+    }
+
+    .meta-chip {
+      align-self: stretch;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-width: 260px;
+      padding: 18px 20px;
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      background: rgba(251, 248, 242, 0.82);
+      box-shadow: var(--panel-shadow);
+      backdrop-filter: blur(12px);
+    }
+
+    .meta-chip .tag {
+      display: inline-flex;
+      width: fit-content;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(31, 36, 40, 0.05);
+      color: var(--ink);
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+
+    .meta-chip strong {
+      display: block;
+      font-size: 20px;
+      line-height: 1.15;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .meta-chip p {
+      margin: 0;
+      font-size: 14px;
+      line-height: 1.7;
+      color: var(--muted);
+    }
+
+    .systems {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 28px;
+      margin-bottom: 24px;
+    }
+
+    .system {
+      position: relative;
+      min-height: 1040px;
+      border-radius: 30px;
+      border: 1px solid rgba(31, 36, 40, 0.12);
+      box-shadow: var(--panel-shadow);
+      overflow: hidden;
+      background: rgba(255, 255, 255, 0.42);
+      backdrop-filter: blur(10px);
+    }
+
+    .system::before {
+      content: "";
+      position: absolute;
+      inset: 0 auto auto 0;
+      width: 100%;
+      height: 7px;
+      background: var(--accent);
+    }
+
+    .system.youth { --accent: linear-gradient(90deg, var(--teal), var(--teal-2), var(--yellow)); }
+    .system.premium { --accent: linear-gradient(90deg, var(--navy), var(--gray), var(--gold)); }
+
+    .system-inner {
+      position: relative;
+      height: 100%;
+      padding: 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .system-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: flex-start;
+    }
+
+    .system-name {
+      margin: 0;
+      font-family: "Noto Serif SC", "Source Han Serif SC", serif;
+      font-size: 34px;
+      line-height: 1.08;
+      letter-spacing: -0.03em;
+    }
+
+    .system-subtitle {
+      margin-top: 10px;
+      max-width: 420px;
+      font-size: 15px;
+      line-height: 1.65;
+      color: var(--muted);
+    }
+
+    .system-badge {
+      padding: 10px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(31, 36, 40, 0.10);
+      background: rgba(255,255,255,0.7);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      white-space: nowrap;
+    }
+
+    .system-badge .dot {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      margin-right: 8px;
+      border-radius: 50%;
+      background: var(--accent-dot);
+      vertical-align: middle;
+    }
+
+    .youth { --accent-dot: var(--teal); }
+    .premium { --accent-dot: var(--navy); }
+
+    .image-grid {
+      display: grid;
+      gap: 14px;
+      grid-template-columns: 1.15fr 0.85fr;
+      align-items: stretch;
+      min-height: 520px;
+    }
+
+    .hero-frame,
+    .thumb {
+      border-radius: 22px;
+      border: 1px solid rgba(31, 36, 40, 0.10);
+      background: rgba(255,255,255,0.76);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .hero-frame {
+      aspect-ratio: 4 / 5;
+      padding: 10px;
+    }
+
+    .hero-frame img,
+    .thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+      background: linear-gradient(180deg, rgba(255,255,255,0.95), rgba(244,239,229,0.7));
+    }
+
+    .thumb-stack {
+      display: grid;
+      gap: 14px;
+      grid-template-rows: repeat(3, 1fr);
+      min-height: 520px;
+    }
+
+    .thumb {
+      padding: 10px;
+    }
+
+    .thumb.logo { aspect-ratio: 1 / 1; }
+    .thumb.poster { aspect-ratio: 4 / 5; }
+    .thumb.wide { aspect-ratio: 16 / 10; }
+
+    .thumb label,
+    .hero-caption {
+      position: absolute;
+      left: 14px;
+      bottom: 14px;
+      z-index: 2;
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 6px 9px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.82);
+      border: 1px solid rgba(31, 36, 40, 0.10);
+      color: var(--muted);
+    }
+
+    .thumb label {
+      bottom: auto;
+      top: 14px;
+    }
+
+    .specs {
+      display: grid;
+      gap: 10px;
+      margin-top: auto;
+    }
+
+    .spec-row {
+      display: grid;
+      grid-template-columns: 122px 1fr;
+      gap: 16px;
+      align-items: start;
+      padding: 12px 0;
+      border-top: 1px solid rgba(31, 36, 40, 0.10);
+    }
+
+    .spec-row:first-child { border-top: 0; padding-top: 0; }
+
+    .spec-label {
+      font-size: 12px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding-top: 3px;
+    }
+
+    .spec-content {
+      font-size: 15px;
+      line-height: 1.72;
+      color: var(--ink);
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(31, 36, 40, 0.10);
+      background: rgba(255,255,255,0.78);
+      font-size: 12px;
+      line-height: 1;
+      white-space: nowrap;
+    }
+
+    .swatch {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      border: 1px solid rgba(0,0,0,0.08);
+      flex: 0 0 auto;
+    }
+
+    .summary {
+      border-radius: 30px;
+      border: 1px solid rgba(31, 36, 40, 0.12);
+      box-shadow: var(--panel-shadow);
+      background: rgba(251, 248, 242, 0.82);
+      backdrop-filter: blur(10px);
+      overflow: hidden;
+    }
+
+    .summary-head {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 18px;
+      padding: 22px 26px 14px;
+      border-bottom: 1px solid rgba(31, 36, 40, 0.08);
+      align-items: end;
+    }
+
+    .summary-head .section-title {
+      font-family: "Noto Serif SC", "Source Han Serif SC", serif;
+      font-size: 26px;
+      line-height: 1.1;
+      margin: 0;
+    }
+
+    .summary-head .helper {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.6;
+      justify-self: end;
+      text-align: right;
+      max-width: 340px;
+    }
+
+    .matrix {
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr 1.05fr;
+    }
+
+    .matrix .col {
+      padding: 18px 24px 22px;
+    }
+
+    .matrix .col + .col {
+      border-left: 1px solid rgba(31, 36, 40, 0.08);
+    }
+
+    .metric {
+      padding: 14px 0;
+      border-top: 1px solid rgba(31, 36, 40, 0.08);
+    }
+
+    .metric:first-child { border-top: 0; padding-top: 0; }
+
+    .metric h3 {
+      margin: 0 0 8px;
+      font-size: 12px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .metric p {
+      margin: 0;
+      font-size: 15px;
+      line-height: 1.75;
+      color: var(--ink);
+    }
+
+    .core-note {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      justify-content: center;
+      height: 100%;
+      text-align: center;
+      padding: 10px 0;
+    }
+
+    .core-note .kicker {
+      display: inline-flex;
+      width: fit-content;
+      margin: 0 auto;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(31, 36, 40, 0.06);
+      font-size: 12px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .core-note strong {
+      font-family: "Noto Serif SC", "Source Han Serif SC", serif;
+      font-size: 24px;
+      line-height: 1.28;
+      letter-spacing: -0.02em;
+    }
+
+    .core-note p {
+      margin: 0 auto;
+      max-width: 200px;
+      font-size: 14px;
+      line-height: 1.65;
+      color: var(--muted);
+    }
+
+    .font-sample {
+      display: grid;
+      gap: 8px;
+      padding: 12px 14px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.7);
+      border: 1px solid rgba(31, 36, 40, 0.08);
+    }
+
+    .font-sample .name {
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    .font-sample .demo {
+      font-size: 19px;
+      line-height: 1.2;
+      letter-spacing: -0.03em;
+      color: var(--ink);
+    }
+
+    .youth-font .demo { font-family: "Noto Sans SC", "Source Han Sans SC", sans-serif; font-weight: 700; }
+    .premium-font .demo { font-family: "Noto Serif SC", "Source Han Serif SC", serif; font-weight: 600; }
+
+    @media print {
+      html, body { width: 1440px; height: 1800px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="topbar">
+      <div class="title-block">
+        <div class="eyebrow">Shanghai Zhujiajiao Brand Proposal</div>
+        <h1>双方案品牌提案总览</h1>
+        <div class="subtitle">同一古镇语境下的两套独立系统：左侧以年轻化传播和轻快打卡为核心，右侧以历史文脉、园林秩序与文博级气质为核心。以下总览从核心意象、色彩、字体与应用侧重四个维度直接对照。</div>
+      </div>
+      <aside class="meta-chip">
+        <div>
+          <div class="tag">overview board · 1440×1800</div>
+          <strong>朱家角双方案，不同系统，不同气质。</strong>
+          <p>避免同一 logo 换色化处理，强调真正独立的视觉语言与应用场景分化。</p>
+        </div>
+      </aside>
+    </header>
+
+    <section class="systems">
+      <article class="system youth">
+        <div class="system-inner">
+          <div class="system-head">
+            <div>
+              <h2 class="system-name">方案一 · 年轻化传播视觉系统</h2>
+              <div class="system-subtitle">清水青绿与银杏黄构成高识别度的水感传播界面，面向年轻游客、小红书/朋友圈扩散与旅游 APP 场景，强调轻盈、现代、可分享。</div>
+            </div>
+            <div class="system-badge"><span class="dot"></span>modern / lively / shareable</div>
+          </div>
+
+          <div class="image-grid">
+            <div class="hero-frame">
+              <img src="../youth-visual-system/key-visual-poster/v1.png" alt="Youth key visual poster" />
+              <div class="hero-caption">core visual poster</div>
+            </div>
+            <div class="thumb-stack">
+              <div class="thumb logo">
+                <img src="../youth-visual-system/logo/v1.png" alt="Youth logo" />
+                <label>logo</label>
+              </div>
+              <div class="thumb wide">
+                <img src="../youth-visual-system/social-media-cover/v1.png" alt="Youth social media cover" />
+                <label>social cover</label>
+              </div>
+              <div class="thumb poster">
+                <img src="../youth-visual-system/travel-app-interface/v1.png" alt="Youth app interface" />
+                <label>travel app</label>
+              </div>
+            </div>
+          </div>
+
+          <div class="specs">
+            <div class="spec-row">
+              <div class="spec-label">核心意象</div>
+              <div class="spec-content">水网、放生桥、周末游、打卡路径、古镇焕新；视觉重点落在“可参与的江南”，更像一套面向社媒传播的旅游内容系统。</div>
+            </div>
+            <div class="spec-row">
+              <div class="spec-label">色彩</div>
+              <div class="spec-content chips">
+                <span class="chip"><span class="swatch" style="background:#2f8f86"></span>清水青绿</span>
+                <span class="chip"><span class="swatch" style="background:#89cfc3"></span>湖水青</span>
+                <span class="chip"><span class="swatch" style="background:#f0c94a"></span>银杏黄</span>
+                <span class="chip"><span class="swatch" style="background:#f7f2e8"></span>宣纸白</span>
+              </div>
+            </div>
+            <div class="spec-row">
+              <div class="spec-label">字体</div>
+              <div class="spec-content">
+                <div class="font-sample youth-font">
+                  <div class="name">Display / Body</div>
+                  <div class="demo">Noto Sans SC · Heavy / Regular</div>
+                </div>
+              </div>
+            </div>
+            <div class="spec-row">
+              <div class="spec-label">应用侧重</div>
+              <div class="spec-content">Logo、主视觉海报、社媒传播图、宣传册、旅游 APP 首页概念。整体偏轻、偏快、偏移动端阅读。</div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <article class="system premium">
+        <div class="system-inner">
+          <div class="system-head">
+            <div>
+              <h2 class="system-name">方案二 · 高端文化视觉系统</h2>
+              <div class="system-subtitle">黛瓦墨青与米金暖灰建立更克制的文脉秩序，以历史厚度、留白和材质感呈现朱家角的文化深度，适配导视、文旅纪念与公共空间。</div>
+            </div>
+            <div class="system-badge"><span class="dot"></span>premium / restrained / cultural</div>
+          </div>
+
+          <div class="image-grid">
+            <div class="hero-frame">
+              <img src="../cultural-premium-system/key-visual-poster/v1.png" alt="Cultural premium key visual poster" />
+              <div class="hero-caption">core visual poster</div>
+            </div>
+            <div class="thumb-stack">
+              <div class="thumb logo">
+                <img src="../cultural-premium-system/logo/v1.png" alt="Cultural premium logo" />
+                <label>logo</label>
+              </div>
+              <div class="thumb wide">
+                <img src="../cultural-premium-system/postcard/v1.png" alt="Cultural premium postcard" />
+                <label>postcard</label>
+              </div>
+              <div class="thumb poster">
+                <img src="../cultural-premium-system/wayfinding-application/v1.png" alt="Cultural premium wayfinding application" />
+                <label>wayfinding</label>
+              </div>
+            </div>
+          </div>
+
+          <div class="specs">
+            <div class="spec-row">
+              <div class="spec-label">核心意象</div>
+              <div class="spec-content">放生桥、课植园、漕港河、明清街巷、水墨层次与桥影留白；更强调“被凝视的江南”，突出历史感与文化厚度。</div>
+            </div>
+            <div class="spec-row">
+              <div class="spec-label">色彩</div>
+              <div class="spec-content chips">
+                <span class="chip"><span class="swatch" style="background:#1d3440"></span>黛瓦墨青</span>
+                <span class="chip"><span class="swatch" style="background:#a79d91"></span>石桥暖灰</span>
+                <span class="chip"><span class="swatch" style="background:#c5a66a"></span>宣纸米金</span>
+                <span class="chip"><span class="swatch" style="background:#f7f1e8"></span>宣纸白</span>
+              </div>
+            </div>
+            <div class="spec-row">
+              <div class="spec-label">字体</div>
+              <div class="spec-content">
+                <div class="font-sample premium-font">
+                  <div class="name">Display / Body</div>
+                  <div class="demo">Noto Serif SC · SemiBold + Noto Sans SC</div>
+                </div>
+              </div>
+            </div>
+            <div class="spec-row">
+              <div class="spec-label">应用侧重</div>
+              <div class="spec-content">Logo、文化海报、导视或文旅应用、明信片、公共家具。整体偏安静、偏慢、偏空间化和收藏感。</div>
+            </div>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <section class="summary">
+      <div class="summary-head">
+        <h2 class="section-title">对比摘要</h2>
+        <div></div>
+        <div class="helper">四项主差异一眼可见：年轻方案更像传播内容系统，高端方案更像文化空间系统。</div>
+      </div>
+      <div class="matrix">
+        <div class="col">
+          <div class="metric">
+            <h3>core imagery</h3>
+            <p>水网、打卡、周末游、焕新感，强调参与性和移动端传播效率。</p>
+          </div>
+          <div class="metric">
+            <h3>color logic</h3>
+            <p>青绿为主、银杏黄点睛，整体更明亮、更轻快，适合社媒传播和年轻人视角。</p>
+          </div>
+        </div>
+        <div class="col">
+          <div class="core-note">
+            <span class="kicker">same place · two systems</span>
+            <strong>同一朱家角，<br/>两种品牌姿态。</strong>
+            <p>左侧偏“会传播”，右侧偏“会沉淀”。</p>
+          </div>
+        </div>
+        <div class="col">
+          <div class="metric">
+            <h3>core imagery</h3>
+            <p>桥、园、街巷、水墨留白，强调历史秩序、文脉密度与空间仪式感。</p>
+          </div>
+          <div class="metric">
+            <h3>color logic</h3>
+            <p>墨青与暖灰、米金构成克制底色，整体更安静，适合导视、纪念品与公共空间。</p>
+          </div>
+        </div>
+      </div>
+      <div class="matrix" style="border-top:1px solid rgba(31,36,40,0.08);">
+        <div class="col">
+          <div class="metric">
+            <h3>typeface</h3>
+            <p>思源黑体 Heavy + Regular：字面干净、屏幕友好，适合短视频封面、海报与 APP。</p>
+          </div>
+          <div class="metric">
+            <h3>application focus</h3>
+            <p>Logo、主视觉海报、社媒传播图、宣传册、旅游 APP；更强调内容扩散与转化。</p>
+          </div>
+        </div>
+        <div class="col">
+          <div class="metric">
+            <h3>difference statement</h3>
+            <p>不是同一套标志的换色版本，而是两套独立的视觉系统：一个向外发声，一个向内沉淀。</p>
+          </div>
+        </div>
+        <div class="col">
+          <div class="metric">
+            <h3>typeface</h3>
+            <p>思源宋体 SemiBold + 思源黑体 Regular：更有书卷气和历史感，适合文化传播与空间识别。</p>
+          </div>
+          <div class="metric">
+            <h3>application focus</h3>
+            <p>Logo、文化海报、导视、明信片、公共家具；更强调场域感、纪念性与材料表达。</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</body>
+</html>

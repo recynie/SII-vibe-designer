@@ -1,0 +1,6 @@
+# backend: openai
+# format: png
+# aspect: 1:1
+# candidate: 2/3
+
+Youth-oriented flat vector combination mark for Zhujiajiao water town in Shanghai, centered emblem built from three simple shapes: a flowing canal curve, a single arched stone bridge silhouette inspired by Fangsheng Bridge, and a subtle angular 'Jiao' corner motif. Fresh clear-water teal and bamboo green primary forms with one small ginkgo yellow accent dot, warm rice-paper background, crisp modern Chinese tourism identity, friendly weekend-travel mood, thick consistent strokes, strong negative space, scalable at small size, optional clean Chinese characters '朱家角' below the mark if legible. flat vector, scalable, on solid background, no gradients, no emoji, no photorealistic textures, no faces, no lanterns, no clouds, no red-gold palace style, no random Jiangnan symbols

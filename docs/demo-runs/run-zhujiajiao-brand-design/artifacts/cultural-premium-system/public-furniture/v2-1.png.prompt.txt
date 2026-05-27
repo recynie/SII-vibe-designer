@@ -1,0 +1,6 @@
+# backend: openai
+# format: png
+# aspect: 1:1
+# candidate: 1/1
+
+Square product concept render for Zhujiajiao premium public furniture. A branded waterfront public furniture unit combining a low stone bench, slim dark-wood backrest, and integrated upright cultural guide panel, occupying 72 percent of the frame. Clean minimal Jiangnan riverside setting with pale stone ground and softly blurred water-town wall, very little background clutter. Strong subject contrast: warm stone gray base, deep ink teal guide panel, rice paper ivory information inset with large Chinese title '朱家角' and simplified route marks. Showcase furniture structure clearly, front three-quarter angle, soft daylight, museum-grade restraint, poetic historical Jiangnan tone, no people, no crowded street, no dark muddy environment, no tiny illegible text, no lanterns, no red-gold tourist style, no floating object

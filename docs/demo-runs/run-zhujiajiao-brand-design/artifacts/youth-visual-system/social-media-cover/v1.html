@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>朱家角社媒传播图</title>
+  <style>
+    :root {
+      --bg: #f5f0e8;
+      --ink: #123237;
+      --muted: #587477;
+      --teal: #2d8b91;
+      --yellow: #efc84f;
+      --panel: rgba(245,240,232,0.80);
+      --line: rgba(18,50,55,0.12);
+    }
+    html, body { margin: 0; width: 100%; height: 100%; background: var(--bg); font-family: 'Noto Sans SC', sans-serif; overflow: hidden; }
+    .frame {
+      position: relative;
+      width: 1080px;
+      height: 1080px;
+      background:
+        radial-gradient(circle at 82% 18%, rgba(239,200,79,0.18), transparent 17%),
+        radial-gradient(circle at 20% 82%, rgba(45,139,145,0.12), transparent 20%),
+        linear-gradient(135deg, rgba(245,240,232,0.40), rgba(245,240,232,0.12)),
+        url('../../../assets/zhujiajiao-water-town-bg.jpg') center center / cover no-repeat;
+    }
+    .frame::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(110deg, rgba(245,240,232,0.92) 0%, rgba(245,240,232,0.76) 42%, rgba(245,240,232,0.18) 72%, rgba(245,240,232,0.88) 100%);
+      pointer-events: none;
+    }
+    .content {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: 1.12fr 0.88fr;
+      height: 100%;
+      box-sizing: border-box;
+      padding: 46px;
+      gap: 24px;
+    }
+    .left { display: flex; flex-direction: column; justify-content: space-between; }
+    .brand {
+      display: flex; align-items: center; gap: 14px;
+    }
+    .brand img {
+      width: 68px; height: 68px; object-fit: contain; border-radius: 16px; padding: 8px; background: rgba(255,255,255,0.36);
+      box-shadow: 0 12px 24px rgba(15,43,46,0.06);
+    }
+    .brand .copy { display: flex; flex-direction: column; gap: 4px; }
+    .brand .top { font-size: 12px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--teal); font-weight: 700; }
+    .brand .name { font-size: 18px; font-weight: 700; color: var(--ink); }
+    .hero {
+      margin-top: auto;
+      max-width: 520px;
+    }
+    .tag {
+      display: inline-flex;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(45,139,145,0.08);
+      color: var(--teal);
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      margin-bottom: 18px;
+    }
+    h1 {
+      margin: 0;
+      color: var(--ink);
+      font-size: 76px;
+      line-height: 0.98;
+      letter-spacing: -0.05em;
+      font-weight: 900;
+    }
+    .desc {
+      margin-top: 22px;
+      font-size: 23px;
+      line-height: 1.55;
+      color: rgba(18,50,55,0.82);
+      max-width: 20ch;
+    }
+    .chips { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 26px; }
+    .chip {
+      padding: 10px 14px; border-radius: 999px; font-size: 14px; background: rgba(255,255,255,0.52);
+      border: 1px solid var(--line); color: rgba(18,50,55,0.82);
+    }
+    .right {
+      display: flex; flex-direction: column; justify-content: space-between;
+      background: rgba(245,240,232,0.55);
+      border: 1px solid rgba(18,50,55,0.10);
+      box-shadow: 0 24px 60px rgba(10, 29, 31, 0.08);
+      border-radius: 34px;
+      overflow: hidden;
+    }
+    .visual {
+      position: relative;
+      flex: 1;
+      min-height: 0;
+      background: url('../../../assets/zhujiajiao-scenic-card.jpg') center center / cover no-repeat;
+    }
+    .visual::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(18,50,55,0.00) 0%, rgba(18,50,55,0.22) 100%);
+    }
+    .visual-label {
+      position: absolute;
+      left: 24px;
+      bottom: 24px;
+      right: 24px;
+      z-index: 1;
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 14px;
+      color: #f7f2ea;
+    }
+    .visual-label .big {
+      font-size: 44px;
+      line-height: 0.96;
+      font-weight: 900;
+      letter-spacing: -0.04em;
+    }
+    .visual-label .small {
+      font-size: 14px;
+      line-height: 1.6;
+      text-align: right;
+      max-width: 16ch;
+      opacity: 0.95;
+    }
+    .bottom {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      padding: 18px;
+      background: rgba(255,255,255,0.42);
+      border-top: 1px solid rgba(18,50,55,0.10);
+    }
+    .box {
+      background: rgba(245,240,232,0.74);
+      border: 1px solid rgba(18,50,55,0.10);
+      border-radius: 24px;
+      padding: 18px;
+    }
+    .box .label {
+      font-size: 12px;
+      color: rgba(18,50,55,0.54);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .box .value {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--ink);
+      line-height: 1.15;
+    }
+    .box .note {
+      margin-top: 10px;
+      font-size: 14px;
+      line-height: 1.55;
+      color: rgba(18,50,55,0.74);
+    }
+  </style>
+</head>
+<body>
+  <main class="frame">
+    <div class="content">
+      <section class="left">
+        <div class="brand">
+          <img src="../logo/v1.png" alt="朱家角标志" />
+          <div class="copy">
+            <div class="top">SOCIAL COVER</div>
+            <div class="name">朱家角 · 年轻周末游</div>
+          </div>
+        </div>
+
+        <div class="hero">
+          <div class="tag">最江南 · 水乡打卡 · 轻快分享</div>
+          <h1>把周末
+            <br>交给水乡</h1>
+          <div class="desc">一张适合小红书和朋友圈封面的年轻化传播图。让画面先有水感，再有信息点。</div>
+          <div class="chips">
+            <div class="chip">1 天轻游</div>
+            <div class="chip">夜游体验</div>
+            <div class="chip">桥与河网</div>
+            <div class="chip">拍照友好</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="right">
+        <div class="visual">
+          <div class="visual-label">
+            <div class="big">朱家角</div>
+            <div class="small">桥、河、街、园<br>构成一个轻松可分享的周末目的地</div>
+          </div>
+        </div>
+        <div class="bottom">
+          <div class="box">
+            <div class="label">Highlight</div>
+            <div class="value">清水青绿</div>
+            <div class="note">主色从水乡感出发，黄只做少量高亮。</div>
+          </div>
+          <div class="box">
+            <div class="label">Scene</div>
+            <div class="value">放生桥 / 北大街 / 课植园</div>
+            <div class="note">传播时可以直接替换成路线内容或活动信息。</div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+</body>
+</html>

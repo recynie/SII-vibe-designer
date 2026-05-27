@@ -1,0 +1,6 @@
+# backend: openai
+# format: png
+# aspect: 1:1
+# candidate: 1/1
+
+Square high-end cultural wayfinding application mockup for Zhujiajiao ancient town. Close frontal three-quarter view of a large stone-and-dark-wood wayfinding sign occupying 70 percent of the frame, clean ancient-town entrance background softly blurred and minimal. The sign face uses deep ink teal panels, warm stone gray body, rice paper ivory information area. Large readable Chinese wayfinding text: '朱家角古镇' as the main title, with three clear directional lines '放生桥 →', '北大街 →', '课植园 ←'. Emphasize legible Chinese information and material craft, carved stone base, subtle wood grain, daylight, uncluttered environment, premium restrained Jiangnan cultural tone. no tiny text, no crowded environment, no people, no emoji, no lanterns, no red-gold tourist style, no HDR, no random decorative symbols

@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>朱家角宣传册三折页</title>
+  <style>
+    :root {
+      --bg: #f6f1e8;
+      --paper: rgba(250,247,241,0.92);
+      --ink: #143136;
+      --muted: #5d7779;
+      --teal: #2d8b91;
+      --teal-deep: #0f5c66;
+      --yellow: #efc84f;
+      --line: rgba(20,49,54,0.12);
+    }
+    html, body { margin: 0; width: 100%; height: 100%; background: var(--bg); font-family: 'Noto Sans SC', sans-serif; overflow: hidden; }
+    .sheet {
+      position: relative;
+      width: 2480px;
+      height: 1754px;
+      background:
+        linear-gradient(90deg, transparent 0 32.97%, rgba(20,49,54,0.08) 32.97% 33.04%, transparent 33.04% 66.64%, rgba(20,49,54,0.08) 66.64% 66.71%, transparent 66.71%),
+        linear-gradient(180deg, rgba(246,241,232,0.90), rgba(246,241,232,0.82));
+      box-sizing: border-box;
+      padding: 56px;
+    }
+    .grid {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 0;
+      height: 100%;
+      border-radius: 34px;
+      overflow: hidden;
+      box-shadow: 0 32px 80px rgba(13, 35, 38, 0.10);
+      background: var(--paper);
+      border: 1px solid rgba(20,49,54,0.08);
+    }
+    .panel {
+      position: relative;
+      padding: 50px 46px;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .panel + .panel { border-left: 1px solid rgba(20,49,54,0.10); }
+    .panel.left {
+      background:
+        linear-gradient(180deg, rgba(245,240,232,0.68), rgba(245,240,232,0.40)),
+        url('../../../assets/zhujiajiao-water-town-bg.jpg') center top / cover no-repeat;
+    }
+    .panel.left::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(245,240,232,0.18) 0%, rgba(245,240,232,0.78) 100%);
+    }
+    .panel.left > * { position: relative; z-index: 1; }
+    .panel.center {
+      background: linear-gradient(180deg, rgba(250,247,241,0.90), rgba(239,247,245,0.88));
+    }
+    .panel.right {
+      background: linear-gradient(180deg, rgba(250,247,241,0.92), rgba(243,237,228,0.92));
+    }
+    .brand {
+      display: flex; align-items: center; gap: 14px; margin-bottom: 36px;
+    }
+    .brand img { width: 76px; height: 76px; object-fit: contain; border-radius: 18px; padding: 8px; background: rgba(255,255,255,0.44); }
+    .brand .copy { display: flex; flex-direction: column; gap: 4px; }
+    .brand .top { font-size: 12px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--teal); font-weight: 800; }
+    .brand .name { font-size: 18px; font-weight: 700; color: var(--ink); }
+    .cover-title {
+      margin-top: auto;
+      max-width: 410px;
+    }
+    .cover-title h1 {
+      margin: 0;
+      font-size: 82px;
+      line-height: 0.96;
+      letter-spacing: -0.05em;
+      font-weight: 900;
+      color: var(--ink);
+    }
+    .cover-title .sub {
+      margin-top: 22px;
+      font-size: 22px;
+      line-height: 1.55;
+      color: rgba(20,49,54,0.80);
+    }
+    .cover-tags { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 26px; }
+    .tag {
+      padding: 10px 14px; border-radius: 999px; background: rgba(255,255,255,0.58); border: 1px solid rgba(20,49,54,0.10);
+      font-size: 14px; color: rgba(20,49,54,0.82);
+    }
+    .panel h2 {
+      margin: 0 0 16px;
+      font-size: 26px;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      color: var(--teal-deep);
+    }
+    .panel p {
+      margin: 0;
+      font-size: 18px;
+      line-height: 1.7;
+      color: rgba(20,49,54,0.80);
+    }
+    .section {
+      margin-top: 22px;
+      padding-top: 18px;
+      border-top: 1px solid rgba(20,49,54,0.10);
+    }
+    .route-list { display: grid; gap: 14px; margin-top: 18px; }
+    .route {
+      display: grid; grid-template-columns: 52px 1fr; gap: 14px; align-items: start;
+      padding: 16px 18px; border-radius: 20px; background: rgba(255,255,255,0.44); border: 1px solid rgba(20,49,54,0.08);
+    }
+    .route .num {
+      width: 52px; height: 52px; border-radius: 16px; display: grid; place-items: center;
+      background: linear-gradient(135deg, rgba(45,139,145,0.16), rgba(239,200,79,0.18));
+      color: var(--ink); font-size: 20px; font-weight: 800;
+    }
+    .route strong { font-size: 19px; color: var(--ink); }
+    .route span { display: block; margin-top: 6px; font-size: 15px; line-height: 1.55; color: rgba(20,49,54,0.74); }
+    .feature-hero {
+      margin-top: auto;
+      background: url('../../../assets/zhujiajiao-scenic-card.jpg') center center / cover no-repeat;
+      border-radius: 28px;
+      min-height: 700px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 24px 60px rgba(13,35,38,0.10);
+    }
+    .feature-hero::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(180deg, rgba(20,49,54,0.00) 0%, rgba(20,49,54,0.18) 100%);
+    }
+    .feature-hero .caption {
+      position: absolute; left: 22px; bottom: 22px; right: 22px; z-index: 1;
+      color: #f6f2ea;
+      display: flex; justify-content: space-between; gap: 16px; align-items: end;
+    }
+    .feature-hero .caption .big {
+      font-size: 36px; line-height: 0.95; font-weight: 900; letter-spacing: -0.04em;
+    }
+    .feature-hero .caption .small {
+      font-size: 13px; line-height: 1.65; text-align: right; max-width: 17ch; opacity: 0.94;
+    }
+    .footer {
+      margin-top: auto;
+      display: flex; justify-content: space-between; align-items: end; gap: 18px;
+      font-size: 14px; line-height: 1.6; color: rgba(20,49,54,0.74);
+    }
+    .footer strong { color: var(--teal-deep); }
+    .mini-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 18px;
+    }
+    .mini {
+      padding: 16px 16px 18px; border-radius: 18px; background: rgba(255,255,255,0.42); border: 1px solid rgba(20,49,54,0.08);
+    }
+    .mini .label { font-size: 12px; letter-spacing: 0.11em; text-transform: uppercase; color: rgba(20,49,54,0.54); margin-bottom: 8px; }
+    .mini .value { font-size: 20px; font-weight: 800; color: var(--ink); }
+  </style>
+</head>
+<body>
+  <main class="sheet">
+    <div class="grid">
+      <section class="panel left">
+        <div class="brand">
+          <img src="../logo/v1.png" alt="朱家角标志" />
+          <div class="copy">
+            <div class="top">BROCHURE</div>
+            <div class="name">年轻化传播宣传册</div>
+          </div>
+        </div>
+        <div class="cover-title">
+          <h1>朱家角<br>轻游指南</h1>
+          <div class="sub">把桥、水、街、园整理成一册轻松可带走的周末行程。</div>
+          <div class="cover-tags">
+            <div class="tag">核心景点</div>
+            <div class="tag">游船路线</div>
+            <div class="tag">北大街</div>
+            <div class="tag">课植园</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel center">
+        <h2>推荐 3 小时轻游动线</h2>
+        <p>以放生桥为起点，沿河港和明清街巷展开，适合年轻游客边走边拍、边吃边逛。</p>
+        <div class="section">
+          <div class="route-list">
+            <div class="route"><div class="num">01</div><div><strong>放生桥</strong><span>开场视角，先看水网与桥洞，再进入古镇主街。</span></div></div>
+            <div class="route"><div class="num">02</div><div><strong>北大街</strong><span>适合小食、伴手礼和街巷拍照，保持慢节奏。</span></div></div>
+            <div class="route"><div class="num">03</div><div><strong>课植园</strong><span>以园林视角收束，完成安静的停留和打卡。</span></div></div>
+          </div>
+        </div>
+        <div class="mini-grid">
+          <div class="mini"><div class="label">Travel mode</div><div class="value">1 天游 / 2 天游</div></div>
+          <div class="mini"><div class="label">Mood</div><div class="value">清透、轻快、好分享</div></div>
+        </div>
+      </section>
+
+      <section class="panel right">
+        <h2>景点与体验</h2>
+        <p>宣传册通过留白和模块化排版，把“看点”“动线”“体验”拆分成易读单元，方便游客快速浏览。</p>
+        <div class="feature-hero">
+          <div class="caption">
+            <div class="big">水乡<br>慢行</div>
+            <div class="small">适合拍照、散步、游船与夜景停留，形成年轻化传播语境。</div>
+          </div>
+        </div>
+        <div class="section">
+          <div class="footer">
+            <div><strong>朱家角</strong><br>上海文旅年轻传播册页概念</div>
+            <div style="text-align:right;">清水青绿 × 银杏黄<br>纸白 × 深墨黑</div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+</body>
+</html>

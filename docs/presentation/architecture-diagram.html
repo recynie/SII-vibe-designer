@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { width: 1536px; height: 1024px; background: #ffffff; font-family: -apple-system, "Segoe UI", "Helvetica Neue", Arial, sans-serif; padding: 40px 50px; display: flex; flex-direction: column; }
+.title { font-size: 28px; font-weight: 700; color: #1a1a2e; text-align: center; margin-bottom: 30px; }
+.main { display: flex; flex: 1; gap: 30px; }
+.left { flex: 1; display: flex; flex-direction: column; gap: 16px; }
+.right { width: 220px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+
+.layer { border-radius: 12px; padding: 16px 20px; position: relative; }
+.layer-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; opacity: 0.7; }
+
+.user-layer { background: #f0f4ff; border: 1.5px solid #c7d2fe; text-align: center; }
+.user-box { background: #4f46e5; color: #fff; padding: 10px 24px; border-radius: 8px; display: inline-block; font-size: 15px; font-weight: 600; }
+
+.harness-layer { background: #f8fafc; border: 2px solid #e2e8f0; flex: 1; display: flex; flex-direction: column; }
+.harness-header { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; }
+.harness-title { font-size: 14px; font-weight: 700; color: #334155; }
+.harness-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+.harness-tag { font-size: 10px; background: #e2e8f0; color: #475569; padding: 2px 8px; border-radius: 4px; }
+
+.agents { display: flex; flex-direction: column; align-items: center; gap: 12px; flex: 1; }
+.planner-row { display: flex; justify-content: center; }
+.sub-row { display: flex; gap: 20px; justify-content: center; align-items: center; }
+
+.agent-box { padding: 12px 20px; border-radius: 8px; font-size: 13px; font-weight: 600; color: #fff; text-align: center; min-width: 120px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.agent-planner { background: #1e3a5f; }
+.agent-researcher { background: #059669; }
+.agent-designer { background: #d97706; }
+.agent-critic { background: #7c3aed; }
+.agent-sub { font-size: 10px; font-weight: 400; opacity: 0.85; display: block; margin-top: 2px; }
+
+.arrow-down { width: 2px; height: 20px; background: #94a3b8; margin: 0 auto; position: relative; }
+.arrow-down::after { content: ''; position: absolute; bottom: -4px; left: -4px; border-left: 5px solid transparent; border-right: 5px solid transparent; border-top: 6px solid #94a3b8; }
+
+.arrow-spread { display: flex; justify-content: center; align-items: flex-end; height: 30px; position: relative; }
+.arrow-spread::before { content: ''; position: absolute; top: 0; width: 2px; height: 12px; background: #94a3b8; }
+.arrow-spread::after { content: ''; position: absolute; top: 12px; width: 340px; height: 2px; background: #94a3b8; }
+.spread-down { position: absolute; width: 2px; height: 14px; background: #94a3b8; bottom: 0; }
+.spread-down::after { content: ''; position: absolute; bottom: -4px; left: -4px; border-left: 5px solid transparent; border-right: 5px solid transparent; border-top: 6px solid #94a3b8; }
+.sd-left { left: calc(50% - 170px); }
+.sd-center { left: 50%; }
+.sd-right { left: calc(50% + 170px); }
+
+.iteration-badge { font-size: 10px; color: #7c3aed; border: 1.5px solid #c4b5fd; border-radius: 12px; padding: 3px 10px; margin-top: 4px; display: inline-block; }
+
+.tool-layer { background: #fffbeb; border: 1.5px solid #fde68a; }
+.tools { display: flex; gap: 12px; flex-wrap: wrap; }
+.tool-box { background: #fff; border: 1.5px solid #e5e7eb; border-radius: 6px; padding: 8px 14px; font-size: 12px; color: #374151; font-family: "SF Mono", "Fira Code", monospace; }
+.tool-conn { font-size: 10px; color: #6b7280; margin-left: 4px; }
+
+.file-flow { display: flex; flex-direction: column; align-items: center; gap: 0; }
+.file-box { background: #fff; border: 1.5px solid #d1d5db; border-radius: 6px; padding: 8px 16px; font-size: 11px; font-family: "SF Mono", monospace; color: #374151; text-align: center; width: 160px; }
+.file-arrow { width: 2px; height: 16px; background: #9ca3af; position: relative; margin: 0 auto; }
+.file-arrow::after { content: ''; position: absolute; bottom: -3px; left: -3px; border-left: 4px solid transparent; border-right: 4px solid transparent; border-top: 5px solid #9ca3af; }
+.file-label { font-size: 10px; color: #6b7280; margin-bottom: 8px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+</style>
+</head>
+<body>
+<div class="title">Vibe Design · Multi-Agent System Architecture</div>
+<div class="main">
+<div class="left">
+  <!-- User Layer -->
+  <div class="layer user-layer">
+    <div class="layer-label">User Interface</div>
+    <div class="user-box">/design &lt;brief&gt;</div>
+  </div>
+
+  <div class="arrow-down"></div>
+
+  <!-- Harness Layer -->
+  <div class="layer harness-layer">
+    <div class="harness-header">
+      <div class="harness-title">opencode Harness</div>
+      <div class="harness-tags">
+        <span class="harness-tag">context isolation</span>
+        <span class="harness-tag">subagent scheduling</span>
+        <span class="harness-tag">tool dispatch</span>
+        <span class="harness-tag">error handling</span>
+      </div>
+    </div>
+    <div class="agents">
+      <div class="planner-row">
+        <div class="agent-box agent-planner">Planner<span class="agent-sub">primary orchestrator</span></div>
+      </div>
+      <div class="arrow-spread">
+        <div class="spread-down sd-left"></div>
+        <div class="spread-down sd-center"></div>
+        <div class="spread-down sd-right"></div>
+      </div>
+      <div class="sub-row">
+        <div class="agent-box agent-researcher">Researcher<span class="agent-sub">facts · spec · deliverables</span></div>
+        <div class="agent-box agent-designer">Designer<span class="agent-sub">artifact production</span></div>
+        <div class="agent-box agent-critic">Critic<span class="agent-sub">structured review</span></div>
+      </div>
+      <div style="display:flex; justify-content:center; margin-top:6px;">
+        <div class="iteration-badge">⟲ Designer ↔ Critic review cycle (max 2 rounds)</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tool Layer -->
+  <div class="layer tool-layer">
+    <div class="layer-label">Tool Layer (Python CLI via bash)</div>
+    <div class="tools">
+      <div class="tool-box">gen_image.py<span class="tool-conn">← Designer</span></div>
+      <div class="tool-box">html_screenshot.py<span class="tool-conn">← Designer</span></div>
+      <div class="tool-box">validate.py<span class="tool-conn">← Critic</span></div>
+      <div class="tool-box">WebSearch / WebFetch<span class="tool-conn">← Researcher</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- Right: File Flow -->
+<div class="right">
+  <div class="file-label">Data Flow (outputs/)</div>
+  <div class="file-flow">
+    <div class="file-box">facts.md</div>
+    <div class="file-arrow"></div>
+    <div class="file-box">brand-spec.md</div>
+    <div class="file-arrow"></div>
+    <div class="file-box">deliverables.md</div>
+    <div class="file-arrow"></div>
+    <div class="file-box">artifacts/<br>v1.png · v1.review.md</div>
+    <div class="file-arrow"></div>
+    <div class="file-box" style="border-color:#4f46e5; font-weight:600;">final.md</div>
+  </div>
+</div>
+</div>
+</body>
+</html>

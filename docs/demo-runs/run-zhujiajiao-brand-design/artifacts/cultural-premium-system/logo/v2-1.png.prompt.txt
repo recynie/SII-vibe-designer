@@ -1,0 +1,6 @@
+# backend: openai
+# format: png
+# aspect: 1:1
+# candidate: 1/1
+
+High-end cultural logo for Zhujiajiao ancient town in Shanghai, a restrained emblem and wordmark. Main symbol: five stone bridge arches of Fangsheng Bridge merged with quiet water ripple negative space and a subtle Jiangnan garden window geometry. Deep ink teal primary shape, warm stone gray and rice-gold accent on solid xuan paper ivory background. Include only large readable Chinese brand name characters '朱家角' beneath the mark, with a simplified small subtitle '江南文脉' enlarged enough for thumbnail legibility; no extra micro text. Centered composition, generous whitespace, thick consistent vector strokes, premium museum identity, calm poetic historical tone. flat vector, scalable, on solid background, no gradients, no emoji, no photorealistic textures, no faces, no lanterns, no clouds, no red-gold tourist style, no tiny illegible text

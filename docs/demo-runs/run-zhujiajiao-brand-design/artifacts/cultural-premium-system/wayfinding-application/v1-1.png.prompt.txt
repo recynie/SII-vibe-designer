@@ -1,0 +1,6 @@
+# backend: openai
+# format: png
+# aspect: 1:1
+# candidate: 1/1
+
+Premium public wayfinding application mockup for Zhujiajiao ancient water town entrance by a canal, a freestanding cultural guide sign and direction board made of warm grey stone base, dark ink-teal patinated metal panel, subtle wood detail and black tile roof edge. The sign contains clear Chinese place names: "放生桥", "北大街", "课植园", "漕港河" with simple arrows, plus a restrained emblem inspired by five bridge arches. Environment: Jiangnan water town street, stone pavement, canal edge, white walls and black tile roofs softly blurred, overcast daylight, museum-grade restraint, large readable sign occupying 65 percent of frame, slight front perspective. Colors: deep water ink teal, stone warm grey, rice paper beige, tiny rice-paper gold accent. No lanterns, no red-gold tourist signage, no random clouds, no emoji, no over-saturated HDR, no warped text, use the brand color mood for lighting and accents, clean composition

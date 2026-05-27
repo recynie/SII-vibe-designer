@@ -1,0 +1,38 @@
+<!doctype html>
+<!-- v2 update based on v1.review.md: fixes C7 by strengthening the back-side cultural anchor while preserving the postal structure. -->
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>朱家角高端文化明信片 v2</title>
+  <style>
+    :root{--paper:#f6f1e8;--surface:#fffaf1;--ink:#14201e;--teal:#18332f;--muted:#737266;--stone:#b7aa96;--gold:#bda978;--line:rgba(24,51,47,.22)}
+    *{box-sizing:border-box}html,body{margin:0;background:var(--paper);color:var(--ink);font-family:"Noto Sans SC",sans-serif}
+    .canvas{width:1800px;height:1200px;margin:0 auto;position:relative;overflow:hidden;background:linear-gradient(135deg,#efe5d5 0%,#fbf7ef 48%,#e9dfcf 100%);padding:88px;display:grid;grid-template-columns:1fr 1fr;gap:64px}
+    .card{position:relative;background:var(--surface);border:1px solid rgba(24,51,47,.16);box-shadow:0 32px 80px rgba(20,32,30,.14);overflow:hidden}
+    .front{padding:58px 58px 50px 58px}.back{padding:58px}
+    .front:before,.back:before{content:"";position:absolute;inset:22px;border:1px solid rgba(24,51,47,.12);pointer-events:none}
+    .grain{position:absolute;inset:0;opacity:.28;background-image:radial-gradient(rgba(20,32,30,.08) .7px, transparent .9px);background-size:8px 8px;mix-blend-mode:multiply;pointer-events:none}
+    .topline{display:flex;justify-content:space-between;align-items:flex-start;position:relative;z-index:1;color:var(--muted);font-size:14px;letter-spacing:.16em;text-transform:uppercase}
+    .mark{font-family:"Noto Serif SC",serif;border:1.5px solid var(--teal);color:var(--teal);width:58px;height:58px;display:grid;place-items:center;font-size:22px;line-height:1}
+    .scene{position:absolute;left:58px;right:58px;top:188px;height:480px;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+    .moon{position:absolute;right:80px;top:52px;width:146px;height:146px;border-radius:50%;background:rgba(189,169,120,.23)}
+    .bridge{position:absolute;left:38px;right:38px;bottom:92px;height:210px}.deck{position:absolute;left:0;right:0;top:78px;height:24px;background:var(--teal);border-radius:40px 40px 2px 2px}.arch{position:absolute;bottom:0;width:132px;height:132px;border:20px solid var(--teal);border-bottom:0;border-radius:132px 132px 0 0}.a1{left:42px;transform:scale(.76);transform-origin:bottom}.a2{left:190px;transform:scale(.9);transform-origin:bottom}.a3{left:350px}.a4{right:190px;transform:scale(.9);transform-origin:bottom}.a5{right:42px;transform:scale(.76);transform-origin:bottom}
+    .water{position:absolute;left:0;right:0;bottom:0;height:124px;background:linear-gradient(180deg,transparent,rgba(24,51,47,.08))}.water i{position:absolute;height:1px;background:rgba(24,51,47,.24)}.w1{left:64px;right:120px;bottom:38px}.w2{left:220px;right:60px;bottom:68px}.w3{left:0;right:360px;bottom:92px}
+    .front-title{position:absolute;left:58px;bottom:76px;font-family:"Noto Serif SC",serif;font-size:54px;line-height:1.15;letter-spacing:-.03em;color:var(--ink);z-index:1}.front-title small{display:block;margin-top:18px;font-family:"Noto Sans SC",sans-serif;font-size:16px;letter-spacing:.18em;color:var(--muted);font-weight:400}
+    .back h2{font-family:"Noto Serif SC",serif;font-weight:600;font-size:44px;letter-spacing:-.02em;margin:0 0 28px}.message{width:54%;font-size:20px;line-height:2;letter-spacing:.03em;color:#3f4b47}.divider{position:absolute;top:210px;bottom:96px;left:50%;border-left:1px solid var(--line)}
+    .address{position:absolute;right:58px;top:240px;width:330px}.line{height:42px;border-bottom:1px solid rgba(24,51,47,.32);margin-bottom:34px}.stamp{position:absolute;right:58px;top:58px;width:138px;height:168px;border:1px solid var(--line);display:grid;place-items:center;color:var(--muted);font-size:13px;letter-spacing:.12em}.stamp:after{content:"POSTAGE";transform:rotate(-90deg)}
+    .caption{position:absolute;left:58px;bottom:66px;font-size:15px;line-height:1.8;letter-spacing:.06em;color:var(--muted)}
+    .heritage-badge{position:absolute;right:58px;top:248px;width:180px;height:180px;border:1.5px solid rgba(24,51,47,.18);display:flex;flex-direction:column;justify-content:center;align-items:center;color:var(--teal);background:rgba(255,250,241,.72)}
+    .heritage-badge b{font-family:"Noto Serif SC",serif;font-size:36px;line-height:1;margin-bottom:10px}
+    .heritage-badge span{font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
+    .caption strong{display:block;font-family:"Noto Serif SC",serif;font-size:22px;letter-spacing:.02em;color:var(--teal);margin-bottom:10px}
+  </style>
+</head>
+<body>
+  <main class="canvas">
+    <section class="card front"><div class="grain"></div><div class="topline"><span>ZHUIJIAJIAO · SHANGHAI</span><span class="mark">朱角</span></div><div class="scene"><div class="moon"></div><div class="bridge"><div class="deck"></div><div class="arch a1"></div><div class="arch a2"></div><div class="arch a3"></div><div class="arch a4"></div><div class="arch a5"></div></div><div class="water"><i class="w1"></i><i class="w2"></i><i class="w3"></i></div></div><div class="front-title">放生桥记<small>FANGSHENG BRIDGE · WATER TOWN MEMORY</small></div></section>
+    <section class="card back"><div class="grain"></div><div class="stamp"></div><h2>一枚寄往江南的水印</h2><p class="message">从北大街入巷，桥影与橹声在水面相逢。朱家角的纪念，不在喧闹处，而在宣纸留白与石桥暖灰之间。</p><div class="divider"></div><div class="heritage-badge"><b>朱角</b><span>heritage edition</span></div><div class="address"><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div></div><p class="caption"><strong>上海朱家角古镇</strong>放生桥｜北大街｜课植园<br>Premium cultural postcard system</p></section>
+  </main>
+</body>
+</html>

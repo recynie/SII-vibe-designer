@@ -1,0 +1,147 @@
+<!doctype html>
+<!-- v2 update based on v1.review.md: fixes C3 hierarchy and C4 composition by creating one dominant title entry, redistributing weight downward, and replacing top-heavy empty-bottom structure with staged vertical rhythm. -->
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>朱家角高端文化主视觉海报 v2</title>
+  <style>
+    :root{
+      --paper:#f5efe4;
+      --paper-deep:#ece3d4;
+      --ink:#14201e;
+      --teal:#193530;
+      --muted:#68706a;
+      --stone:#b8ab95;
+      --gold:#baa57a;
+      --line:rgba(20,32,30,.18);
+      --soft:rgba(24,53,48,.08);
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;width:100%;min-height:100%;background:var(--paper)}
+    body{font-family:"Noto Sans SC",sans-serif;color:var(--ink)}
+    .poster{
+      width:1200px;height:1600px;position:relative;overflow:hidden;margin:0 auto;
+      background:
+        radial-gradient(circle at 82% 16%, rgba(186,165,122,.17) 0 10%, transparent 11%),
+        linear-gradient(180deg,#faf7f0 0%, #f3ecdf 58%, #ede3d3 100%);
+      padding:74px 82px 72px 82px;
+    }
+    .poster:before{content:"";position:absolute;inset:36px;border:1px solid rgba(24,53,48,.16);pointer-events:none}
+    .grain{position:absolute;inset:0;opacity:.28;background-image:radial-gradient(rgba(20,32,30,.08) .7px, transparent .9px);background-size:8px 8px;mix-blend-mode:multiply;pointer-events:none}
+
+    .topbar{
+      position:absolute;left:82px;right:82px;top:78px;display:flex;justify-content:space-between;align-items:flex-start;
+      color:var(--muted);font-size:13px;letter-spacing:.18em;text-transform:uppercase;
+    }
+    .markwrap{display:flex;gap:18px;align-items:flex-start}
+    .seal{width:64px;height:64px;border:1.8px solid var(--teal);display:grid;place-items:center;font-family:"Noto Serif SC",serif;font-size:22px;line-height:1.05;color:var(--teal)}
+    .vert{writing-mode:vertical-rl;font-size:13px;letter-spacing:.16em;line-height:1.9;color:var(--muted)}
+
+    .hero{
+      position:absolute;left:166px;top:176px;width:690px;
+    }
+    .kicker{font-size:14px;letter-spacing:.24em;color:var(--muted);margin-bottom:24px}
+    h1{margin:0;font-family:"Noto Serif SC",serif;font-size:144px;line-height:.95;letter-spacing:-.065em;font-weight:600;color:var(--ink)}
+    .lead{margin-top:28px;max-width:450px;font-size:19px;line-height:1.95;letter-spacing:.03em;color:#43504b}
+
+    .side-note{
+      position:absolute;right:96px;top:232px;width:214px;padding-top:28px;border-top:1px solid var(--line);
+      font-size:15px;line-height:1.95;letter-spacing:.04em;color:#4f5752;
+    }
+    .side-note b{display:block;margin-bottom:14px;font-family:"Noto Serif SC",serif;font-size:28px;font-weight:600;letter-spacing:.01em;color:var(--teal)}
+
+    .scene{
+      position:absolute;left:82px;right:82px;top:648px;height:560px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+      background:linear-gradient(180deg, rgba(255,255,255,.18), rgba(24,53,48,.02));
+    }
+    .scene .wash{position:absolute;inset:0;background:radial-gradient(circle at 34% 40%, rgba(24,53,48,.08), transparent 46%)}
+    .garden-ring{position:absolute;right:126px;top:84px;width:248px;height:248px;border:1px solid rgba(24,53,48,.22);border-radius:50%}
+    .garden-ring:before,.garden-ring:after{content:"";position:absolute;border-radius:50%}
+    .garden-ring:before{inset:38px;border:1px solid rgba(24,53,48,.18)}
+    .garden-ring:after{inset:92px;background:rgba(186,165,122,.16)}
+
+    .roofline{position:absolute;left:44px;right:360px;top:78px;height:226px}
+    .house{position:absolute;bottom:0;background:rgba(245,239,228,.84);border-left:1px solid rgba(24,53,48,.16);border-right:1px solid rgba(24,53,48,.16)}
+    .house:before{content:"";position:absolute;left:-18px;right:-18px;top:-34px;border-left:126px solid transparent;border-right:126px solid transparent;border-bottom:34px solid rgba(24,53,48,.8)}
+    .h1{left:0;width:204px;height:92px}
+    .h2{left:212px;width:216px;height:124px}
+    .h3{left:440px;width:188px;height:110px}
+
+    .bridge{position:absolute;left:72px;right:72px;bottom:118px;height:250px}
+    .deck{position:absolute;left:0;right:0;top:66px;height:28px;background:var(--teal);border-radius:48px 48px 4px 4px;transform:skewX(-4deg)}
+    .arch{position:absolute;bottom:0;border:22px solid var(--teal);border-bottom:0;border-radius:180px 180px 0 0;background:transparent}
+    .a1{left:46px;width:120px;height:120px;transform:scale(.82);transform-origin:bottom}
+    .a2{left:196px;width:146px;height:146px;transform:scale(.95);transform-origin:bottom}
+    .a3{left:382px;width:176px;height:176px}
+    .a4{right:196px;width:146px;height:146px;transform:scale(.95);transform-origin:bottom}
+    .a5{right:46px;width:120px;height:120px;transform:scale(.82);transform-origin:bottom}
+    .water{position:absolute;left:0;right:0;bottom:0;height:176px;background:linear-gradient(180deg, transparent, rgba(24,53,48,.11));overflow:hidden}
+    .ripple{position:absolute;height:1px;background:rgba(24,53,48,.22)}
+    .r1{left:70px;right:110px;bottom:42px}.r2{left:210px;right:56px;bottom:76px}.r3{left:0;right:336px;bottom:112px}.r4{left:478px;right:0;bottom:144px}
+
+    .bottom{
+      position:absolute;left:82px;right:82px;bottom:86px;display:grid;grid-template-columns:1.2fr .8fr;gap:88px;align-items:end;
+    }
+    .poem{margin:0;font-family:"Noto Serif SC",serif;font-size:34px;line-height:1.72;letter-spacing:.04em;color:var(--teal)}
+    .closing{padding-left:30px;border-left:1px solid var(--line);display:flex;flex-direction:column;gap:18px}
+    .closing .city{font-family:"Noto Serif SC",serif;font-size:28px;font-weight:600;letter-spacing:.02em;color:var(--ink)}
+    .closing .txt{font-size:15px;line-height:1.95;letter-spacing:.05em;color:#48514c}
+    .tag{display:inline-block;padding:8px 14px;border:1px solid rgba(24,53,48,.18);font-size:12px;letter-spacing:.18em;color:var(--muted);text-transform:uppercase;width:max-content;background:rgba(255,255,255,.26)}
+  </style>
+</head>
+<body>
+  <main class="poster">
+    <div class="grain"></div>
+
+    <section class="topbar">
+      <div class="markwrap">
+        <div class="seal">朱<br>角</div>
+        <div class="vert">放生桥｜北大街｜课植园</div>
+      </div>
+      <div>THE MOST JIANGNAN · CULTURAL EDITION</div>
+    </section>
+
+    <section class="hero">
+      <div class="kicker">SHANGHAI ZHUJIAJIAO · WATER TOWN HERITAGE</div>
+      <h1>最江南<br>在朱家角</h1>
+      <p class="lead">从桥拱、水巷与园林院落之间展开一条克制而有秩序的阅读路径。以黛瓦墨青、宣纸留白与石桥暖灰，重建古镇的历史厚度与缓慢尺度。</p>
+    </section>
+
+    <aside class="side-note">
+      <b>千年水镇</b>
+      九条老街沿河蜿蜒，三十六座石桥跨水成景。明清街巷、园林界面与漕港河的水纹秩序，共同构成朱家角的文脉入口。
+    </aside>
+
+    <section class="scene" aria-label="放生桥与古镇轮廓">
+      <div class="wash"></div>
+      <div class="roofline">
+        <div class="house h1"></div>
+        <div class="house h2"></div>
+        <div class="house h3"></div>
+      </div>
+      <div class="garden-ring"></div>
+      <div class="bridge">
+        <div class="deck"></div>
+        <div class="arch a1"></div>
+        <div class="arch a2"></div>
+        <div class="arch a3"></div>
+        <div class="arch a4"></div>
+        <div class="arch a5"></div>
+      </div>
+      <div class="water">
+        <i class="ripple r1"></i><i class="ripple r2"></i><i class="ripple r3"></i><i class="ripple r4"></i>
+      </div>
+    </section>
+
+    <section class="bottom">
+      <p class="poem">桥影入水，街巷入画。<br>在古镇慢行的尺度里，重读江南的时间秩序。</p>
+      <div class="closing">
+        <span class="tag">premium cultural visual system</span>
+        <div class="city">上海 · 朱家角古镇</div>
+        <div class="txt">文化导览｜水岸漫行｜园林参访<br>Fangsheng Bridge · North Street · Kezhi Garden</div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

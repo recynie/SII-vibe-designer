@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>朱家角年轻化传播主视觉海报</title>
+  <style>
+    :root {
+      --bg: #f5f0e8;
+      --ink: #153236;
+      --muted: #547376;
+      --teal: #2b8a8f;
+      --teal-deep: #0f5d66;
+      --yellow: #f0c84b;
+      --paper: rgba(245, 240, 232, 0.82);
+      --line: rgba(21, 50, 54, 0.12);
+    }
+    html, body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: 'Noto Sans SC', sans-serif;
+      overflow: hidden;
+    }
+    .poster {
+      position: relative;
+      width: 1200px;
+      height: 1600px;
+      margin: 0 auto;
+      background:
+        radial-gradient(circle at 80% 18%, rgba(240,200,75,0.16), transparent 19%),
+        radial-gradient(circle at 18% 85%, rgba(43,138,143,0.12), transparent 22%),
+        linear-gradient(180deg, rgba(245,240,232,0.4), rgba(245,240,232,0.2)),
+        url('../../../assets/zhujiajiao-water-town-bg.jpg') center top / cover no-repeat;
+      box-sizing: border-box;
+      padding: 54px;
+    }
+    .poster::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(90deg, rgba(245,240,232,0.85) 0%, rgba(245,240,232,0.26) 43%, rgba(245,240,232,0.06) 68%, rgba(245,240,232,0.74) 100%),
+        linear-gradient(180deg, rgba(21,50,54,0.10), rgba(21,50,54,0.02) 30%, rgba(21,50,54,0.28));
+      pointer-events: none;
+    }
+    .grid {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      height: 100%;
+      gap: 28px;
+    }
+    .left, .right { display: flex; flex-direction: column; }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 70px;
+    }
+    .brand img {
+      width: 92px;
+      height: 92px;
+      object-fit: contain;
+      background: rgba(245,240,232,0.54);
+      border-radius: 20px;
+      padding: 10px;
+      box-shadow: 0 12px 35px rgba(18, 43, 46, 0.08);
+    }
+    .brand .meta {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .kicker {
+      font-size: 14px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--teal-deep);
+      font-weight: 600;
+    }
+    .brand-name {
+      font-size: 18px;
+      font-weight: 600;
+      color: rgba(21,50,54,0.88);
+    }
+    .hero {
+      margin-top: auto;
+      padding-right: 24px;
+      max-width: 560px;
+    }
+    h1 {
+      margin: 0;
+      font-size: 88px;
+      line-height: 0.96;
+      letter-spacing: -0.05em;
+      font-weight: 900;
+      color: var(--ink);
+      text-wrap: pretty;
+    }
+    .accent-line {
+      width: 160px;
+      height: 8px;
+      margin: 28px 0 26px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--teal), var(--yellow));
+    }
+    .sub {
+      font-size: 24px;
+      line-height: 1.52;
+      color: rgba(21,50,54,0.82);
+      max-width: 23ch;
+      font-weight: 500;
+    }
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 30px;
+    }
+    .chip {
+      padding: 12px 18px;
+      border-radius: 999px;
+      background: rgba(245,240,232,0.75);
+      border: 1px solid rgba(21,50,54,0.10);
+      font-size: 15px;
+      color: rgba(21,50,54,0.82);
+      box-shadow: 0 10px 24px rgba(10, 31, 33, 0.05);
+    }
+    .story {
+      margin-top: auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+      align-items: end;
+    }
+    .story-card, .info-card {
+      background: rgba(245,240,232,0.77);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(21,50,54,0.10);
+      box-shadow: 0 24px 55px rgba(11, 31, 33, 0.08);
+      border-radius: 28px;
+      padding: 24px;
+    }
+    .story-card {
+      min-height: 214px;
+    }
+    .story-card h2, .info-card h2 {
+      margin: 0 0 12px;
+      font-size: 18px;
+      letter-spacing: 0.04em;
+      color: var(--teal-deep);
+    }
+    .story-card p, .info-card p, .info-card li {
+      margin: 0;
+      font-size: 16px;
+      line-height: 1.72;
+      color: rgba(21,50,54,0.84);
+    }
+    .story-card p + p { margin-top: 10px; }
+    .info-card {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .route {
+      display: grid;
+      grid-template-columns: 18px 1fr;
+      gap: 12px;
+      align-items: start;
+      padding: 10px 0;
+      border-top: 1px solid rgba(21,50,54,0.08);
+    }
+    .dot {
+      width: 14px;
+      height: 14px;
+      margin-top: 6px;
+      border-radius: 50%;
+      background: var(--yellow);
+      box-shadow: inset 0 0 0 4px rgba(43,138,143,0.18);
+    }
+    .right {
+      justify-content: space-between;
+      padding-top: 8px;
+    }
+    .schedule {
+      margin-top: 16px;
+      border-left: 1px solid rgba(21,50,54,0.16);
+      padding-left: 18px;
+    }
+    .schedule .item {
+      margin-bottom: 18px;
+    }
+    .schedule .label {
+      font-size: 13px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(21,50,54,0.54);
+      margin-bottom: 6px;
+    }
+    .schedule .value {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+    .footer-note {
+      margin-top: auto;
+      padding-top: 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 20px;
+      color: rgba(21,50,54,0.72);
+      font-size: 15px;
+      line-height: 1.6;
+    }
+    .footer-note strong { color: var(--teal-deep); }
+  </style>
+</head>
+<body>
+  <main class="poster">
+    <div class="grid">
+      <section class="left">
+        <div class="brand">
+          <img src="../logo/v1.png" alt="朱家角品牌标志" />
+          <div class="meta">
+            <div class="kicker">YOUTH TRAVEL SYSTEM</div>
+            <div class="brand-name">朱家角 · 上海水乡周末游</div>
+          </div>
+        </div>
+
+        <div class="hero">
+          <h1>最江南的<br>年轻打卡地</h1>
+          <div class="accent-line"></div>
+          <div class="sub">把石桥、河港、北大街和课植园装进一个轻快周末。适合拍照、漫游、慢吃、夜游。</div>
+          <div class="chips">
+            <div class="chip">水乡打卡</div>
+            <div class="chip">周末微旅行</div>
+            <div class="chip">夜游路线</div>
+            <div class="chip">年轻友好</div>
+          </div>
+        </div>
+
+        <div class="story">
+          <div class="story-card">
+            <h2>一眼就能记住的朱家角</h2>
+            <p>清水青绿建立主视觉，银杏黄只作为少量点睛。画面留白充足，让建筑、水网和标题各自有呼吸感。</p>
+            <p>让游客在一张海报里，先感受到“水感”和“轻快”，再读到具体信息。</p>
+          </div>
+          <div class="info-card">
+            <h2>推荐动线</h2>
+            <div class="route"><div class="dot"></div><div><strong>放生桥</strong><br>桥面眺望水网与游船</div></div>
+            <div class="route"><div class="dot"></div><div><strong>北大街</strong><br>街巷、店铺、在地小食</div></div>
+            <div class="route"><div class="dot"></div><div><strong>课植园</strong><br>园林式慢游与拍照停留</div></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="right">
+        <div class="story-card" style="min-height: 394px; display:flex; flex-direction:column; justify-content:space-between; background: linear-gradient(180deg, rgba(245,240,232,0.80), rgba(245,240,232,0.60));">
+          <div>
+            <h2>周末来朱家角</h2>
+            <p>从城市切换到水岸节奏，适合 1 天游、2 天游，适合朋友、情侣和亲子轻出发。</p>
+          </div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:18px;">
+            <div style="padding:16px 18px; border-radius:22px; background:rgba(255,255,255,0.45); border:1px solid rgba(21,50,54,0.08);">
+              <div style="font-size:13px; color:rgba(21,50,54,0.58); letter-spacing:0.08em; text-transform:uppercase; margin-bottom:8px;">Best time</div>
+              <div style="font-size:24px; font-weight:700; color:var(--ink);">周五晚 / 周末</div>
+            </div>
+            <div style="padding:16px 18px; border-radius:22px; background:rgba(255,255,255,0.45); border:1px solid rgba(21,50,54,0.08);">
+              <div style="font-size:13px; color:rgba(21,50,54,0.58); letter-spacing:0.08em; text-transform:uppercase; margin-bottom:8px;">Mood</div>
+              <div style="font-size:24px; font-weight:700; color:var(--ink);">清透 / 轻快</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="info-card">
+          <h2>快拍建议</h2>
+          <p>桥洞、河面倒影、白墙黛瓦、船桨掠过水面的瞬间，都是适合年轻用户分享的高识别瞬间。</p>
+          <div class="schedule">
+            <div class="item"><div class="label">route 01</div><div class="value">桥上看水</div></div>
+            <div class="item"><div class="label">route 02</div><div class="value">街巷慢吃</div></div>
+            <div class="item"><div class="label">route 03</div><div class="value">夜色返航</div></div>
+          </div>
+          <div class="footer-note">
+            <div><strong>朱家角</strong><br>上海近郊年轻化文旅传播主视觉</div>
+            <div style="text-align:right;">清水青绿 × 银杏黄<br>paper white × ink black</div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+</body>
+</html>

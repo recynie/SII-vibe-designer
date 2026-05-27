@@ -1,0 +1,6 @@
+# backend: openai
+# format: png
+# aspect: 1:1
+# candidate: 1/1
+
+Premium cultural public furniture design mockup for Zhujiajiao waterfront, an integrated low stone-and-wood bench with a slim dark ink-teal guide panel rising from one side, designed as a rest seat and cultural orientation marker. The panel shows a restrained five-arch bridge emblem and readable Chinese labels "朱家角", "放生桥", "水岸导览" with small directional arrows. Materials: warm grey local stone, dark patinated metal, oiled dark wood seat, rice-paper gold engraved accent. Scene: canal-side stone pavement, Jiangnan white walls and black tile roofs, calm water edge, soft overcast daylight, product occupies 60 percent of frame, grounded with realistic contact shadows, high-end museum/public-space quality, quiet negative space. No lanterns, no red-gold tourist style, no random decorative clouds, no floating object, no people, no emoji, no over-saturated HDR, no warped text, use the brand color mood for lighting and accents, clean composition
